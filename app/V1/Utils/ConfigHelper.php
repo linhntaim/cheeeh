@@ -9,26 +9,26 @@ class ConfigHelper
     public static function get($key = null, $default = null)
     {
         if (is_null($key)) {
-            return config('App');
+            return config('cheeeh');
         }
         if (is_array($key)) {
             $keyTemp = [];
             foreach ($key as $k => $v) {
-                $keyTemp['App.' . $k] = $v;
+                $keyTemp['cheeeh.' . $k] = $v;
             }
             return config($keyTemp);
         }
-        return config('App.' . $key, $default);
+        return config('cheeeh.' . $key, $default);
     }
 
     public static function getAppName()
     {
-        return static::get('app.name');
+        return config('app.name');
     }
 
     public static function getAppUrl()
     {
-        return static::get('app.url');
+        return config('app.url');
     }
 
     public static function getNoReplyMail()
@@ -90,15 +90,5 @@ class ConfigHelper
     {
         $blockKey = Configuration::CLOCK_BLOCK_KEYS[static::getClockBlock($secondRange) % count(Configuration::CLOCK_BLOCK_KEYS)];
         return !empty($callback) ? $callback($blockKey) : $blockKey;
-    }
-
-    public static function path($path = '')
-    {
-        return base_path($path ? 'App' . DIRECTORY_SEPARATOR . $path : 'App');
-    }
-
-    public static function appPath($path = '')
-    {
-        return static::path($path ? 'app' . DIRECTORY_SEPARATOR . $path : 'app');
     }
 }
