@@ -1,0 +1,17 @@
+<?php
+
+namespace App\V1\Commands;
+
+class TestCommand extends Command
+{
+    protected $signature = 'test';
+
+    public function handle()
+    {
+        $this->before();
+
+        // TODO: Write something to check if it works
+
+        $this->after();
+    }
+}

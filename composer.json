@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "linhntaim/cheeeh",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "A photo & video sharing service.",
     "keywords": [
         "framework",
         "laravel"
@@ -31,7 +31,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/passport"
+            ]
         }
     },
     "autoload": {
