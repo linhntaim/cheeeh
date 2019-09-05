@@ -1,0 +1,65 @@
+/**
+ * Hide
+ */
+.hide, .hide-xl {
+    display: none !important;
+}
+
+@media (max-width: 575px) {
+    .hide-xs {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .hide-sm {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .hide-md {
+        display: none !important;
+    }
+}
+
+@media (min-width: 1199px) {
+    .hide-lg {
+        display: none !important;
+    }
+}
+
+/**
+ * Modal
+ */
+@media (min-width: 768px) {
+    .modal-md {
+        max-width: 700px;
+    }
+}
+
+@media (min-width: 992px) {
+    .modal-lg {
+        max-width: 900px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .modal-xl {
+        max-width: 1100px;
+    }
+}
+
+/**
+ * Role
+ */
+[role="button"] {
+    cursor: pointer;
+}
+
+/**
+ * Text
+ */
+.text-nowrap {
+    white-space: nowrap;
+}

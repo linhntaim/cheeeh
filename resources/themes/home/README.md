@@ -1,4 +1,4 @@
-# home
+# Cheeeh Home
 
 ## Project setup
 ```

@@ -1,17 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>home</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but home doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><%= VUE_APP_NAME %></title>
+    <link rel="icon" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/favicon.ico">
+    <link rel="apple-touch-icon" sizes="57x57" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/favicon-16x16.png">
+    <link rel="manifest" href="<%= VUE_APP_STATIC_URL %>/sites/favicons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="<%= VUE_APP_STATIC_URL %>/sites/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="<%= BASE_URL %>vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<%= BASE_URL %>vendor/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="<%= BASE_URL %>vendor/animate.css/animate.min.css">
+    <link rel="stylesheet" href="<%= BASE_URL %>css/style.css">
+</head>
+<body class="initializing">
+<noscript>
+    <strong>We're sorry but home doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+<div id="app"></div>
+<div id="page-pop-loading" class="page-popping hide">
+    <div class="page-pop-wrapper">
+        <i class="fas fa-circle-notch fa-spin"></i>
+    </div>
+</div>
+<script src="<%= BASE_URL %>vendor/jquery/jquery.min.js"></script>
+<script src="<%= BASE_URL %>vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- built files will be auto injected -->
+</body>
 </html>

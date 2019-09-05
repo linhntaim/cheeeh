@@ -1,12 +1,24 @@
 import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import Server from './plugins/server'
+import store from './app/store'
+import {app} from './app/utils/app'
+import {log} from './app/utils/log'
+import {ui} from './app/utils/ui'
 
-Vue.config.productionTip = false
+Vue.config.productionTip = true
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+ui.startPageLoading()
+
+Vue.use(Server, {
+    store,
+    doneCallback: () => {
+        app.create()
+    },
+    errorCallback: err => {
+        log.write(err, 'main')
+
+        app.create(false)
+    }
+})
+
+
