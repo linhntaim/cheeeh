@@ -32,22 +32,22 @@
         },
         watch: {
             '$route'() {
-                if (routeHelper.isLogin(this.$route)) {
-                    this.actionRouteName = 'register'
-                    this.actionName = 'Register'
-                } else if (routeHelper.isRegister(this.$route)) {
+                if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
                     this.actionRouteName = 'login'
                     this.actionName = 'Login'
+                } else {
+                    this.actionRouteName = 'register'
+                    this.actionName = 'Register'
                 }
             },
         },
         created() {
-            if (routeHelper.isLogin(this.$route)) {
-                this.actionRouteName = 'register'
-                this.actionName = 'Register'
-            } else if (routeHelper.isRegister(this.$route)) {
+            if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
                 this.actionRouteName = 'login'
                 this.actionName = 'Login'
+            } else {
+                this.actionRouteName = 'register'
+                this.actionName = 'Register'
             }
         },
     }
