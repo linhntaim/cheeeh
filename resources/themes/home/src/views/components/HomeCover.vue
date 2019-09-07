@@ -4,7 +4,7 @@
         .home-caption
             .text-center.px-3
                 h1.caption-title.font-weight-bold Find your inspiration.
-                h4.caption-subtitle.mt-3.mb-5.mx-auto Join the Flickr community, home to tens of billions of photos and 2 million groups.
+                h4.caption-subtitle.mt-3.mb-5.mx-auto Join the Cheeeh community, home to tens of billions of photos and 2 million groups.
                 router-link.btn.btn-light.btn-lg.font-weight-bold.px-5(:class="{'text-base-pink': actionRouteName === 'login', 'text-base-red': actionRouteName === 'register'}" :to="{name: actionRouteName}") {{ actionName }}
 </template>
 

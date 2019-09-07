@@ -9,7 +9,7 @@
                 .container
                     h2.font-weight-bold Unlimited inspiration.
                     h2.font-weight-bold.mb-0 Unlimited passion.
-                    .my-4 Joining Flickr means joining the world’s largest, most influential group of photographers. It means honing your craft, finding community, and changing the world through photography.
+                    .my-4 Joining Cheeeh means joining the world’s largest, most influential group of photographers. It means honing your craft, finding community, and changing the world through photography.
                     router-view
         footer.layout-footer
             main-footer
