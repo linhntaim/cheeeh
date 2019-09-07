@@ -15,7 +15,7 @@ class ImageFiler extends Filer
     /**
      * ImageFiler constructor.
      * @param string|SplFileInfo $file
-     * @throws \App\V1\Exceptions\AppException
+     * @throws \DSquare\Exceptions\AppException
      */
     public function __construct($file)
     {
@@ -75,11 +75,19 @@ class ImageFiler extends Filer
         $this->prepare();
     }
 
-    public function move($toDirectory, $name = null, $isRelative = false)
+    public function move($toDirectory, $name = null, $isRelative = false, $safe = false)
     {
-        parent::move($toDirectory, $name, $isRelative);
+        parent::move($toDirectory, $name, $isRelative, $safe);
         $this->prepare();
         return $this;
+    }
+
+    public function delete()
+    {
+        $this->image->destroy();
+        $this->image = null;
+
+        parent::delete();
     }
 
     /**

@@ -25,7 +25,7 @@ export class Application {
                     return
                 }
 
-                if (++tried > 10) {
+                if (++tried > 100) {
                     reject()
                     return
                 }
@@ -40,18 +40,25 @@ export class Application {
     }
 
     createDefault() {
+        log.write('default creating', 'app')
+
+        Vue.use(EventBus)
         localeReady(i18n => {
             this.instance = new Vue({
                 i18n,
                 router,
                 store,
-                render: h => h(AppFailed)
+                render: h => h(AppFailed),
             }).$mount('#app')
+
+            log.write('default created', 'app')
         })
     }
 
     create(alright = true) {
         if (!alright) return this.createDefault()
+
+        log.write('creating', 'app')
 
         Vue.use(VueHead)
         Vue.use(VueCookie)
@@ -80,8 +87,10 @@ export class Application {
                 i18n,
                 router,
                 store,
-                render: h => h(App)
+                render: h => h(App),
             }).$mount('#app')
+
+            log.write('created', 'app')
         })
     }
 }

@@ -1,13 +1,16 @@
 <template lang="pug">
-    header.masthead
-        .container.d-flex.h-100.align-items-center
-            .mx-auto.text-center
-                h1.mx-auto.my-0.text-uppercase 401
-                h2.text-white-50.mx-auto.mt-2.mb-5 {{ $t('error.unauthenticated._') }}
-                h3.text-white-50.mx-auto.mt-2.mb-5 {{ $t('error.unauthenticated.desc') }}
-                div(:class="{'mb-5': enabled}")
-                    router-link(:to="{path: '/'}") ← {{ $t('actions.go', {where: $t('pages._auth._login._')}) }}
-                clear-cache-button(:enabled="enabled")
+    .card
+        .card-body.text-center
+            h1 401
+            h4 {{ $t('error.unauthenticated._') }}
+            .my-3 {{ $t('error.unauthenticated.desc') }}
+            div(:class="{'mb-5': enabled}")
+                router-link(:class="{'btn btn-primary': !enabled, 'link-icon': enabled}" :to="{path: '/'}")
+                    i.fas.fa-long-arrow-alt-left
+                    | &nbsp;&nbsp;
+                    span {{ $t('actions.go_where', {where: $t('pages._auth._login._')}) }}
+            .mb-2.text-small.text-danger(v-if="enabled") {{ $t('error.clear_cache_help') }}
+            clear-cache-button(:enabled="enabled")
 </template>
 
 <script>

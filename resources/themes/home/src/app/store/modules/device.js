@@ -16,6 +16,7 @@ export default {
     mutations: {
         setDevice(state, {device}) {
             state.device = device
+            state.failed = false
 
             deviceCookieStore.store(state.device)
         },

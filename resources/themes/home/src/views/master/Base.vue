@@ -1,9 +1,13 @@
 <template lang="pug">
-    router-view
+    router-link
 </template>
 
 <script>
     export default {
-        name: 'Home',
+        name: 'Base',
     }
 </script>
+
+<style scoped>
+
+</style>

@@ -1,4 +1,4 @@
-import Home from '../../../views/master/Home'
+import Base from '../../../views/master/Base'
 import Auth from '../../../views/master/Auth'
 import Error from '../../../views/master/Error'
 import {all} from '../middleware'
@@ -42,29 +42,8 @@ export default [
         ],
     },
     {
-        path: '/auth',
-        component: Auth,
-        meta: {
-            middleware: all,
-        },
-        children: [
-            {
-                path: 'logout',
-                name: 'logout',
-                meta: {
-                    requireAuth: true,
-                },
-                component: () => import('../../../views/pages/auth/Logout'),
-            },
-            {
-                path: '*',
-                component: () => import('../../../views/error/NotFound'),
-            },
-        ],
-    },
-    {
         path: '/',
-        component: Home,
+        component: Auth,
         meta: {
             middleware: all,
         },
@@ -72,7 +51,42 @@ export default [
             {
                 path: '',
                 name: 'home',
-                component: () => import('../../../views/pages/Home'),
+                meta: {
+                    requireAuth: false,
+                },
+                component: () => import('../../../views/pages/auth/Register'),
+            },
+            {
+                path: 'auth/login',
+                name: 'login',
+                meta: {
+                    requireAuth: false,
+                },
+                component: () => import('../../../views/pages/auth/Login'),
+            },
+            {
+                path: 'auth/logout',
+                name: 'logout',
+                meta: {
+                    requireAuth: true,
+                },
+                component: () => import('../../../views/pages/auth/Logout'),
+            },
+            {
+                path: 'auth/register',
+                name: 'register',
+                meta: {
+                    requireAuth: false,
+                },
+                component: () => import('../../../views/pages/auth/Register'),
+            },
+            {
+                path: 'auth/forgot-password',
+                name: 'forgot_password',
+                meta: {
+                    requireAuth: false,
+                },
+                component: () => import('../../../views/pages/auth/Register'),
             },
             {
                 path: '*',

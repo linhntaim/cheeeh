@@ -4,23 +4,35 @@ import {timeoutCaller} from '../../../utils/timeout_caller'
 import {ui} from '../../../utils/ui'
 import {session} from '../../../utils/session'
 import {log} from '../../../utils/log'
+import {app} from '../../../utils/app'
 
 class CommonMiddleware extends Middleware {
+    constructor() {
+        super()
+
+        this.initializing = true
+    }
+
     handle($middlewareManager) {
         log.write('common', 'middleware')
 
-        if ($middlewareManager.before) {
-            session.start()
-            timeoutCaller.clear()
-            intervalCaller.clear()
-            ui.startPageLoading()
-            $middlewareManager.store.dispatch('account/anonymous')
-        } else if ($middlewareManager.after) {
-            ui.stopPageLoading()
-            ui.scrollToTop()
-        }
+        app.get().then(appInstance => {
+            if ($middlewareManager.before) {
+                if (this.initializing) {
+                    ui.removeInitializing()
+                }
+                appInstance.$bus.emit('page.loading')
+                session.start()
+                timeoutCaller.clear()
+                intervalCaller.clear()
+                $middlewareManager.store.dispatch('account/anonymous')
+            } else if ($middlewareManager.after) {
+                appInstance.$bus.emit('page.loaded')
 
-        super.handle($middlewareManager)
+                ui.scrollToTop()
+            }
+            super.handle($middlewareManager)
+        })
     }
 }
 

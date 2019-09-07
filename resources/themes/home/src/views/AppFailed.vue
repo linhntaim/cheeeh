@@ -1,6 +1,7 @@
 <template lang="pug">
     #app
-        connection-lost
+        .container.pt-5
+            connection-lost
 </template>
 
 <script>
@@ -11,7 +12,7 @@
         name: 'AppFailed',
         components: {ConnectionLost},
         mounted() {
-            ui.stopPageLoading()
+            ui.removeInitializing()
         },
     }
 </script>

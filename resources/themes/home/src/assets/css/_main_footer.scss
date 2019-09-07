@@ -1,0 +1,62 @@
+@import "variables";
+
+.main-footer {
+    .navbar {
+        height: $layout-footer-height;
+        padding-top: 0;
+        padding-bottom: 0;
+        background: $color-dark;
+    }
+
+    @media (min-width: $sm-min-width) {
+        .navbar-collapse {
+            margin-right: 1rem;
+        }
+
+        .navbar-nav {
+            .nav-item {
+                &:first-child {
+                    .nav-link {
+                        padding-left: 0;
+                    }
+                }
+
+                &:last-child {
+                    .nav-link {
+                        padding-right: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: $xs-max-width) {
+        padding: 0;
+
+        .navbar {
+            height: auto;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .navbar-collapse {
+            margin-bottom: 1rem;
+        }
+
+        .navbar-nav {
+            .nav-item {
+                &:first-child {
+                    .nav-link {
+                        padding-top: 0;
+                    }
+                }
+
+                &:last-child {
+                    .nav-link {
+                        padding-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+}

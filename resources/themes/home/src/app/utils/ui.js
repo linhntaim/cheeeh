@@ -14,25 +14,17 @@ export class UI {
         })
     }
 
+    removeInitializing() {
+        $ui('body').removeClass('initializing')
+        $ui('#app-initializing').remove()
+    }
+
     setLang(lang) {
         document.querySelector('html').setAttribute('lang', lang)
     }
 
-    startPageLoading() {
-        let $body = $ui('body')
-        if (!$body.hasClass('initializing')) {
-            $ui('#page-pop-loading').removeClass('hide')
-            $body.addClass('has-page-popping')
-        }
-    }
-
     openWindow(url = null, target = null, features = null, replace = null) {
         return window.open(url, target, features, replace)
-    }
-
-    stopPageLoading() {
-        $ui('body').removeClass('has-page-popping').removeClass('initializing')
-        $ui('#page-pop-loading').addClass('hide')
     }
 
     scrollToTop() {

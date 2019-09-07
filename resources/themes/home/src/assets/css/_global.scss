@@ -1,3 +1,141 @@
+@import "variables";
+
+body {
+    color: $color-base-dark;
+    //font-family: 'Nunito Sans', sans-serif;
+    font-family: 'Nunito', sans-serif;
+}
+
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/**
+ * Button
+ */
+.btn, button, a {
+    &:disabled, &.disabled {
+        cursor: default;
+        pointer-events: none;
+    }
+}
+
+.btn-base-red {
+    &, &:disabled, &.disabled {
+        color: $color-light;
+        background-color: $color-base-red;
+        border-color: $color-base-red;
+
+        &:focus, &.focus {
+            box-shadow: none;
+        }
+    }
+
+    &:not(:disabled):not(.disabled):hover {
+        color: $color-light;
+        background-color: $color-base-red-darker;
+        border-color: $color-base-red-darker;
+    }
+
+    &:not(:disabled):not(.disabled):focus, &:not(:disabled):not(.disabled).focus {
+        box-shadow: 0 0 0 0.2rem $color-base-red-lighter-o;
+    }
+
+    &:not(:disabled):not(.disabled):active, &:not(:disabled):not(.disabled).active {
+        color: $color-light;
+        background-color: $color-base-red-dark;
+        border-color: $color-base-red-dark;
+    }
+}
+
+.btn-base-yellow {
+    &, &:disabled, &.disabled {
+        color: $color-light;
+        background-color: $color-base-yellow;
+        border-color: $color-base-yellow;
+
+        &:focus, &.focus {
+            box-shadow: none;
+        }
+    }
+
+    &:not(:disabled):not(.disabled):hover {
+        color: $color-light;
+        background-color: $color-base-yellow-darker;
+        border-color: $color-base-yellow-darker;
+    }
+
+    &:not(:disabled):not(.disabled):focus, &:not(:disabled):not(.disabled).focus {
+        box-shadow: 0 0 0 0.2rem $color-base-yellow-lighter-o;
+    }
+
+    &:not(:disabled):not(.disabled):active, &:not(:disabled):not(.disabled).active {
+        color: $color-light;
+        background-color: $color-base-yellow-dark;
+        border-color: $color-base-yellow-dark;
+    }
+}
+
+.btn-base-pink {
+    &, &:disabled, &.disabled {
+        color: $color-light;
+        background-color: $color-base-pink;
+        border-color: $color-base-pink;
+
+        &:focus, &.focus {
+            box-shadow: none;
+        }
+    }
+
+    &:not(:disabled):not(.disabled):hover {
+        color: $color-light;
+        background-color: $color-base-pink-darker;
+        border-color: $color-base-pink-darker;
+    }
+
+    &:not(:disabled):not(.disabled):focus, &:not(:disabled):not(.disabled).focus {
+        box-shadow: 0 0 0 0.2rem $color-base-pink-lighter-o;
+    }
+
+    &:not(:disabled):not(.disabled):active, &:not(:disabled):not(.disabled).active {
+        color: $color-light;
+        background-color: $color-base-pink-dark;
+        border-color: $color-base-pink-dark;
+    }
+}
+
+/**
+ * Height
+ */
+.h8 {
+    height: $d8x;
+}
+
+.h8x2 {
+    height: $d8x * 2;
+}
+
+.h8x3 {
+    height: $d8x * 3;
+}
+
+.h8x4 {
+    height: $d8x * 4;
+}
+
+.h8x5 {
+    height: $d8x * 5;
+}
+
+.h8x6 {
+    height: $d8x * 6;
+}
+
 /**
  * Hide
  */
@@ -5,49 +143,137 @@
     display: none !important;
 }
 
-@media (max-width: 575px) {
+@media (max-width: $xs-max-width) {
     .hide-xs {
         display: none !important;
     }
 }
 
-@media (max-width: 767px) {
+@media (max-width: $sm-max-width) {
     .hide-sm {
         display: none !important;
     }
 }
 
-@media (max-width: 991px) {
+@media (max-width: $md-max-width) {
     .hide-md {
         display: none !important;
     }
 }
 
-@media (min-width: 1199px) {
+@media (min-width: $lg-max-width) {
     .hide-lg {
         display: none !important;
     }
 }
 
 /**
+ * Link
+ */
+a {
+    &:disabled, &.disabled {
+        opacity: $disabled-o;
+        text-decoration: none;
+    }
+}
+
+.link-icon {
+    &:hover {
+        text-decoration: none;
+
+        span {
+            text-decoration: underline;
+        }
+    }
+}
+
+.link-base-red {
+    &, &:disabled, &.disabled {
+        color: $color-base-red;
+    }
+
+    &:not(:disabled):not(.disabled):hover {
+        color: $color-base-red-darker;
+    }
+}
+
+.link-base-yellow {
+    &, &:disabled, &.disabled {
+        color: $color-base-yellow;
+    }
+
+    &:not(:disabled):not(.disabled):hover {
+        color: $color-base-yellow-darker;
+    }
+}
+
+.link-base-pink {
+    &, &:disabled, &.disabled {
+        color: $color-base-pink;
+    }
+
+    &:not(:disabled):not(.disabled):hover {
+        color: $color-base-pink-darker;
+    }
+}
+
+/**
+ * Margin
+ */
+.mt-6, .my-6 {
+    margin-top: $d6;
+}
+
+.mb-6, .my-6 {
+    margin-bottom: $d6;
+}
+
+.ml-6, .mx-6 {
+    margin-left: $d6;
+}
+
+.mr-6, .my-6 {
+    margin-right: $d6;
+}
+
+/**
  * Modal
  */
-@media (min-width: 768px) {
+@media (min-width: $md-min-width) {
     .modal-md {
-        max-width: 700px;
+        max-width: ($md-min-width - 100);
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: $lg-min-width) {
     .modal-lg {
-        max-width: 900px;
+        max-width: $lg-min-width - 100;
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: $xl-min-width) {
     .modal-xl {
-        max-width: 1100px;
+        max-width: $xl-min-width - 100;
     }
+}
+
+/**
+ * Padding
+ */
+.pt-6, .py-6 {
+    padding-top: $d6;
+}
+
+.pb-6, .py-6 {
+    padding-bottom: $d6;
+}
+
+.pl-6, .px-6 {
+    padding-left: $d6;
+}
+
+.pr-6, .px-6 {
+    padding-right: $d6;
 }
 
 /**
@@ -60,6 +286,67 @@
 /**
  * Text
  */
+.text-body, .text-base-dark {
+    color: $color-base-dark;
+}
+
+.text-base-red {
+    color: $color-base-red !important;
+}
+
+.text-base-yellow {
+    color: $color-base-yellow !important;
+}
+
+.text-base-pink {
+    color: $color-base-pink !important;
+}
+
+.text-small {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.text-smaller {
+    font-size: 12px;
+    font-weight: 300;
+}
+
 .text-nowrap {
     white-space: nowrap;
+}
+
+/**
+ * Width
+ */
+.w-80 {
+    width: 80%;
+}
+
+.w-90 {
+    width: 90%;
+}
+
+.w8 {
+    width: $d8x;
+}
+
+.w8x2 {
+    width: $d8x * 2;
+}
+
+.w8x3 {
+    width: $d8x * 3;
+}
+
+.w8x4 {
+    width: $d8x * 4;
+}
+
+.w8x5 {
+    width: $d8x * 5;
+}
+
+.w8x6 {
+    width: $d8x * 6;
 }

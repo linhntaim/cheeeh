@@ -1,0 +1,44 @@
+$color-base-red-lighter: #da6171;
+$color-base-red-lighter-o: rgba(218, 97, 113, .5);
+$color-base-red: #da2c43;
+$color-base-red-darker: #a92b42;
+$color-base-red-dark: #8C2940;
+$color-base-yellow-lighter: #f8efa7;
+$color-base-yellow-lighter-o: rgba(248, 239, 167, .5);
+$color-base-yellow: #f8e356;
+$color-base-yellow-darker: #d0be49;
+$color-base-yellow-dark: #AE9C45;
+$color-base-pink-lighter: #f194cf;
+$color-base-pink-lighter-o: rgba(241, 148, 207, .5);
+$color-base-pink: #f15ebc;
+$color-base-pink-darker: #c84f9c;
+$color-base-pink-dark: #AA4880;
+$color-base-dark: #262626;
+
+$disabled-o: .65;
+
+$color-light: #fff;
+$color-dark: #000;
+
+$xs-max-width: 575px;
+$sm-min-width: 576px;
+$sm-max-width: 767px;
+$md-min-width: 768px;
+$md-max-width: 991px;
+$lg-min-width: 992px;
+$lg-max-width: 1199px;
+$xl-min-width: 1200px;
+
+$d5: 3rem;
+$d6: $d5 * 2;
+
+$d8x: 8px;
+
+$rem: 16px;
+$d-base-n: 14;
+$d-base: 14rem;
+
+$layout-header-height: $d-base * 0.25;
+$layout-footer-height: $d-base * 0.2;
+$layout-main-with-left-cover-width-n: $d-base-n * 2.5;
+$layout-main-with-left-cover-width: $d-base * 2.5;

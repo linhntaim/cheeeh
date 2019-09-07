@@ -3,6 +3,11 @@ export const APP_NAME = process.env.VUE_APP_NAME
 export const APP_URL = window.location.origin
 export const APP_ADMIN_URL = process.env.VUE_APP_ADMIN_URL
 export const APP_STATIC_URL = process.env.VUE_APP_STATIC_URL
+export const APP_LOGO_URL = {
+    original: APP_STATIC_URL + '/sites/logos/logo.png',
+    s32: APP_STATIC_URL + '/sites/logos/logo_32x32.png',
+    s128: APP_STATIC_URL + '/sites/logos/logo_128x128.png',
+}
 export const APP_PASSPORT_PW_CLIENT_ID = process.env.VUE_APP_PASSPORT_PW_CLIENT_ID
 export const APP_PASSPORT_PW_CLIENT_SECRET = process.env.VUE_APP_PASSPORT_PW_CLIENT_SECRET
 export const APP_COOKIE = {

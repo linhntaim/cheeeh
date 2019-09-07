@@ -1,11 +1,12 @@
 <template lang="pug">
-    header.masthead
-        .container.d-flex.h-100.align-items-center
-            .mx-auto.text-center
-                h1.mx-auto.my-0.text-uppercase 404
-                h2.text-white-50.mx-auto.mt-2.mb-5 {{ $t('error.not_found._') }}
-                h3.text-white-50.mx-auto.mt-2.mb-5 {{ $t('error.not_found.desc') }}
-                router-link.btn.btn-primary(:to="{path: '/'}") {{ $t('error.back_to_root') }}
+    .card
+        .card-body.text-center
+            h1 404
+            h4 {{ $t('error.not_found._') }}
+            .my-3 {{ $t('error.not_found.desc') }}
+            router-link.btn.btn-primary(:to="{path: '/'}")
+                i.fas.fa-long-arrow-alt-left
+                | &nbsp;&nbsp;{{ $t('error.back_to_root') }}
 </template>
 
 <script>

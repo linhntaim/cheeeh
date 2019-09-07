@@ -1,84 +1,21 @@
 body.has-page-popping {
     overflow: hidden;
-
-    .page-popping {
-        display: table;
-    }
 }
 
 .page-popping {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    display: table;
     position: fixed;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: rgba(255, 255, 255, 0.25);
     color: #fff;
-    z-index: 9999;
+    z-index: 99999;
 
     &.dark {
         background: rgba(0, 0, 0, .75);
-    }
-
-    .page-pop-wrapper {
-        display: table-cell;
-        vertical-align: middle;
-    }
-
-    .page-pop-box {
-        margin: 10px;
-        background: #fff;
-        color: #333;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, .125);
-        border: 1px solid #333;
-    }
-
-    .page-pop-body {
-        padding: 10px 15px;
-    }
-
-    .page-pop-footer {
-        background: #000;
-        padding: 6px 15px;
-        font-size: 12px;
-
-        a {
-            color: #ddd;
-            font-weight: 700;
-
-            &:hover {
-                color: #efefef;
-            }
-        }
-    }
-
-    &.warning {
-        .page-pop-box {
-            background: #f39c12;
-            color: #fff;
-        }
-    }
-
-    &.danger {
-        .page-pop-box {
-            background: #dd4b39;
-            color: #fff;
-        }
-    }
-
-    &.info {
-        .page-pop-box {
-            background: #00c0ef;
-            color: #fff;
-        }
-    }
-}
-
-@media (min-width: 768px) {
-    .page-popping .page-pop-box {
-        width: 600px;
-        margin: 30px auto;
     }
 }

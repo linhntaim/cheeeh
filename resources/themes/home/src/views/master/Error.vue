@@ -1,5 +1,6 @@
 <template lang="pug">
-    router-view
+    .container.pt-5
+        router-view
 </template>
 
 <script>

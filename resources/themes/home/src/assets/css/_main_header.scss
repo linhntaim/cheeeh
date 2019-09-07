@@ -1,0 +1,123 @@
+@import "variables";
+
+.main-header {
+    .navbar {
+        height: $layout-header-height;
+        background: $color-dark;
+    }
+
+    .navbar-brand {
+        margin-left: -10px;
+
+        img {
+            margin-top: -3px;
+        }
+    }
+
+    .navbar-toggler {
+        border: none;
+        outline: none;
+    }
+
+    .navbar-dark {
+        .navbar-toggler {
+            color: rgba(255, 255, 255, .75);
+        }
+    }
+
+    .navbar-light {
+        .navbar-toggler {
+            color: rgba(0, 0, 0, .75);
+        }
+    }
+
+    .navbar-collapse {
+        background: $color-dark;
+    }
+
+    @media (min-width: $sm-min-width) {
+        .navbar-collapse {
+            justify-content: flex-end;
+        }
+
+        .navbar-nav {
+            .nav-item {
+                .btn {
+                    margin: 0 .5rem;
+                }
+
+                &:first-child {
+                    .nav-link {
+                        padding-left: 0;
+                    }
+
+                    .btn {
+                        margin-left: 0;
+                    }
+                }
+
+                &:last-child {
+                    .nav-link {
+                        padding-right: 0;
+                    }
+
+                    .btn {
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: $xs-max-width) {
+        padding: 0;
+
+        .navbar-collapse {
+            position: absolute;
+            left: 0;
+            top: $layout-header-height;
+            width: 100%;
+            padding: 1rem;
+            background: $color-light;
+            z-index: 10;
+        }
+
+        .navbar-nav {
+            .nav-item {
+                .nav-link {
+                    color: rgba(0, 0, 0, .5);
+                }
+
+                .btn {
+                    margin: .5rem 0;
+                }
+
+                &:hover, &.active {
+                    .nav-link {
+                        color: rgba(0, 0, 0, .9);
+                    }
+                }
+
+                &:first-child {
+                    .nav-link {
+                        padding-top: 0;
+                    }
+
+                    .btn {
+                        margin-top: 0;
+                    }
+                }
+
+                &:last-child {
+                    .nav-link {
+                        padding-bottom: 0;
+                    }
+
+                    .btn {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+}
