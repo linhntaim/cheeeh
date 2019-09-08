@@ -1,8 +1,11 @@
-import DefaultService from '../default_service'
 import {
     APP_PASSPORT_PW_CLIENT_ID,
     APP_PASSPORT_PW_CLIENT_SECRET,
+    APP_PATH,
 } from '../../../config'
+import {crypto} from '../../utils/crypto'
+import {serverClock} from '../../utils/server_clock'
+import DefaultService from '../default_service'
 
 class AuthService extends DefaultService {
     logout(doneCallback = null, errorCallback = null, alwaysCallback = null) {
@@ -11,7 +14,7 @@ class AuthService extends DefaultService {
             {},
             doneCallback,
             errorCallback,
-            alwaysCallback
+            alwaysCallback,
         )
     }
 
@@ -27,7 +30,87 @@ class AuthService extends DefaultService {
             },
             doneCallback,
             errorCallback,
-            alwaysCallback
+            alwaysCallback,
+        )
+    }
+
+    login(email, password, doneCallback = null, errorCallback = null, alwaysCallback = null) {
+        this.post(
+            'auth/login',
+            {
+                grant_type: 'password',
+                client_id: APP_PASSPORT_PW_CLIENT_ID,
+                client_secret: APP_PASSPORT_PW_CLIENT_SECRET,
+                username: email,
+                password: password,
+                scope: '*',
+            },
+            doneCallback,
+            errorCallback,
+            alwaysCallback,
+        )
+    }
+
+    loginWithToken(email, doneCallback = null, errorCallback = null, alwaysCallback = null) {
+        this.e()
+        this.login(
+            crypto.encrypt(email, serverClock.blockKey()),
+            crypto.encryptJson({source: 'token'}, serverClock.blockKey()),
+            doneCallback,
+            errorCallback,
+            alwaysCallback,
+        )
+    }
+
+    loginSocially(provider, providerId, doneCallback = null, errorCallback = null, alwaysCallback = null) {
+        this.e()
+        this.login(
+            crypto.encryptJson({provider: provider, provider_id: providerId}, serverClock.blockKey()),
+            crypto.encryptJson({source: 'social'}, serverClock.blockKey()),
+            doneCallback,
+            errorCallback,
+            alwaysCallback,
+        )
+    }
+
+    loginWithFacebook(providerId, doneCallback = null, errorCallback = null, alwaysCallback = null) {
+        this.loginSocially(
+            'facebook',
+            providerId,
+            doneCallback,
+            errorCallback,
+            alwaysCallback,
+        )
+    }
+
+    loginWithGoogle(providerId, doneCallback = null, errorCallback = null, alwaysCallback = null) {
+        this.loginSocially(
+            'google',
+            providerId,
+            doneCallback,
+            errorCallback,
+            alwaysCallback,
+        )
+    }
+
+    loginWithMicrosoft(providerId, doneCallback = null, errorCallback = null, alwaysCallback = null) {
+        this.loginSocially(
+            'microsoft',
+            providerId,
+            doneCallback,
+            errorCallback,
+            alwaysCallback,
+        )
+    }
+
+    register(params, doneCallback = null, errorCallback = null, alwaysCallback = null) {
+        params.app_verify_email_path = APP_PATH.verify_email
+        this.post(
+            'auth/register',
+            params,
+            doneCallback,
+            errorCallback,
+            alwaysCallback,
         )
     }
 }

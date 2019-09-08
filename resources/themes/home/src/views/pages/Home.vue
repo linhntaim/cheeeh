@@ -1,10 +1,10 @@
-<template lang="pug">
-    router-view
+<template>
+
 </template>
 
 <script>
     export default {
-        name: 'Base',
+        name: 'Home',
     }
 </script>
 

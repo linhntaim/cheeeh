@@ -8,15 +8,12 @@
                 i.fas.fa-bars
             #navbarHeader.collapse.navbar-collapse
                 ul.navbar-nav
-                    li.nav-item
-                        a.nav-link(href="#")
-                            | What's new?
                     li.nav-item.active
                         router-link.btn(:class="{'btn-base-pink': actionRouteName === 'login', 'btn-base-red': actionRouteName === 'register'}" :to="{name: actionRouteName}") {{ actionName }}
 </template>
 
 <script>
-    import {APP_LOGO_URL, APP_NAME, APP_URL} from '../../config'
+    import {APP_LOGO_URL, APP_NAME} from '../../config'
     import routeHelper from '../../app/utils/route_helper'
 
     export default {
@@ -27,27 +24,27 @@
                 logoUrl: APP_LOGO_URL.s128,
 
                 actionRouteName: 'login',
-                actionName: 'Login',
+                actionName: this.$t('actions.login'),
             }
         },
         watch: {
             '$route'() {
                 if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
                     this.actionRouteName = 'login'
-                    this.actionName = 'Login'
+                    this.actionName = this.$t('actions.login')
                 } else {
                     this.actionRouteName = 'register'
-                    this.actionName = 'Register'
+                    this.actionName = this.$t('actions.register')
                 }
             },
         },
         created() {
             if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
                 this.actionRouteName = 'login'
-                this.actionName = 'Login'
+                this.actionName = this.$t('actions.login')
             } else {
                 this.actionRouteName = 'register'
-                this.actionName = 'Register'
+                this.actionName = this.$t('actions.register')
             }
         },
     }

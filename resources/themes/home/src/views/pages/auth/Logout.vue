@@ -1,10 +1,13 @@
 <template lang="pug">
-    div
+    h4.text-base-red.mt-5
+        i.fas.fa-circle-notch.fa-spin
+        | &nbsp;&nbsp;{{ $t('actions.logging_out') }}
 </template>
 
 <script>
     import {mapActions} from 'vuex'
     import {session} from '../../../app/utils/session'
+    import {log} from '../../../app/utils/log'
 
     export default {
         name: 'Logout',
@@ -26,7 +29,7 @@
                     alwaysCallback: () => {
                         this.loading = false
                         session.restart()
-                        this.$router.push('/')
+                        this.$router.push({name: 'home'})
                     },
                 })
             },

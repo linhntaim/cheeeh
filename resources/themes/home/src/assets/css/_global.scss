@@ -16,6 +16,84 @@ body {
 }
 
 /**
+ * Background
+ */
+.bg-gradient-base {
+    background: linear-gradient(to bottom, $color-base-red 0%, $color-base-pink 51%, $color-base-yellow 100%);
+}
+
+.bg-gradient-base-reverse {
+    background: linear-gradient(to bottom, $color-base-yellow 0%, $color-base-pink 51%, $color-base-red 100%);
+}
+
+.bg-gradient-base-cross {
+    background: linear-gradient(to right, $color-base-red 0%, $color-base-pink 51%, $color-base-yellow 100%);
+}
+
+.bg-gradient-base-cross-reverse {
+    background: linear-gradient(to right, $color-base-yellow 0%, $color-base-pink 51%, $color-base-red 100%);
+}
+
+/**
+ * Border
+ */
+.border-none {
+    border: none;
+}
+
+.border-base-dark {
+    border-color: $color-base-dark !important;
+}
+
+.border-base-red-lighter {
+    border-color: $color-base-red-lighter !important;
+}
+
+.border-base-red {
+    border-color: $color-base-red !important;
+}
+
+.border-base-red-darker {
+    border-color: $color-base-red-darker !important;
+}
+
+.border-base-red-dark {
+    border-color: $color-base-red-dark !important;
+}
+
+.border-base-yellow-lighter {
+    border-color: $color-base-yellow-lighter !important;
+}
+
+.border-base-yellow {
+    border-color: $color-base-yellow !important;
+}
+
+.border-base-yellow-darker {
+    border-color: $color-base-yellow-darker !important;
+}
+
+.border-base-yellow-dark {
+    border-color: $color-base-yellow-dark !important;
+}
+
+.border-base-pink-lighter {
+    border-color: $color-base-pink-lighter !important;
+}
+
+.border-base-pink {
+    border-color: $color-base-pink !important;
+}
+
+.border-base-pink-darker {
+    border-color: $color-base-pink-darker !important;
+}
+
+.border-base-pink-dark {
+    border-color: $color-base-pink-dark !important;
+}
+
+/**
  * Button
  */
 .btn, button, a {
@@ -26,23 +104,23 @@ body {
 }
 
 .btn-base-red {
-    &, &:disabled, &.disabled {
-        color: $color-light;
-        background-color: $color-base-red;
-        border-color: $color-base-red;
+    color: $color-light;
+    background-color: $color-base-red;
+    border-color: $color-base-red;
 
-        &:focus, &.focus {
-            box-shadow: none;
-        }
-    }
-
-    &:not(:disabled):not(.disabled):hover {
+    &:hover {
         color: $color-light;
         background-color: $color-base-red-darker;
         border-color: $color-base-red-darker;
     }
 
-    &:not(:disabled):not(.disabled):focus, &:not(:disabled):not(.disabled).focus {
+    &:disabled, &.disabled {
+        color: $color-light;
+        background-color: $color-base-red-lighter;
+        border-color: $color-base-red-lighter;
+    }
+
+    &:focus, &.focus {
         box-shadow: 0 0 0 0.2rem $color-base-red-lighter-o;
     }
 
@@ -54,23 +132,23 @@ body {
 }
 
 .btn-base-yellow {
-    &, &:disabled, &.disabled {
-        color: $color-light;
-        background-color: $color-base-yellow;
-        border-color: $color-base-yellow;
+    color: $color-light;
+    background-color: $color-base-yellow;
+    border-color: $color-base-yellow;
 
-        &:focus, &.focus {
-            box-shadow: none;
-        }
-    }
-
-    &:not(:disabled):not(.disabled):hover {
+    &:hover {
         color: $color-light;
         background-color: $color-base-yellow-darker;
         border-color: $color-base-yellow-darker;
     }
 
-    &:not(:disabled):not(.disabled):focus, &:not(:disabled):not(.disabled).focus {
+    &:disabled, &.disabled {
+        color: $color-light;
+        background-color: $color-base-yellow-lighter;
+        border-color: $color-base-yellow-lighter;
+    }
+
+    &:focus, &.focus {
         box-shadow: 0 0 0 0.2rem $color-base-yellow-lighter-o;
     }
 
@@ -82,23 +160,23 @@ body {
 }
 
 .btn-base-pink {
-    &, &:disabled, &.disabled {
-        color: $color-light;
-        background-color: $color-base-pink;
-        border-color: $color-base-pink;
+    color: $color-light;
+    background-color: $color-base-pink;
+    border-color: $color-base-pink;
 
-        &:focus, &.focus {
-            box-shadow: none;
-        }
-    }
-
-    &:not(:disabled):not(.disabled):hover {
+    &:hover {
         color: $color-light;
         background-color: $color-base-pink-darker;
         border-color: $color-base-pink-darker;
     }
 
-    &:not(:disabled):not(.disabled):focus, &:not(:disabled):not(.disabled).focus {
+    &:disabled, &.disabled {
+        color: $color-light;
+        background-color: $color-base-pink-lighter;
+        border-color: $color-base-pink-lighter;
+    }
+
+    &:focus, &.focus {
         box-shadow: 0 0 0 0.2rem $color-base-pink-lighter-o;
     }
 
@@ -107,6 +185,14 @@ body {
         background-color: $color-base-pink-dark;
         border-color: $color-base-pink-dark;
     }
+}
+
+/**
+ * Form
+ */
+.form-control {
+    border: none;
+    background-color: $color-base-lightest;
 }
 
 /**
@@ -184,6 +270,16 @@ a {
         span {
             text-decoration: underline;
         }
+    }
+}
+
+.link-base-dark-lighter {
+    &, &:disabled, &.disabled {
+        color: $color-base-dark-lighter;
+    }
+
+    &:not(:disabled):not(.disabled):hover {
+        color: $color-base-dark;
     }
 }
 
@@ -290,16 +386,76 @@ a {
     color: $color-base-dark;
 }
 
+.text-base-red-lighter {
+    color: $color-base-red-lighter !important;
+}
+
 .text-base-red {
     color: $color-base-red !important;
+}
+
+.text-base-red-darker {
+    color: $color-base-red-darker !important;
+}
+
+.text-base-red-dark {
+    color: $color-base-red-dark !important;
+}
+
+.text-base-yellow-lighter {
+    color: $color-base-yellow-lighter !important;
 }
 
 .text-base-yellow {
     color: $color-base-yellow !important;
 }
 
+.text-base-yellow-darker {
+    color: $color-base-yellow-darker !important;
+}
+
+.text-base-yellow-dark {
+    color: $color-base-yellow-dark !important;
+}
+
+.text-base-pink-lighter {
+    color: $color-base-pink-lighter !important;
+}
+
 .text-base-pink {
     color: $color-base-pink !important;
+}
+
+.text-base-pink-darker {
+    color: $color-base-pink-darker !important;
+}
+
+.text-base-pink-dark {
+    color: $color-base-pink-dark !important;
+}
+
+.text-gradient-base {
+    background: linear-gradient(to bottom, $color-base-red 0%, $color-base-pink 51%, $color-base-yellow 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-base-reverse {
+    background: linear-gradient(to bottom, $color-base-yellow 0%, $color-base-pink 51%, $color-base-red 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-base-cross {
+    background: linear-gradient(to right, $color-base-red 0%, $color-base-pink 51%, $color-base-yellow 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-base-cross-reverse {
+    background: linear-gradient(to right, $color-base-yellow 0%, $color-base-pink 51%, $color-base-red 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .text-small {

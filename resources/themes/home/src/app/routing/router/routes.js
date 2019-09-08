@@ -1,12 +1,9 @@
-import Base from '../../../views/master/Base'
-import Auth from '../../../views/master/Auth'
-import Error from '../../../views/master/Error'
 import {all} from '../middleware'
 
-export default [
+export const routes = [
     {
         path: '/error',
-        component: Error,
+        component: () => import('../../../views/master/Error'),
         meta: {
             middleware: all,
         },
@@ -42,30 +39,22 @@ export default [
         ],
     },
     {
-        path: '/',
-        component: Auth,
+        path: '/auth',
+        component: () => import('../../../views/master/Auth'),
         meta: {
             middleware: all,
         },
         children: [
             {
-                path: '',
-                name: 'home',
-                meta: {
-                    requireAuth: false,
-                },
-                component: () => import('../../../views/pages/auth/Register'),
-            },
-            {
-                path: 'auth/login',
+                path: 'login',
                 name: 'login',
                 meta: {
-                    requireAuth: false,
+                    requireNotAuth: true,
                 },
                 component: () => import('../../../views/pages/auth/Login'),
             },
             {
-                path: 'auth/logout',
+                path: 'logout',
                 name: 'logout',
                 meta: {
                     requireAuth: true,
@@ -73,19 +62,73 @@ export default [
                 component: () => import('../../../views/pages/auth/Logout'),
             },
             {
-                path: 'auth/register',
+                path: 'register',
                 name: 'register',
                 meta: {
-                    requireAuth: false,
+                    requireNotAuth: true,
                 },
                 component: () => import('../../../views/pages/auth/Register'),
             },
             {
-                path: 'auth/forgot-password',
+                path: 'forgot-password',
                 name: 'forgot_password',
                 meta: {
-                    requireAuth: false,
+                    requireNotAuth: false,
                 },
+                component: () => import('../../../views/pages/auth/ForgotPassword'),
+            },
+            {
+                path: '*',
+                component: () => import('../../../views/error/NotFound'),
+            },
+        ],
+    },
+    {
+        path: '/',
+        name: 'home',
+        meta: {
+            middleware: all,
+            replaced: true,
+        },
+    },
+]
+
+export const authRoutes = [
+    ...routes.slice(0, 2),
+    {
+        path: '/',
+        component: () => import('../../../views/master/Base'),
+        meta: {
+            middleware: all,
+            authReplaced: true,
+        },
+        children: [
+            {
+                path: '',
+                name: 'home',
+                component: () => import('../../../views/pages/Home'),
+            },
+            {
+                path: '*',
+                component: () => import('../../../views/error/NotFound'),
+            },
+        ],
+    },
+]
+
+export const notAuthRoutes = [
+    ...routes.slice(0, 2),
+    {
+        path: '/',
+        component: () => import('../../../views/master/Auth'),
+        meta: {
+            middleware: all,
+            notAuthReplaced: true,
+        },
+        children: [
+            {
+                path: '',
+                name: 'home',
                 component: () => import('../../../views/pages/auth/Register'),
             },
             {

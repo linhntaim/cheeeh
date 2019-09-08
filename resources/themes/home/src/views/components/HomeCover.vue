@@ -2,13 +2,17 @@
     .home-cover
         featured-image-slider.home-image(ref="slider")
         .home-caption
-            .text-center.px-3
-                h1.caption-title.font-weight-bold Find your inspiration.
-                h4.caption-subtitle.mt-3.mb-5.mx-auto Join the Cheeeh community, home to tens of billions of photos and 2 million groups.
-                router-link.btn.btn-light.btn-lg.font-weight-bold.px-5(:class="{'text-base-pink': actionRouteName === 'login', 'text-base-red': actionRouteName === 'register'}" :to="{name: actionRouteName}") {{ actionName }}
+            .text-center.px-3.mt-n5
+                img(:src="logoUrl")
+                h1.caption-title.font-weight-bold {{ $t('components.home_cover.title') }}
+                h4.caption-subtitle.mt-3.mb-5.mx-auto {{ $t('components.home_cover.subtitle') }}
+                router-link.btn.btn-light.btn-lg.font-weight-bold.px-5(v-if="!accountIsLoggedIn" :class="{'text-base-pink': actionRouteName === 'login', 'text-base-red': actionRouteName === 'register'}" :to="{name: actionRouteName}")
+                    | {{ actionName }}
 </template>
 
 <script>
+    import {APP_LOGO_URL} from '../../config'
+    import {mapGetters} from 'vuex'
     import FeaturedImageSlider from './FeaturedImageSlider'
     import routeHelper from '../../app/utils/route_helper'
 
@@ -17,19 +21,24 @@
         components: {FeaturedImageSlider},
         data() {
             return {
+                logoUrl: APP_LOGO_URL.s128,
                 actionRouteName: 'login',
-                actionName: 'Login',
+                actionName: this.$t('actions.login'),
             }
+        },
+        computed: {
+            ...mapGetters({
+                accountIsLoggedIn: 'account/isLoggedIn',
+            }),
         },
         watch: {
             '$route'() {
                 if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
                     this.actionRouteName = 'login'
-                    this.actionName = 'Login'
-                }
-                else {
+                    this.actionName = this.$t('actions.login')
+                } else {
                     this.actionRouteName = 'register'
-                    this.actionName = 'Start for free'
+                    this.actionName = this.$t('pages.start_free')
                 }
 
                 this.$refs.slider.restart()
@@ -38,18 +47,17 @@
         created() {
             if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
                 this.actionRouteName = 'login'
-                this.actionName = 'Login'
-            }
-            else {
+                this.actionName = this.$t('actions.login')
+            } else {
                 this.actionRouteName = 'register'
-                this.actionName = 'Start for free'
+                this.actionName = this.$t('pages.start_free')
             }
         },
     }
 </script>
 
 <style lang="scss" scoped>
-    @import "../../assets/css/variables";
+    @import '../../assets/css/variables';
 
     .home-cover {
         position: relative;
@@ -94,6 +102,22 @@
         .caption-subtitle {
             line-height: 1.4;
             width: 62%;
+        }
+    }
+
+    @media (max-width: $xs-max-width) {
+        .home-caption {
+            img {
+                width: 96px;
+            }
+
+            .caption-title {
+                font-size: 1.75rem;
+            }
+
+            .caption-subtitle {
+                font-size: 1.15rem;
+            }
         }
     }
 

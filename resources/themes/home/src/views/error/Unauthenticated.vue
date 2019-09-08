@@ -1,11 +1,12 @@
 <template lang="pug">
-    .card
+    .card.border-dark.pb-4
         .card-body.text-center
-            h1 401
-            h4 {{ $t('error.unauthenticated._') }}
+            img(:src="logoUrl")
+            h1.font-weight-bold 401
+            h4.font-weight-bold {{ $t('error.unauthenticated._') }}
             .my-3 {{ $t('error.unauthenticated.desc') }}
             div(:class="{'mb-5': enabled}")
-                router-link(:class="{'btn btn-primary': !enabled, 'link-icon': enabled}" :to="{path: '/'}")
+                router-link.btn.btn-dark(:to="{name: 'login'}")
                     i.fas.fa-long-arrow-alt-left
                     | &nbsp;&nbsp;
                     span {{ $t('actions.go_where', {where: $t('pages._auth._login._')}) }}
@@ -15,12 +16,14 @@
 
 <script>
     import ClearCacheButton from '../components/ClearCacheButton'
+    import {APP_LOGO_URL} from '../../config'
 
     export default {
         name: 'Unauthenticated',
         components: {ClearCacheButton},
         data() {
             return {
+                logoUrl: APP_LOGO_URL.black_s128,
                 enabled: false,
             }
         },

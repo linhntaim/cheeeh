@@ -5,23 +5,23 @@
                 ul.navbar-nav
                     li.nav-item
                         a.nav-link(href="#")
-                            | About
+                            | {{ $t('master.main_footer.about') }}
                     li.nav-item
                         a.nav-link(href="#")
-                            | Blog
+                            | {{ $t('master.main_footer.blog') }}
                     li.nav-item
                         a.nav-link(href="#")
-                            | Privacy
+                            | {{ $t('master.main_footer.privacy') }}
                     li.nav-item
                         a.nav-link(href="#")
-                            | Terms
+                            | {{ $t('master.main_footer.terms') }}
                     li.nav-item
                         a.nav-link(href="#")
-                            | Help
+                            | {{ $t('master.main_footer.help') }}
             ul.navbar-nav.navbar-nav-right
                 li.nav-item
                     a.nav-link(href="#")
-                        | Language
+                        | {{ $t('master.main_footer.language') }}
 </template>
 
 <script>

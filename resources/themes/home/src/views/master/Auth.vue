@@ -7,9 +7,9 @@
                 home-cover
             section.layout-main.layout-auth
                 .container
-                    h2.font-weight-bold Unlimited inspiration.
-                    h2.font-weight-bold.mb-0 Unlimited passion.
-                    .my-4 Joining Cheeeh means joining the world’s largest, most influential group of photographers. It means honing your craft, finding community, and changing the world through photography.
+                    h2.font-weight-bold {{ $t('master.auth.title_1') }}
+                    h2.font-weight-bold.mb-0 {{ $t('master.auth.title_2') }}
+                    .my-4(v-html="$t('master.auth.desc')")
                     router-view
         footer.layout-footer
             main-footer
@@ -32,7 +32,7 @@
     .layout-auth {
         display: flex;
         align-items: center;
-        background-color: #f3f5f6;
+        background-color: $color-base-lighter;
         padding-top: 2rem;
         padding-bottom: 2rem;
 

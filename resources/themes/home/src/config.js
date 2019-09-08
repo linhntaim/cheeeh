@@ -7,6 +7,12 @@ export const APP_LOGO_URL = {
     original: APP_STATIC_URL + '/sites/logos/logo.png',
     s32: APP_STATIC_URL + '/sites/logos/logo_32x32.png',
     s128: APP_STATIC_URL + '/sites/logos/logo_128x128.png',
+    black_original: APP_STATIC_URL + '/sites/logos/logo_black.png',
+    black_s32: APP_STATIC_URL + '/sites/logos/logo_black_32x32.png',
+    black_s128: APP_STATIC_URL + '/sites/logos/logo_black_128x128.png',
+    white_original: APP_STATIC_URL + '/sites/logos/logo_white.png',
+    white_s32: APP_STATIC_URL + '/sites/logos/logo_white_32x32.png',
+    white_s128: APP_STATIC_URL + '/sites/logos/logo_white_128x128.png',
 }
 export const APP_PASSPORT_PW_CLIENT_ID = process.env.VUE_APP_PASSPORT_PW_CLIENT_ID
 export const APP_PASSPORT_PW_CLIENT_SECRET = process.env.VUE_APP_PASSPORT_PW_CLIENT_SECRET

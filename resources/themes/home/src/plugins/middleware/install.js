@@ -11,9 +11,11 @@ const install = (Vue, {router, store, beforeEnable, afterEnable, beforeRouting, 
                     middleware.push(...route.meta.middleware.before)
                 }
             })
+
             if (middleware.length) {
-                (new BeforeMiddlewareManager(middleware, store)).run(to, from, next)
+                (new BeforeMiddlewareManager(middleware, store, router)).run(to, from, next)
             }
+            console.log('beforeEach')
             return
         }
 
@@ -29,7 +31,7 @@ const install = (Vue, {router, store, beforeEnable, afterEnable, beforeRouting, 
                 }
             })
             if (middleware.length) {
-                (new AfterMiddlewareManager(middleware, store)).run(to, from)
+                (new AfterMiddlewareManager(middleware, store, router)).run(to, from)
             }
         }
 

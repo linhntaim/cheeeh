@@ -1,7 +1,8 @@
 class MiddlewareManager {
-    constructor(groups, store) {
+    constructor(groups, store, router) {
         this.groups = groups
         this.store = store
+        this.router = router
         this.index = -1
     }
 
@@ -20,8 +21,8 @@ class MiddlewareManager {
 }
 
 export class BeforeMiddlewareManager extends MiddlewareManager {
-    constructor(groups, store) {
-        super(groups, store)
+    constructor(groups, store, router) {
+        super(groups, store, router)
         this.before = true
     }
 
@@ -51,8 +52,8 @@ export class BeforeMiddlewareManager extends MiddlewareManager {
 }
 
 export class AfterMiddlewareManager extends MiddlewareManager {
-    constructor(groups, store) {
-        super(groups, store)
+    constructor(groups, store, router) {
+        super(groups, store, router)
         this.after = true
     }
 
@@ -83,12 +84,12 @@ export class Middleware {
         $middlewareManager.handle()
     }
 
-    redirect($middlewareManager, path) {
+    redirect($middlewareManager, path, query = {}, hash = '') {
+        query.time = new Date().getTime()
         $middlewareManager.next({
             path: path,
-            query: {
-                time: new Date().getTime(),
-            }
+            query: query,
+            hash: hash,
         })
     }
 }

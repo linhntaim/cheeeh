@@ -27,7 +27,7 @@ const setDefaultServiceLocalizationHeader = localization => {
                 'short_date_format',
                 'short_time_format',
             ],
-            localization
+            localization,
         ))
     })
 }
@@ -129,7 +129,7 @@ export default {
         unsetUser(state) {
             if (state.user && state.user.localization) {
                 state.user = {
-                    localization: state.user.localization
+                    localization: state.user.localization,
                 }
             } else {
                 let storedLocalization = localizationCookieStore.retrieve()
@@ -152,13 +152,13 @@ export default {
         },
 
         anonymous({commit, state}) {
-            if (state.isLoggedIn) return;
+            if (state.isLoggedIn) return
 
             let storedLocalization = localizationCookieStore.retrieve()
             commit('setUser', {
                 user: {
                     localization: storedLocalization ? storedLocalization : DEFAULT_LOCALIZATION,
-                }
+                },
             })
         },
 
@@ -233,6 +233,95 @@ export default {
 
                 alwaysCallback()
             })
+        },
+
+        login({commit, dispatch}, {email, password, token, doneCallback, errorCallback}) {
+            let done = (data) => {
+                commit('setAuth', passportCookieStore.convert(data))
+                dispatch('current', {
+                    login: true,
+                    doneCallback: doneCallback,
+                    errorCallback: errorCallback,
+                })
+            }
+            if (token) {
+                authService().loginWithToken(email, done, errorCallback)
+            } else {
+                authService().login(email, password, done, errorCallback)
+            }
+        },
+
+        loginWithFacebook({commit, dispatch}, {id, doneCallback, errorCallback}) {
+            authService().loginWithFacebook(id, (data) => {
+                commit('setAuth', passportCookieStore.convert(data))
+                dispatch('current', {
+                    doneCallback: doneCallback,
+                    errorCallback: errorCallback,
+                })
+            }, errorCallback)
+        },
+
+        loginWithGoogle({commit, dispatch}, {id, doneCallback, errorCallback}) {
+            authService().loginWithGoogle(id, (data) => {
+                commit('setAuth', passportCookieStore.convert(data))
+                dispatch('current', {
+                    doneCallback: doneCallback,
+                    errorCallback: errorCallback,
+                })
+            }, errorCallback)
+        },
+
+        loginWithMicrosoft({commit, dispatch}, {id, doneCallback, errorCallback}) {
+            authService().loginWithMicrosoft(id, (data) => {
+                commit('setAuth', passportCookieStore.convert(data))
+                dispatch('current', {
+                    doneCallback: doneCallback,
+                    errorCallback: errorCallback,
+                })
+            }, errorCallback)
+        },
+
+        register({dispatch}, {
+            displayName, email, password, passwordConfirmation, urlAvatar,
+            provider, providerId,
+            doneCallback, errorCallback,
+        }) {
+            authService().register({
+                display_name: displayName,
+                email: email,
+                password: password,
+                password_confirmation: passwordConfirmation,
+                url_avatar: urlAvatar,
+                provider: provider,
+                provider_id: providerId,
+            }, () => {
+                dispatch('login', {
+                    email: email,
+                    password: password,
+                    doneCallback: doneCallback,
+                    errorCallback: errorCallback,
+                })
+            }, errorCallback)
+        },
+
+        forgotPassword(store, {email, doneCallback, errorCallback}) {
+            authService().forgotPassword(email, doneCallback, errorCallback)
+        },
+
+        getResetPassword(store, {email, token, doneCallback, errorCallback}) {
+            authService().getResetPassword({
+                email: email,
+                token: token,
+            }, doneCallback, errorCallback)
+        },
+
+        resetPassword(store, {email, token, password, passwordConfirmation, doneCallback, errorCallback}) {
+            authService().resetPassword({
+                email: email,
+                token: token,
+                password: password,
+                password_confirmation: passwordConfirmation,
+            }, doneCallback, errorCallback)
         },
     },
 }

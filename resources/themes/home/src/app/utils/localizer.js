@@ -1,15 +1,14 @@
 import {app} from './app'
-import {DEFAULT_LOCALIZATION} from '../../config'
 import {log} from './log'
 import {ui} from './ui'
 
 export class Localizer {
     constructor() {
-        this.loadedLocales = [DEFAULT_LOCALIZATION.locale]
+        this.loadedLocales = []
     }
 
     localize(localization) {
-        this.set(localization.locale)
+        return this.set(localization.locale)
     }
 
     set(locale) {
