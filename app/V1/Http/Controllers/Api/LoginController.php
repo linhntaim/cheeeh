@@ -6,6 +6,9 @@ use App\V1\Http\Controllers\ApiResponseTrait;
 use Exception;
 use Illuminate\Http\Response;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
+use Laravel\Passport\TokenRepository;
+use Lcobucci\JWT\Parser as JwtParser;
+use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
@@ -14,6 +17,13 @@ use Zend\Diactoros\Response as Psr7Response;
 class LoginController extends AccessTokenController
 {
     use ApiResponseTrait;
+
+    public function __construct(AuthorizationServer $server, TokenRepository $tokens, JwtParser $jwt)
+    {
+        parent::__construct($server, $tokens, $jwt);
+
+        $this->throttleMiddleware();
+    }
 
     protected function withErrorHandling($callback)
     {

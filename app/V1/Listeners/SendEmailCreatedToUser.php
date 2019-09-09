@@ -14,7 +14,9 @@ class SendEmailCreatedToUser extends NowListener
         MailHelper::sendNowWithTemplate(
             'user_created',
             [
-                TemplateMailable::EMAIL_SUBJECT => 'Your account has been created',
+                TemplateMailable::EMAIL_SUBJECT => static::__transListener('mail_subject', [
+                    'app_name' => $event->getClientAppName(),
+                ]),
                 TemplateMailable::EMAIL_TO => $user->email->email,
                 TemplateMailable::EMAIL_TO_NAME => $user->display_name,
                 'user_name' => $user->name,

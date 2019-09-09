@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 
 trait ClassTrait
 {
-
     protected static function __class()
     {
         return static::class;
@@ -16,18 +15,17 @@ trait ClassTrait
 
     protected static function __classBaseName()
     {
-        $names = explode('\\', static::class);
-        return array_pop($names);
+        return class_basename(static::class);
     }
 
     protected static function __snakyClassBaseName()
     {
-        return Str::snake(class_basename(static::class));
+        return Str::snake(static::__classBaseName());
     }
 
     protected static function __friendlyClassBaseName()
     {
-        return Str::title(Str::snake(class_basename(static::class), ' '));
+        return Str::title(Str::snake(static::__classBaseName(), ' '));
     }
 
     protected static function __hasTransWithModule($name, $module, $locale = null, $fallback = true)
@@ -40,8 +38,22 @@ trait ClassTrait
         return trans(static::__transPathWithModule($name, $module), $replace, $locale);
     }
 
-    protected static function __transPathWithModule($name, $module)
+    protected static function __hasTransWithSpecificModule($name, $module, $locale = null, $fallback = true)
     {
+        return Lang::has(static::__transPathWithModule($name, $module, true), $locale, $fallback);
+    }
+
+    protected static function __transWithSpecificModule($name, $module, $replace = [], $locale = null)
+    {
+        return trans(static::__transPathWithModule($name, $module, true), $replace, $locale);
+    }
+
+    protected static function __transPathWithModule($name, $module, $specific = false)
+    {
+        if ($specific) {
+            return sprintf('%s.%s.%s', $module, static::__snakyClassBaseName(), $name);
+        }
+
         $classNames = explode('\\', str_replace(Configuration::ROOT_NAMESPACE . '\\', '', static::class));
         foreach ($classNames as &$className) {
             $className = Str::snake($className);

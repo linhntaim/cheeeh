@@ -2,6 +2,7 @@
 
 namespace App\V1\Utils\Files\Filer;
 
+use App\V1\Exceptions\AppException;
 use Intervention\Image\ImageManagerStatic;
 use SplFileInfo;
 
@@ -15,7 +16,7 @@ class ImageFiler extends Filer
     /**
      * ImageFiler constructor.
      * @param string|SplFileInfo $file
-     * @throws \DSquare\Exceptions\AppException
+     * @throws AppException
      */
     public function __construct($file)
     {

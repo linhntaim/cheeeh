@@ -25,13 +25,16 @@ class ResetPasswordNotification extends NowNotification
 
     protected function getMailSubject($notifiable)
     {
-        return 'Reset password';
+        return $this->__transNotification('mail_subject', [
+            'app_name' => $this->getClientAppName(),
+        ]);
     }
 
     protected function getMailParams($notifiable)
     {
         return [
             'url_reset_password' => $this->getAppResetPasswordUrl($notifiable),
+            'expired_at' => $notifiable->passwordResetExpiredAt, // user model
         ];
     }
 

@@ -6,7 +6,11 @@ use App\V1\Configuration;
 use App\V1\Exceptions\Exception;
 use App\V1\Exceptions\UnhandledException;
 use App\V1\Exceptions\UserException;
+use App\V1\Http\Requests\Request;
+use App\V1\Utils\ClientAppHelper;
+use App\V1\Utils\LocalizationHelper;
 use App\V1\Utils\LogHelper;
+use Closure;
 use Exception as BaseException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 
@@ -76,6 +80,20 @@ trait ApiResponseTrait
             '_extra' => static::$extraResponse,
             '_exception' => empty($debug) ? null : ($debugMode ? $debug : base64_encode(json_encode($debug))),
         ];
+    }
+
+    protected function withThrottlingMiddleware()
+    {
+        $this->middleware(function (Request $request, Closure $next) {
+            $this->throttleMiddleware($request);
+            return $next($request);
+        });
+    }
+
+    protected function throttleMiddleware(Request $request)
+    {
+        LocalizationHelper::getInstance()->autoFetch();
+        ClientAppHelper::getInstance();
     }
 
     /**

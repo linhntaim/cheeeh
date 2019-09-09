@@ -92,7 +92,7 @@ class Filer extends RelativeFileContainer
      * @param string|array|null $name
      * @param bool $isRelative
      * @param bool $safe
-     * @return Filer
+     * @return static
      */
     public function move($toDirectory, $name = null, $isRelative = false, $safe = false)
     {
@@ -108,7 +108,7 @@ class Filer extends RelativeFileContainer
      * @param string|array|bool $toDirectory
      * @param string|array|null $name
      * @param bool $isRelative
-     * @return Filer
+     * @return static
      */
     public function safeMove($toDirectory, $name = null, $isRelative = false)
     {
@@ -120,7 +120,7 @@ class Filer extends RelativeFileContainer
      * @param string|array|null $name
      * @param bool $isRelative
      * @param bool $safe
-     * @return Filer
+     * @return static
      */
     public function duplicate($toDirectory, $name = null, $isRelative = false, $safe = false)
     {
@@ -138,7 +138,7 @@ class Filer extends RelativeFileContainer
      * @param string|array|bool $toDirectory
      * @param string|array|null $name
      * @param bool $isRelative
-     * @return Filer
+     * @return static
      */
     public function safeDuplicate($toDirectory, $name = null, $isRelative = false)
     {
@@ -147,7 +147,7 @@ class Filer extends RelativeFileContainer
 
     /**
      * @param string|array|null $name
-     * @return Filer
+     * @return static
      */
     public function store($name = null)
     {

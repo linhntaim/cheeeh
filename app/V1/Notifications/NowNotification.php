@@ -5,6 +5,7 @@ namespace App\V1\Notifications;
 use App\V1\Configuration;
 use App\V1\ModelRepositories\UserRepository;
 use App\V1\Models\User;
+use App\V1\Utils\ClassTrait;
 use App\V1\Utils\ClientAppTrait;
 use App\V1\Utils\DateTimeHelper;
 use App\V1\Utils\Mail\TemplateMailable;
@@ -16,9 +17,14 @@ use Illuminate\Support\Facades\Notification;
 
 abstract class NowNotification extends BaseNotification
 {
-    use SerializesModels, ClientAppTrait;
+    use SerializesModels, ClassTrait, ClientAppTrait;
 
     const NAME = 'now_notification';
+
+    protected static function __transNotification($name, $replace = [], $locale = null)
+    {
+        return static::__transWithSpecificModule($name, 'notification', $replace, $locale);
+    }
 
     public $shouldStore;
     public $shouldWeb;

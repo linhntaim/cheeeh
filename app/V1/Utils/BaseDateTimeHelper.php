@@ -6,6 +6,7 @@ use App\V1\Exceptions\AppException;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
+use Exception;
 
 abstract class BaseDateTimeHelper
 {
@@ -25,7 +26,7 @@ abstract class BaseDateTimeHelper
     protected static $now;
 
     /**
-     * @return BaseDateTimeHelper
+     * @return static
      */
     public static function getInstance()
     {
@@ -35,6 +36,11 @@ abstract class BaseDateTimeHelper
         return static::$instance;
     }
 
+    /**
+     * @param bool $reset
+     * @return DateTime
+     * @throws Exception
+     */
     public static function syncNowObject($reset = false)
     {
         if ($reset || empty(static::$now)) {
@@ -43,11 +49,22 @@ abstract class BaseDateTimeHelper
         return static::$now;
     }
 
+    /**
+     * @param string $format
+     * @param bool $reset
+     * @return string
+     * @throws Exception
+     */
     public static function syncNowFormat($format, $reset = false)
     {
         return static::syncNowObject($reset)->format($format);
     }
 
+    /**
+     * @param bool $reset
+     * @return string
+     * @throws Exception
+     */
     public static function syncNow($reset = false)
     {
         return static::syncNowFormat(static::DATABASE_FORMAT, $reset);
@@ -201,28 +218,28 @@ abstract class BaseDateTimeHelper
         ];
     }
 
-    public function compound($func_1 = BaseDateTimeHelper::SHORT_DATE_FUNCTION, $separation = ' ', $func_2 = BaseDateTimeHelper::SHORT_TIME_FUNCTION, $time = 'now', $no_offset = false)
+    public function compound($func1 = BaseDateTimeHelper::SHORT_DATE_FUNCTION, $separation = ' ', $func2 = BaseDateTimeHelper::SHORT_TIME_FUNCTION, $time = 'now', $noOffset = false)
     {
         $allowedFunctions = [static::LONG_DATE_FUNCTION, static::LONG_TIME_FUNCTION, static::SHORT_DATE_FUNCTION, static::SHORT_TIME_FUNCTION];
-        if (!in_array($func_1, $allowedFunctions) || !in_array($func_2, $allowedFunctions)) {
+        if (!in_array($func1, $allowedFunctions) || !in_array($func2, $allowedFunctions)) {
             throw new AppException('Not allowed methods');
         }
-        return call_user_func(array($this, $func_1), $time, $no_offset)
+        return call_user_func(array($this, $func1), $time, $noOffset)
             . $separation
-            . call_user_func(array($this, $func_2), $time, $no_offset);
+            . call_user_func(array($this, $func2), $time, $noOffset);
     }
 
-    public function compoundBags($func_1 = BaseDateTimeHelper::SHORT_DATE_FUNCTION, $separation = ' ', $func_2 = BaseDateTimeHelper::SHORT_TIME_FUNCTION, array $bags = [])
+    public function compoundBags($func1 = BaseDateTimeHelper::SHORT_DATE_FUNCTION, $separation = ' ', $func2 = BaseDateTimeHelper::SHORT_TIME_FUNCTION, array $bags = [])
     {
         $allowedFunctions = [static::LONG_DATE_FUNCTION, static::LONG_TIME_FUNCTION, static::SHORT_DATE_FUNCTION, static::SHORT_TIME_FUNCTION];
-        if (!in_array($func_1, $allowedFunctions) || !in_array($func_2, $allowedFunctions)) {
+        if (!in_array($func1, $allowedFunctions) || !in_array($func2, $allowedFunctions)) {
             throw new AppException('Not allowed methods');
         }
-        $func_1 .= 'FromBags';
-        $func_2 .= 'FromBags';
-        return call_user_func(array($this, $func_1), $bags)
+        $func1 .= 'FromBags';
+        $func2 .= 'FromBags';
+        return call_user_func(array($this, $func1), $bags)
             . $separation
-            . call_user_func(array($this, $func_2), $bags);
+            . call_user_func(array($this, $func2), $bags);
     }
 
     public function longDayOfWeek($time = 'now', $no_offset = false)
@@ -404,12 +421,16 @@ abstract class BaseDateTimeHelper
 
     public static function applyStartType(DateTime $time, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
-        if ($start == static::DAY_TYPE_NEXT_START) {
-            $time->setTime(0, 0, 0)->add(new DateInterval('P1D'));
-        } elseif ($start == static::DAY_TYPE_END) {
-            $time->setTime(23, 59, 59);
-        } elseif ($start == static::DAY_TYPE_START) {
-            $time->setTime(0, 0, 0);
+        switch ($start) {
+            case static::DAY_TYPE_NEXT_START:
+                $time->setTime(0, 0, 0)->add(new DateInterval('P1D'));
+                break;
+            case static::DAY_TYPE_END:
+                $time->setTime(23, 59, 59);
+                break;
+            case static::DAY_TYPE_START:
+                $time->setTime(0, 0, 0);
+                break;
         }
         return $time;
     }

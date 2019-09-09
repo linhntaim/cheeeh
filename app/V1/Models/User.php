@@ -2,11 +2,12 @@
 
 namespace App\V1\Models;
 
-use App\V1\Configuration;
 use App\V1\ModelTraits\MemorizeTrait;
 use App\V1\Notifications\ResetPasswordNotification;
 use App\V1\Utils\ConfigHelper;
 use App\V1\Utils\CryptoJs\AES;
+use App\V1\Utils\DateTimeHelper;
+use DateInterval;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -118,6 +119,20 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->remind('permission_names');
     }
 
+    public function getPasswordResetExpiredAtAttribute()
+    {
+        $dateTimeHelper = DateTimeHelper::getInstance();
+        $passwordReset = $this->passwordReset;
+        return empty($passwordReset) ? null : $dateTimeHelper->compound(
+            'shortDate',
+            ' ',
+            'shortTime',
+            $dateTimeHelper->getObject($passwordReset->created_at)
+                ->add(new DateInterval('PT' . config('auth.passwords.users.expire') . 'M')),
+            true
+        );
+    }
+
     public function emails()
     {
         return $this->hasMany(UserEmail::class, 'user_id', 'id');
@@ -141,6 +156,11 @@ class User extends Authenticatable implements HasLocalePreference
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'roles_users', 'user_id', 'role_id');
+    }
+
+    public function passwordReset()
+    {
+        return $this->hasOne(PasswordReset::class, 'email', 'email');
     }
 
     public function hasPermission($permissionName)
@@ -173,6 +193,7 @@ class User extends Authenticatable implements HasLocalePreference
     {
         return $this->localization->locale;
     }
+
     #endregion
 
     public function preferredEmail()
