@@ -16,6 +16,7 @@
 </template>
 
 <script>
+    import {authRoutes} from '../../../app/routing/router/routes'
     import {log} from '../../../app/utils/log'
     import {mapActions, mapGetters} from 'vuex'
     import {session} from '../../../app/utils/session'
@@ -185,7 +186,7 @@
             afterLogin() {
                 session.restart()
 
-                this.$router.push({name: 'home'})
+                this.$router.replaceRoutes(authRoutes).push({name: 'home'})
             },
         },
     }

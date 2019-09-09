@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import VueHead from 'vue-head'
-import VueCookie from 'vue-cookie'
-import EventBus from '../../plugins/event_bus'
-import Middleware from '../../plugins/middleware'
-import SoftReplaceRouter from '../../plugins/soft_replace_router'
-import {session} from './session'
 import {log} from './log'
+import {session} from './session'
+import localeReady from '../../app/locales'
 import router from '../routing/router'
 import store from '../store'
+import AdvancedRouter from '../../plugins/advanced_router'
 import App from '../../views/App'
 import AppFailed from '../../views/AppFailed'
-import localeReady from '../../app/locales'
+import EventBus from '../../plugins/event_bus'
+import Middleware from '../../plugins/middleware'
+import Vue from 'vue'
+import VueCookie from 'vue-cookie'
+import VueHead from 'vue-head'
 
 export class Application {
     constructor() {
@@ -39,10 +39,15 @@ export class Application {
         })
     }
 
+    useDefault() {
+        Vue.use(VueCookie)
+        Vue.use(EventBus)
+    }
+
     createDefault() {
         log.write('default creating', 'app')
 
-        Vue.use(EventBus)
+        this.useDefault()
         localeReady(i18n => {
             this.instance = new Vue({
                 i18n,
@@ -55,15 +60,11 @@ export class Application {
         })
     }
 
-    create(alright = true) {
-        if (!alright) return this.createDefault()
-
-        log.write('creating', 'app')
+    use() {
+        this.useDefault()
 
         Vue.use(VueHead)
-        Vue.use(VueCookie)
-        Vue.use(EventBus)
-        Vue.use(SoftReplaceRouter, {router, session})
+        Vue.use(AdvancedRouter, {router, session})
         Vue.use(Middleware, {
             router,
             store,
@@ -81,6 +82,14 @@ export class Application {
                 log.write('end', 'routing')
             },
         })
+    }
+
+    create(alright = true) {
+        if (!alright) return this.createDefault()
+
+        log.write('creating', 'app')
+
+        this.use()
 
         localeReady(i18n => {
             this.instance = new Vue({

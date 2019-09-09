@@ -97,7 +97,7 @@ export default class DefaultService extends Service {
     get(path, params = {}, doneCallback = null, errorCallback = null, alwaysCallback = null, cancelToken = null) {
         return this.service().get(this.path(path), {
             params: this.params(params),
-            cancelToken: cancelToken
+            cancelToken: cancelToken,
         })
             .then((response) => {
                 this.done(response, doneCallback)
@@ -112,7 +112,7 @@ export default class DefaultService extends Service {
 
     post(path, params = {}, doneCallback = null, errorCallback = null, alwaysCallback = null, cancelToken = null) {
         return this.service().post(this.path(path), this.params(params), {
-            cancelToken: cancelToken
+            cancelToken: cancelToken,
         })
             .then(response => {
                 this.done(response, doneCallback)
@@ -127,7 +127,7 @@ export default class DefaultService extends Service {
 
     put(path, params = {}, doneCallback = null, errorCallback = null, alwaysCallback = null, cancelToken = null) {
         return this.service().put(this.path(path), this.params(params), {
-            cancelToken: cancelToken
+            cancelToken: cancelToken,
         })
             .then((response) => {
                 this.done(response, doneCallback)
@@ -143,7 +143,7 @@ export default class DefaultService extends Service {
     delete(path, params = {}, doneCallback = null, errorCallback = null, alwaysCallback = null, cancelToken = null) {
         return this.service().delete(this.path(path), {
             params: this.params(params),
-            cancelToken: cancelToken
+            cancelToken: cancelToken,
         })
             .then((response) => {
                 this.done(response, doneCallback)

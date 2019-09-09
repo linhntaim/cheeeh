@@ -1,9 +1,8 @@
-import {log} from '../../../utils/log'
 import {authRoutes, notAuthRoutes} from '../../router/routes'
+import {log} from '../../../utils/log'
+import {APP_PATH} from '../../../../config'
 import {Middleware} from '../../../../plugins/middleware'
 import passportCookieStore from '../../../utils/cookie_store/passport_cookie_store'
-import Router from 'vue-router'
-import {ui} from '../../../utils/ui'
 
 class AuthMiddleware extends Middleware {
     handle($middlewareManager) {
@@ -42,21 +41,16 @@ class AuthMiddleware extends Middleware {
                 this.handleAuth($middlewareManager)
             },
             errorCallback: () => {
-                super.redirect($middlewareManager, '/error/400')
+                super.redirect($middlewareManager, APP_PATH.bad_request)
             },
         })
     }
 
     handleAuth($middlewareManager) {
-        this.replaceRouterIfNeeded($middlewareManager)
-
-        if ($middlewareManager.to.matched.some(record => record.meta.notAuthReplaced)) {
-            ui.reloadPage()
-            return
-        }
+        if (this.replaceRoutesIfNeeded($middlewareManager)) return
 
         if ($middlewareManager.to.matched.some(record => record.meta.requireNotAuth)) {
-            this.redirect($middlewareManager, '/')
+            this.redirect($middlewareManager, APP_PATH.redirect_path_if_authenticated)
             return
         }
 
@@ -66,7 +60,7 @@ class AuthMiddleware extends Middleware {
             },
             errorCallback: () => {
                 if ($middlewareManager.to.matched.some(record => record.meta.requireAuth)) {
-                    this.redirect($middlewareManager, '/error/401')
+                    this.redirect($middlewareManager, APP_PATH.not_authenticated)
                     return
                 }
 
@@ -76,36 +70,24 @@ class AuthMiddleware extends Middleware {
     }
 
     handleNotAuth($middlewareManager) {
-        this.replaceRouterIfNeeded($middlewareManager, false)
-
-
-        if ($middlewareManager.to.matched.some(record => record.meta.authReplaced)) {
-            ui.reloadPage()
-            return
-        }
+        if (this.replaceRoutesIfNeeded($middlewareManager, false)) return
 
         if ($middlewareManager.to.matched.some(record => record.meta.requireAuth)) {
-            this.redirect($middlewareManager, '/')
+            this.redirect($middlewareManager, APP_PATH.redirect_path_if_not_authenticated)
             return
         }
 
         super.handle($middlewareManager)
     }
 
-    replaceRouterIfNeeded($middlewareManager, auth = true) {
+    replaceRoutesIfNeeded($middlewareManager, auth = true) {
         const router = $middlewareManager.router
         const routes = auth ? authRoutes : notAuthRoutes
         if (router.options.routes[2].meta.replaced
             || (auth && router.options.routes[2].meta.notAuthReplaced)
             || (!auth && router.options.routes[2].meta.authReplaced)) {
-            const newRouter = (new Router({
-                mode: 'history',
-                base: process.env.BASE_URL,
-                routes: routes,
-            }))
-            router.options.routes = routes
-            router.matcher = newRouter.matcher
-            // this.redirect($middlewareManager, $middlewareManager.to.path, $middlewareManager.to.query, $middlewareManager.to.hash)
+            router.replaceRoutes(routes)
+            this.redirect($middlewareManager, $middlewareManager.to.path, $middlewareManager.to.query, $middlewareManager.to.hash)
             return true
         }
         return false

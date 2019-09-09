@@ -19,8 +19,8 @@
                 this.accountUnsetAuth()
                 this.accountUnsetUser()
 
-                this.$router.push('/')
-            }
-        }
+                this.$router.push({name: 'home'})
+            },
+        },
     }
 </script>

@@ -6,7 +6,7 @@ const install = (Vue, {store, doneCallback, errorCallback}) => {
 
             doneCallback()
         },
-        errorCallback
+        errorCallback,
     })
 }
 

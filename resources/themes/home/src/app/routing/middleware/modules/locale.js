@@ -1,6 +1,6 @@
-import {Middleware} from '../../../../plugins/middleware'
 import {localizer} from '../../../utils/localizer'
 import {log} from '../../../utils/log'
+import {Middleware} from '../../../../plugins/middleware'
 
 class LocaleMiddleware extends Middleware {
     handle($middlewareManager) {

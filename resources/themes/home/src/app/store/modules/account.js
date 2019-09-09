@@ -1,14 +1,14 @@
-import {serviceFactory} from '../../services/service_factory'
 import {authService} from '../../services/default/auth'
 import {accountService} from '../../services/default/account'
 import {callbackWaiter} from '../../utils/callback_waiter'
-import {numberFormatHelper} from '../../utils/number_format_helper'
 import {localizer} from '../../utils/localizer'
 import {log} from '../../utils/log'
-import passportCookieStore from '../../utils/cookie_store/passport_cookie_store'
-import localizationCookieStore from '../../utils/cookie_store/localization_cookie_store'
-import helpers from '../../utils/helpers'
+import {numberFormatHelper} from '../../utils/number_format_helper'
+import {serviceFactory} from '../../services/service_factory'
 import {APP_DEFAULT_SERVICE, DEFAULT_LOCALIZATION} from '../../../config'
+import helpers from '../../utils/helpers'
+import localizationCookieStore from '../../utils/cookie_store/localization_cookie_store'
+import passportCookieStore from '../../utils/cookie_store/passport_cookie_store'
 
 const setDefaultServiceLocalizationHeader = localization => {
     serviceFactory.modify(defaultService => {

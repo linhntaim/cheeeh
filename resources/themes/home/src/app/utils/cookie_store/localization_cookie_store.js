@@ -1,5 +1,5 @@
-import CookieStore from './cookie_store'
 import {APP_COOKIE} from '../../../config'
+import CookieStore from './cookie_store'
 
 class LocalizationCookieStore extends CookieStore {
     constructor() {

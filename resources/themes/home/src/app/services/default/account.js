@@ -11,7 +11,7 @@ export class AccountService extends DefaultService {
             login ? {_login: 1} : {},
             doneCallback,
             errorCallback,
-            alwaysCallback
+            alwaysCallback,
         )
     }
 
@@ -21,7 +21,7 @@ export class AccountService extends DefaultService {
             params,
             doneCallback,
             errorCallback,
-            alwaysCallback
+            alwaysCallback,
         )
     }
 
@@ -31,7 +31,7 @@ export class AccountService extends DefaultService {
             params,
             doneCallback,
             errorCallback,
-            alwaysCallback
+            alwaysCallback,
         )
     }
 
@@ -43,7 +43,7 @@ export class AccountService extends DefaultService {
             },
             doneCallback,
             errorCallback,
-            alwaysCallback
+            alwaysCallback,
         )
     }
 }

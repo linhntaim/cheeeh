@@ -13,8 +13,8 @@
 <script>
     import {APP_LOGO_URL} from '../../config'
     import {mapGetters} from 'vuex'
-    import FeaturedImageSlider from './FeaturedImageSlider'
     import routeHelper from '../../app/utils/route_helper'
+    import FeaturedImageSlider from './FeaturedImageSlider'
 
     export default {
         name: 'HomeCover',

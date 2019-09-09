@@ -1,5 +1,5 @@
-import {deviceService} from '../../services/default/device'
 import {accountDeviceService} from '../../services/default/account_device'
+import {deviceService} from '../../services/default/device'
 import deviceCookieStore from '../../utils/cookie_store/device_cookie_store'
 
 export default {

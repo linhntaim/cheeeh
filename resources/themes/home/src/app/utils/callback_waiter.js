@@ -1,6 +1,6 @@
 export class CallbackWaiter {
     constructor() {
-        this.waiters={}
+        this.waiters = {}
     }
 
     call(id, callback, time = 10, replaceCallback = null) {

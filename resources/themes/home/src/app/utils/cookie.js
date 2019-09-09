@@ -1,6 +1,6 @@
-import Vue from 'vue'
 import {crypto} from './crypto'
 import {APP_COOKIE} from '../../config'
+import Vue from 'vue'
 
 export class Cookie {
     set(name, data, expires = null, domain = null) {

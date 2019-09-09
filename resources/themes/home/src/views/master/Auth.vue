@@ -16,9 +16,9 @@
 </template>
 
 <script>
+    import HomeCover from '../components/HomeCover'
     import MainHeader from './MainHeader'
     import MainFooter from './MainFooter'
-    import HomeCover from '../components/HomeCover'
 
     export default {
         name: 'Auth',

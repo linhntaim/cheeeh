@@ -41,8 +41,12 @@ export const APP_DEFAULT_SERVICE = {
 export const APP_LOG_ONLY = []
 export const APP_PREREQUISITE_LIFETIME = 31622400
 export const APP_PATH = {
-    verify_email: 'auth/verify-email',
-    reset_password: 'auth/reset-password',
+    bad_request: '/error/400',
+    reset_password: '/auth/reset-password',
+    verify_email: '/auth/verify-email',
+    not_authenticated: '/error/401',
+    redirect_path_if_authenticated: '/',
+    redirect_path_if_not_authenticated: '/',
 }
 export const DEFAULT_LOCALIZATION = {
     _from_app: true,

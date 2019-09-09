@@ -1,7 +1,7 @@
 <template lang="pug">
-    .card.border-dark.pb-4
+    .card.border-dark
         .card-body.text-center
-            img(:src="logoUrl")
+            safe-image.mt-n4(:src="logoUrl")
             h1.font-weight-bold 404
             h4.font-weight-bold {{ $t('error.not_found._') }}
             .my-3 {{ $t('error.not_found.desc') }}
@@ -12,9 +12,11 @@
 
 <script>
     import {APP_LOGO_URL} from '../../config'
+    import SafeImage from '../components/SafeImage'
 
     export default {
         name: 'NotFound',
+        components: {SafeImage},
         data() {
             return {
                 logoUrl: APP_LOGO_URL.black_s128,

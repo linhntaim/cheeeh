@@ -1,5 +1,5 @@
-import axios from 'axios'
 import {APP_DEFAULT_SERVICE, APP_NAME, APP_URL} from '../../config'
+import axios from 'axios'
 
 export const defaultService = 'axios'
 

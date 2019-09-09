@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import Server from './plugins/server'
-import store from './app/store'
 import {app} from './app/utils/app'
 import {log} from './app/utils/log'
+import store from './app/store'
+import Server from './plugins/server'
+import Vue from 'vue'
 
 Vue.config.productionTip = true
 

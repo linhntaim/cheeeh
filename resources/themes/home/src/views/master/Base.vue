@@ -7,7 +7,3 @@
         name: 'Base',
     }
 </script>
-
-<style scoped>
-
-</style>

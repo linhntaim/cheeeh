@@ -1,10 +1,10 @@
-import {Middleware} from '../../../../plugins/middleware'
+import {app} from '../../../utils/app'
 import {intervalCaller} from '../../../utils/interval_caller'
+import {log} from '../../../utils/log'
+import {session} from '../../../utils/session'
 import {timeoutCaller} from '../../../utils/timeout_caller'
 import {ui} from '../../../utils/ui'
-import {session} from '../../../utils/session'
-import {log} from '../../../utils/log'
-import {app} from '../../../utils/app'
+import {Middleware} from '../../../../plugins/middleware'
 
 class CommonMiddleware extends Middleware {
     constructor() {

@@ -84,7 +84,7 @@ export class Middleware {
         $middlewareManager.handle()
     }
 
-    redirect($middlewareManager, path, query = {}, hash = '') {
+    redirect($middlewareManager, path = '/', query = {}, hash = '') {
         query.time = new Date().getTime()
         $middlewareManager.next({
             path: path,

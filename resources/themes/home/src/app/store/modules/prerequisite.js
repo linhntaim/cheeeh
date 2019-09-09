@@ -57,7 +57,7 @@ export default {
                     if (doneCallback) doneCallback()
                 },
                 errorCallback,
-                alwaysCallback
+                alwaysCallback,
             )
         },
     },

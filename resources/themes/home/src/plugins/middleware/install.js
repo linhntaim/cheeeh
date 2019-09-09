@@ -15,7 +15,6 @@ const install = (Vue, {router, store, beforeEnable, afterEnable, beforeRouting, 
             if (middleware.length) {
                 (new BeforeMiddlewareManager(middleware, store, router)).run(to, from, next)
             }
-            console.log('beforeEach')
             return
         }
 

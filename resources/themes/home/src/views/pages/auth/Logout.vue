@@ -6,8 +6,8 @@
 
 <script>
     import {mapActions} from 'vuex'
+    import {notAuthRoutes} from '../../../app/routing/router/routes'
     import {session} from '../../../app/utils/session'
-    import {log} from '../../../app/utils/log'
 
     export default {
         name: 'Logout',
@@ -23,13 +23,14 @@
             ...mapActions({
                 accountLogout: 'account/logout',
             }),
+
             init() {
                 this.loading = true
                 this.accountLogout({
                     alwaysCallback: () => {
                         this.loading = false
                         session.restart()
-                        this.$router.push({name: 'home'})
+                        this.$router.replaceRoutes(notAuthRoutes).push({name: 'home'})
                     },
                 })
             },

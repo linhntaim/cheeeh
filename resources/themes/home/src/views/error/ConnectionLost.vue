@@ -1,7 +1,7 @@
 <template lang="pug">
-    .card.border-dark.pb-4
+    .card.border-dark
         .card-body.text-center
-            img(:src="logoUrl")
+            safe-image.mt-n4(:src="logoUrl")
             h1.font-weight-bold 777
             h4.font-weight-bold {{ $t('error.connection_lost._') }}
             .my-3 {{ $t('error.connection_lost.desc') }}
@@ -10,11 +10,13 @@
 </template>
 
 <script>
-    import {ui} from '../../app/utils/ui'
     import {APP_LOGO_URL} from '../../config'
+    import {ui} from '../../app/utils/ui'
+    import SafeImage from '../components/SafeImage'
 
     export default {
         name: 'ConnectionLost',
+        components: {SafeImage},
         data() {
             return {
                 logoUrl: APP_LOGO_URL.black_s128,
@@ -23,7 +25,7 @@
         methods: {
             onRefreshClicked() {
                 ui.reloadPage()
-            }
-        }
+            },
+        },
     }
 </script>
