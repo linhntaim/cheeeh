@@ -7,7 +7,8 @@
                 .form-group
                     input#inputPassword.form-control(v-model="password" :placeholder="$t('pages.password')" :required="!token" :disabled="token" type="password")
                 .form-group
-                    button.btn.btn-base-pink(:disabled="loading || disabled" type="submit") {{ $t('actions.login') }}
+                    button.btn.btn-base-pink(:disabled="loading || disabled" type="submit")
+                        text-with-loading(:loading="loading" :text="$t('actions.login')")
             nav
                 .mt-2
                     router-link.link-base-pink(:to="{name: 'forgot_password'}") {{ $t('pages._auth.forgot_password') }}
@@ -20,9 +21,11 @@
     import {log} from '../../../app/utils/log'
     import {mapActions, mapGetters} from 'vuex'
     import {session} from '../../../app/utils/session'
+    import TextWithLoading from '../../components/TextWithLoading'
 
     export default {
         name: 'Login',
+        components: {TextWithLoading},
         data() {
             return {
                 loading: false,
@@ -71,8 +74,6 @@
                     password: this.password,
                     token: this.token,
                     doneCallback: () => {
-                        this.loading = false
-
                         this.afterLogin()
                     },
                     errorCallback: err => {
@@ -91,8 +92,6 @@
                         this.accountLoginWithMicrosoft({
                             id: this.microsoftMe.id,
                             doneCallback: () => {
-                                this.loading = false
-
                                 this.afterLogin()
                             },
                             errorCallback: err => {
@@ -119,8 +118,6 @@
                         this.accountLoginWithGoogle({
                             id: this.googleMe.id,
                             doneCallback: () => {
-                                this.loading = false
-
                                 this.afterLogin()
                             },
                             errorCallback: err => {
@@ -149,8 +146,6 @@
                         this.accountLoginWithFacebook({
                             id: this.facebookMe.id,
                             doneCallback: () => {
-                                this.loading = false
-
                                 this.afterLogin()
                             },
                             errorCallback: err => {

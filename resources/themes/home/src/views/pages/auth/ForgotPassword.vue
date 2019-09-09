@@ -7,7 +7,8 @@
                 .form-group
                     input#inputEmail.form-control.form-control-user(v-model="email" :readonly="succeed" :placeholder="$t('pages.email_address')" type="email" required)
                 .form-group
-                    button.btn.btn-base-pink(:disabled="loading || disabled" type="submit") {{ $t('pages._auth._forgot_password.submit') }}
+                    button.btn.btn-base-pink(:disabled="loading || disabled" type="submit")
+                        text-with-loading(:loading="loading" :text="$t('pages._auth._forgot_password.submit')")
             nav
                 .mt-2
                     router-link.link-base-pink(:to="{name: 'login'}") {{ $t('actions.back_where', {where: $t('pages._auth._login._')}) }}
@@ -17,9 +18,11 @@
 
 <script>
     import {mapActions} from 'vuex'
+    import TextWithLoading from '../../components/TextWithLoading'
 
     export default {
         name: 'ForgotPassword',
+        components: {TextWithLoading},
         data() {
             return {
                 loading: false,

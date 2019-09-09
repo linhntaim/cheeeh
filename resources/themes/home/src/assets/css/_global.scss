@@ -188,6 +188,17 @@ body {
 }
 
 /**
+ * Dropdown
+ */
+.dropdown-toggle {
+    &.no-arrow {
+        &::after {
+            display: none;
+        }
+    }
+}
+
+/**
  * Form
  */
 .form-control {

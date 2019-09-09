@@ -14,7 +14,8 @@
                 .form-group
                     input#inputRepeatPassword.form-control(v-model="passwordConfirmation" :placeholder="$t('actions.retype_what', {what: $t('pages.password_lc')})" type="password" required)
                 .form-group
-                    button.btn.btn-base-red(:disabled="loading || disabled" type="submit") {{ $t('actions.register') }}
+                    button.btn.btn-base-red(:disabled="loading || disabled" type="submit")
+                        text-with-loading(:loading="loading" :text="$t('actions.register')")
             nav
                 .mt-2
                     router-link.link-base-red(:to="{name: 'login'}") {{ $t('pages._auth.has_account') }}
@@ -23,9 +24,11 @@
 <script>
     import {mapActions, mapGetters} from 'vuex'
     import {session} from '../../../app/utils/session'
+    import TextWithLoading from '../../components/TextWithLoading'
 
     export default {
         name: 'Register',
+        components: {TextWithLoading},
         data() {
             return {
                 loading: false,

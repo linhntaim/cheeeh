@@ -8,12 +8,22 @@
                 i.fas.fa-bars
             #navbarHeader.collapse.navbar-collapse
                 ul.navbar-nav
-                    li.nav-item.active
+                    li.nav-item(v-if="accountIsLoggedIn")
+                        .dropdown.user-dropdown
+                            a.dropdown-toggle.no-arrow(href="#" data-toggle="dropdown")
+                                img.w8x4.rounded-circle(:src="currentUser.url_avatar")
+                            .dropdown-menu.dropdown-menu-right
+                                .dropdown-divider
+                                router-link.dropdown-item(:to="{name: 'logout'}")
+                                    i.fas.fa-sign-out-alt.mr-2.text-gray.fa-xs.fa-fw
+                                    | {{ $t('actions.logout') }}
+                    li.nav-item(v-else)
                         router-link.btn(:class="{'btn-base-pink': actionRouteName === 'login', 'btn-base-red': actionRouteName === 'register'}" :to="{name: actionRouteName}") {{ actionName }}
 </template>
 
 <script>
     import {APP_LOGO_URL, APP_NAME} from '../../config'
+    import {mapGetters} from 'vuex'
     import routeHelper from '../../app/utils/route_helper'
 
     export default {
@@ -26,6 +36,12 @@
                 actionRouteName: 'login',
                 actionName: this.$t('actions.login'),
             }
+        },
+        computed: {
+            ...mapGetters({
+                accountIsLoggedIn: 'account/isLoggedIn',
+                currentUser: 'account/user',
+            }),
         },
         watch: {
             '$route'() {
@@ -49,3 +65,15 @@
         },
     }
 </script>
+
+<style lang="scss" scoped>
+    @import '../../assets/css/variables';
+
+    .user-dropdown {
+        .dropdown-toggle:hover {
+            img {
+                box-shadow: 0 0 0 0.15rem $color-base-lighter-o2;
+            }
+        }
+    }
+</style>

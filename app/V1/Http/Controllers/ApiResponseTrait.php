@@ -90,7 +90,7 @@ trait ApiResponseTrait
         });
     }
 
-    protected function throttleMiddleware(Request $request)
+    protected function throttleMiddleware()
     {
         LocalizationHelper::getInstance()->autoFetch();
         ClientAppHelper::getInstance();
