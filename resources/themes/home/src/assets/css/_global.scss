@@ -1,6 +1,7 @@
 @import "variables";
 
 body {
+    background-color: $color-base-lighter;
     color: $color-base-dark;
     //font-family: 'Nunito Sans', sans-serif;
     font-family: 'Nunito', sans-serif;
@@ -195,6 +196,21 @@ body {
         &::after {
             display: none;
         }
+    }
+}
+
+.dropdown-menu, .dropdown-divider {
+    border-color: $color-base-light;
+}
+
+.dropdown-item {
+    &:hover {
+        background-color: $color-base-light;
+    }
+
+    &:focus, &.focus, &:active, &.active {
+        color: $color-light;
+        background-color: $color-base-red;
     }
 }
 
@@ -516,4 +532,11 @@ a {
 
 .w8x6 {
     width: $d8x * 6;
+}
+
+/**
+ * Vertical align
+ */
+.va-middle {
+    vertical-align: middle;
 }

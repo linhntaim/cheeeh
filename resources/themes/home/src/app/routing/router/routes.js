@@ -109,6 +109,10 @@ export const authRoutes = [
                 component: () => import('../../../views/pages/Home'),
             },
             {
+                path: 'account',
+                name: 'account',
+            },
+            {
                 path: '*',
                 component: () => import('../../../views/error/NotFound'),
             },

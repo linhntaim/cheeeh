@@ -33,6 +33,19 @@
         },
         watch: {
             '$route'() {
+                this.initUi()
+                this.$refs.slider.restart()
+            },
+        },
+        created() {
+            this.initUi()
+
+            this.$bus.on('localeChanged', () => {
+                this.initUi()
+            })
+        },
+        methods: {
+            initUi() {
                 if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
                     this.actionRouteName = 'login'
                     this.actionName = this.$t('actions.login')
@@ -40,18 +53,7 @@
                     this.actionRouteName = 'register'
                     this.actionName = this.$t('pages.start_free')
                 }
-
-                this.$refs.slider.restart()
             },
-        },
-        created() {
-            if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
-                this.actionRouteName = 'login'
-                this.actionName = this.$t('actions.login')
-            } else {
-                this.actionRouteName = 'register'
-                this.actionName = this.$t('pages.start_free')
-            }
         },
     }
 </script>

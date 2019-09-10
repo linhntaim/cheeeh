@@ -191,8 +191,7 @@
     @import "../../../assets/css/variables";
 
     .form-control {
-        &:focus {
-            border-color: $color-base-pink-lighter;
+        &:focus, &.focus {
             box-shadow: 0 0 0 0.2rem $color-base-pink-lighter-o;
         }
     }

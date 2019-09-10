@@ -92,16 +92,18 @@ export default {
             passportCookieStore.remove()
         },
 
-        setUser(state, {user}) {
+        setUser(state, {user, localeCallback}) {
             state.user = user
 
             setDefaultServiceLocalizationHeader(state.user.localization)
             localizationCookieStore.store(state.user.localization)
-            localizer.localize(state.user.localization)
+            localizer.localize(state.user.localization).then(() => {
+                localeCallback && localeCallback()
+            })
             numberFormatHelper.localize(state.user.localization)
         },
 
-        setLocale(state, {locale}) {
+        setLocale(state, {locale, callback}) {
             if (locale != state.user.localization.locale) {
                 state.user.localization._ts = 0
             }
@@ -109,10 +111,12 @@ export default {
 
             setDefaultServiceLocalizationHeader(state.user.localization)
             localizationCookieStore.store(state.user.localization)
-            localizer.localize(state.user.localization)
+            localizer.localize(state.user.localization).then(() => {
+                callback && callback()
+            })
         },
 
-        setLocalization(state, {localization}) {
+        setLocalization(state, {localization, localeCallback}) {
             for (let key in localization) {
                 if (key == 'locale' && localization.locale != state.user.localization.locale) {
                     state.user.localization._ts = 0
@@ -122,7 +126,9 @@ export default {
 
             setDefaultServiceLocalizationHeader(state.user.localization)
             localizationCookieStore.store(state.user.localization)
-            localizer.localize(state.user.localization)
+            localizer.localize(state.user.localization).then(() => {
+                localeCallback && localeCallback()
+            })
             numberFormatHelper.localize(state.user.localization)
         },
 
@@ -151,7 +157,7 @@ export default {
             passportCookieStore.store(state.passport)
         },
 
-        anonymous({commit, state}) {
+        anonymous({commit, state}, {callback}) {
             if (state.isLoggedIn) return
 
             let storedLocalization = localizationCookieStore.retrieve()
@@ -159,6 +165,7 @@ export default {
                 user: {
                     localization: storedLocalization ? storedLocalization : DEFAULT_LOCALIZATION,
                 },
+                localeCallback: callback,
             })
         },
 
@@ -176,11 +183,12 @@ export default {
             }
             callbackWaiter.call('account_current', () => { // tricky cache
                 log.write('get account', 'store')
+
                 accountService().current(login, (data) => {
                     commit('setUser', {
                         user: data.user,
+                        localeCallback: doneCallback,
                     })
-                    doneCallback()
                 }, errorCallback)
             }, 10, () => {
                 doneCallback({user: state.user})
@@ -192,14 +200,14 @@ export default {
                 accountService().updateLocalization(params, (data) => {
                     commit('setUser', {
                         user: data.user,
+                        localeCallback: doneCallback,
                     })
-                    doneCallback()
                 }, errorCallback)
             } else {
                 commit('setLocalization', {
                     localization: params,
+                    localeCallback: doneCallback,
                 })
-                doneCallback()
             }
         },
 
@@ -208,14 +216,14 @@ export default {
                 accountService().updateLocale(locale, (data) => {
                     commit('setUser', {
                         user: data.user,
+                        localeCallback: doneCallback,
                     })
-                    doneCallback()
                 }, errorCallback)
             } else {
                 commit('setLocale', {
                     locale: locale,
+                    callback: doneCallback,
                 })
-                doneCallback()
             }
         },
 

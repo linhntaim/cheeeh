@@ -32,7 +32,6 @@
     .layout-auth {
         display: flex;
         align-items: center;
-        background-color: $color-base-lighter;
         padding-top: 2rem;
         padding-bottom: 2rem;
 

@@ -35,6 +35,29 @@
         background: $color-dark;
     }
 
+    .user-nav-item {
+        display: flex;
+        align-items: center;
+
+        .nav-link {
+            padding-top: 0;
+            padding-bottom: 0;
+
+            &:hover {
+                img {
+                    box-shadow: 0 0 0 0.15rem $color-base-lighter-o2;
+                }
+            }
+        }
+
+        .dropdown-menu {
+            margin-top: 0.75rem;
+            border-top: none;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    }
+
     @media (min-width: $sm-min-width) {
         .navbar-collapse {
             justify-content: flex-end;
@@ -70,6 +93,9 @@
     }
 
     @media (max-width: $xs-max-width) {
+        $color: rgba(0, 0, 0, .9);
+        $colorHover: rgba(0, 0, 0, .5);
+
         padding: 0;
 
         .navbar-collapse {
@@ -79,13 +105,14 @@
             width: 100%;
             padding: 1rem;
             background: $color-light;
+            border-bottom: 1px solid $color-base-light;
             z-index: 10;
         }
 
         .navbar-nav {
             .nav-item {
                 .nav-link {
-                    color: rgba(0, 0, 0, .5);
+                    color: $color;
                 }
 
                 .btn {
@@ -94,7 +121,7 @@
 
                 &:hover, &.active {
                     .nav-link {
-                        color: rgba(0, 0, 0, .9);
+                        color: $colorHover;
                     }
                 }
 
@@ -117,6 +144,51 @@
                         margin-bottom: 0;
                     }
                 }
+            }
+        }
+
+        .user-nav-item {
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-toggle {
+                display: none;
+            }
+
+            .dropdown-menu {
+                display: block;
+                border: none;
+                margin: .5rem 0 0 0;
+                padding: .5rem 0 0 0;
+                border-top: 1px solid $color-base-light;
+            }
+
+            .dropdown-item {
+                margin: 0;
+                padding: .5rem 0;
+                color: $color;
+
+                &:last-child {
+                    padding-bottom: 0;
+                }
+
+                &:hover {
+                    background-color: transparent;
+                    color: $colorHover;
+                }
+
+                &:focus, &.focus {
+                    background-color: transparent;
+                }
+
+                i {
+                    display: none;
+                }
+            }
+
+            .dropdown-divider {
+                display: none;
             }
         }
     }

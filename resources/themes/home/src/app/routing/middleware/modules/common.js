@@ -25,13 +25,17 @@ class CommonMiddleware extends Middleware {
                 session.start()
                 timeoutCaller.clear()
                 intervalCaller.clear()
-                $middlewareManager.store.dispatch('account/anonymous')
+                $middlewareManager.store.dispatch('account/anonymous', {
+                    callback: () => {
+                        super.handle($middlewareManager)
+                    },
+                })
             } else if ($middlewareManager.after) {
                 appInstance.$bus.emit('page.loaded')
-
                 ui.scrollToTop()
+
+                super.handle($middlewareManager)
             }
-            super.handle($middlewareManager)
         })
     }
 }

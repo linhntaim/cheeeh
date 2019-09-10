@@ -8,11 +8,18 @@
                 i.fas.fa-bars
             #navbarHeader.collapse.navbar-collapse
                 ul.navbar-nav
-                    li.nav-item(v-if="accountIsLoggedIn")
-                        .dropdown.user-dropdown
-                            a.dropdown-toggle.no-arrow(href="#" data-toggle="dropdown")
-                                img.w8x4.rounded-circle(:src="currentUser.url_avatar")
+                    li.nav-item
+                        a.nav-link(href="#") What's new
+                    li.nav-item
+                        a.nav-link(href="#") What's new
+                    li.nav-item.user-nav-item(v-if="accountIsLoggedIn")
+                        .dropdown
+                            a.nav-link.dropdown-toggle.no-arrow(href="#" data-toggle="dropdown")
+                                img.w8x4.rounded-circle.va-middle(:src="currentUser.url_avatar")
                             .dropdown-menu.dropdown-menu-right
+                                router-link.dropdown-item(:to="{name: 'account'}")
+                                    i.fas.fa-user.mr-2.text-gray.fa-xs.fa-fw
+                                    | My account
                                 .dropdown-divider
                                 router-link.dropdown-item(:to="{name: 'logout'}")
                                     i.fas.fa-sign-out-alt.mr-2.text-gray.fa-xs.fa-fw
@@ -45,6 +52,18 @@
         },
         watch: {
             '$route'() {
+                this.initUi()
+            },
+        },
+        created() {
+            this.initUi()
+
+            this.$bus.on('localeChanged', () => {
+                this.initUi()
+            })
+        },
+        methods: {
+            initUi() {
                 if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
                     this.actionRouteName = 'login'
                     this.actionName = this.$t('actions.login')
@@ -54,26 +73,5 @@
                 }
             },
         },
-        created() {
-            if (routeHelper.isHome(this.$route) || routeHelper.isRegister(this.$route)) {
-                this.actionRouteName = 'login'
-                this.actionName = this.$t('actions.login')
-            } else {
-                this.actionRouteName = 'register'
-                this.actionName = this.$t('actions.register')
-            }
-        },
     }
 </script>
-
-<style lang="scss" scoped>
-    @import '../../assets/css/variables';
-
-    .user-dropdown {
-        .dropdown-toggle:hover {
-            img {
-                box-shadow: 0 0 0 0.15rem $color-base-lighter-o2;
-            }
-        }
-    }
-</style>

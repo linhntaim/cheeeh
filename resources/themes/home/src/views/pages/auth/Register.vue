@@ -124,7 +124,6 @@
 
     .form-control {
         &:focus {
-            border-color: $color-base-red-lighter;
             box-shadow: 0 0 0 0.2rem $color-base-red-lighter-o;
         }
     }

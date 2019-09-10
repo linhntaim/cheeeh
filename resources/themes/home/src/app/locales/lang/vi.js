@@ -16,7 +16,7 @@ export default {
     components: {
         home_cover: {
             title: 'Hãy thể hiện cảm xúc.',
-            subtitle: 'Cheeeh là nơi bạn lưu giữ và chia sẻ tình yêu với những tấm ảnh của mình.',
+            subtitle: 'Cheeeh là nơi bạn lưu giữ và chia sẻ tình yêu với những bức ảnh của mình.',
         },
     },
     error: {
