@@ -1,4 +1,4 @@
-import {APP_DEBUG, APP_LOG_ONLY} from '../../config'
+import {APP_DEBUG, APP_LOG_ONLY} from '../config'
 
 export class Log {
     write(something, namespace = null) {

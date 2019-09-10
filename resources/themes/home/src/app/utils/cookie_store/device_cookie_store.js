@@ -1,4 +1,4 @@
-import {APP_COOKIE, DEFAULT_DEVICE} from '../../../config'
+import {APP_COOKIE, DEFAULT_DEVICE} from '../../config'
 import CookieStore from './cookie_store'
 
 class DeviceCookieStore extends CookieStore {

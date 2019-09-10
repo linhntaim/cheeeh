@@ -1,4 +1,4 @@
-import {DEFAULT_LOCALIZATION} from '../../config'
+import {DEFAULT_LOCALIZATION} from '../config'
 
 const DEFAULT_NUMBER_OF_DECIMAL_POINTS = 2
 

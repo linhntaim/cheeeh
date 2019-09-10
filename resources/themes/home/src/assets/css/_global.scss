@@ -17,6 +17,29 @@ body {
 }
 
 /**
+ * Alert
+ */
+.alert {
+    padding: .375rem .75rem;
+    border: none;
+}
+
+.alert-base-red {
+    background-color: $color-base-red-lightest;
+    color: $color-base-red-darker;
+}
+
+.alert-base-pink {
+    background-color: $color-base-pink-lightest;
+    color: $color-base-pink-darker;
+}
+
+.alert-base-yellow {
+    background-color: $color-base-yellow-lightest;
+    color: $color-base-yellow-darker;
+}
+
+/**
  * Background
  */
 .bg-gradient-base {
@@ -188,6 +211,90 @@ body {
     }
 }
 
+.btn-microsoft {
+    color: $color-light;
+    background-color: $color-microsoft;
+    border-color: $color-microsoft;
+
+    &:hover {
+        color: $color-light;
+        background-color: $color-microsoft-darker;
+        border-color: $color-microsoft-darker;
+    }
+
+    &:disabled, &.disabled {
+        color: $color-light;
+        background-color: $color-microsoft-lighter;
+        border-color: $color-microsoft-lighter;
+    }
+
+    &:focus, &.focus {
+        box-shadow: 0 0 0 0.2rem $color-microsoft-lighter-o;
+    }
+
+    &:not(:disabled):not(.disabled):active, &:not(:disabled):not(.disabled).active {
+        color: $color-light;
+        background-color: $color-microsoft-dark;
+        border-color: $color-microsoft-dark;
+    }
+}
+
+.btn-facebook {
+    color: $color-light;
+    background-color: $color-facebook;
+    border-color: $color-facebook;
+
+    &:hover {
+        color: $color-light;
+        background-color: $color-facebook-darker;
+        border-color: $color-facebook-darker;
+    }
+
+    &:disabled, &.disabled {
+        color: $color-light;
+        background-color: $color-facebook-lighter;
+        border-color: $color-facebook-lighter;
+    }
+
+    &:focus, &.focus {
+        box-shadow: 0 0 0 0.2rem $color-facebook-lighter-o;
+    }
+
+    &:not(:disabled):not(.disabled):active, &:not(:disabled):not(.disabled).active {
+        color: $color-light;
+        background-color: $color-facebook-dark;
+        border-color: $color-facebook-dark;
+    }
+}
+
+.btn-google {
+    color: $color-light;
+    background-color: $color-google;
+    border-color: $color-google;
+
+    &:hover {
+        color: $color-light;
+        background-color: $color-google-darker;
+        border-color: $color-google-darker;
+    }
+
+    &:disabled, &.disabled {
+        color: $color-light;
+        background-color: $color-google-lighter;
+        border-color: $color-google-lighter;
+    }
+
+    &:focus, &.focus {
+        box-shadow: 0 0 0 0.2rem $color-google-lighter-o;
+    }
+
+    &:not(:disabled):not(.disabled):active, &:not(:disabled):not(.disabled).active {
+        color: $color-light;
+        background-color: $color-google-dark;
+        border-color: $color-google-dark;
+    }
+}
+
 /**
  * Dropdown
  */
@@ -252,6 +359,23 @@ body {
 /**
  * Hide
  */
+.hide-not-over {
+    .hide-target, .hide-target-block {
+        display: none;
+        transition-duration: 0.3s;
+    }
+
+    &:hover {
+        .hide-target {
+            display: inline;
+        }
+
+        .hide-target-block {
+            display: block;
+        }
+    }
+}
+
 .hide, .hide-xl {
     display: none !important;
 }

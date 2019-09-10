@@ -59,7 +59,7 @@ abstract class Exception extends BaseException implements HttpExceptionInterface
 
     public function getStatusCode()
     {
-        return $this::CODE;
+        return static::CODE;
     }
 
     public function getHeaders()
@@ -85,7 +85,7 @@ abstract class Exception extends BaseException implements HttpExceptionInterface
 
     public function getLevel()
     {
-        return $this::LEVEL;
+        return static::LEVEL;
     }
 
     public function formatMessage($message = '')

@@ -1,5 +1,5 @@
 import {crypto} from './crypto'
-import {APP_COOKIE} from '../../config'
+import {APP_COOKIE} from '../config'
 import Vue from 'vue'
 
 export class Cookie {

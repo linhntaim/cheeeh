@@ -1,21 +1,47 @@
+export const APP_ENV = process.env.VUE_APP_ENV
 export const APP_DEBUG = process.env.VUE_APP_DEBUG
+export const APP_LOG_ONLY = process.env.VUE_APP_LOG_ONLY ? process.env.VUE_APP_LOG_ONLY.split(',') : []
+export const APP_TYPE = process.env.VUE_APP_TYPE
+export const APP_TYPE_ADMIN = 'admin'
+export const APP_TYPE_HOME = 'home'
+export const APP_HOST = process.env.VUE_APP_HOST
+export const APP_HOST_SELF = 'self'
+export const APP_HOST_SUB = 'sub'
+export const APP_HOST_SUB_PATH = process.env.VUE_APP_HOST_SUB_PATH
 export const APP_NAME = process.env.VUE_APP_NAME
-export const APP_URL = window.location.origin
-export const APP_ADMIN_URL = process.env.VUE_APP_ADMIN_URL
+export const APP_URL = window.location.origin + (APP_HOST === APP_HOST_SUB ? APP_HOST_SUB_PATH : '')
+export const APP_ADMIN_URL = APP_TYPE === APP_TYPE_ADMIN ? APP_URL : process.env.VUE_APP_ADMIN_URL
+export const APP_HOME_URL = APP_TYPE === APP_TYPE_HOME ? APP_URL : process.env.VUE_APP_HOME_URL
 export const APP_STATIC_URL = process.env.VUE_APP_STATIC_URL
 export const APP_LOGO_URL = {
     original: APP_STATIC_URL + '/sites/logos/logo.png',
     s32: APP_STATIC_URL + '/sites/logos/logo_32x32.png',
     s128: APP_STATIC_URL + '/sites/logos/logo_128x128.png',
+    s256: APP_STATIC_URL + '/sites/logos/logo_256x256.png',
+    s512: APP_STATIC_URL + '/sites/logos/logo_512x512.png',
     black_original: APP_STATIC_URL + '/sites/logos/logo_black.png',
     black_s32: APP_STATIC_URL + '/sites/logos/logo_black_32x32.png',
     black_s128: APP_STATIC_URL + '/sites/logos/logo_black_128x128.png',
+    black_s256: APP_STATIC_URL + '/sites/logos/logo_black_256x256.png',
+    black_s512: APP_STATIC_URL + '/sites/logos/logo_black_512x512.png',
     white_original: APP_STATIC_URL + '/sites/logos/logo_white.png',
     white_s32: APP_STATIC_URL + '/sites/logos/logo_white_32x32.png',
     white_s128: APP_STATIC_URL + '/sites/logos/logo_white_128x128.png',
+    white_s256: APP_STATIC_URL + '/sites/logos/logo_white_256x256.png',
+    white_s512: APP_STATIC_URL + '/sites/logos/logo_white_512x512.png',
 }
-export const APP_PASSPORT_PW_CLIENT_ID = process.env.VUE_APP_PASSPORT_PW_CLIENT_ID
-export const APP_PASSPORT_PW_CLIENT_SECRET = process.env.VUE_APP_PASSPORT_PW_CLIENT_SECRET
+export const APP_DEFAULT_SERVICE = {
+    base_url: process.env.VUE_APP_SERVICE_URL,
+    client_id: process.env.VUE_APP_SERVICE_CLIENT_ID,
+    client_secret: process.env.VUE_APP_SERVICE_CLIENT_SECRET,
+    headers: {
+        application: process.env.VUE_APP_SERVICE_HEADER_APPLICATION_NAME,
+        localization: process.env.VUE_APP_SERVICE_HEADER_LOCALIZATION_NAME,
+        token_authorization: process.env.VUE_APP_SERVICE_HEADER_TOKEN_AUTHORIZATION_NAME,
+        basic_authorization: process.env.VUE_APP_SERVICE_HEADER_BASIC_AUTHORIZATION_NAME,
+    },
+    basic_auth: process.env.VUE_APP_SERVICE_HEADER_BASIC_AUTHORIZATION,
+}
 export const APP_COOKIE = {
     names: {
         default: process.env.VUE_APP_COOKIE_DEFAULT_NAME,
@@ -23,31 +49,26 @@ export const APP_COOKIE = {
         localization: process.env.VUE_APP_COOKIE_LOCALIZATION_NAME,
     },
     disabled: {
+        device: process.env.VUE_APP_COOKIE_DISABLE_DEVICE,
         localization: process.env.VUE_APP_COOKIE_DISABLE_LOCALIZATION,
     },
     secret: process.env.VUE_APP_COOKIE_SECRET,
     domain: process.env.VUE_APP_COOKIE_DOMAIN,
 }
-export const APP_DEFAULT_SERVICE = {
-    base_url: process.env.VUE_APP_SERVICE_URL,
-    basic_auth: process.env.VUE_APP_SERVICE_HEADER_BASIC_AUTHORIZATION,
-    headers: {
-        application: process.env.VUE_APP_SERVICE_HEADER_APPLICATION_NAME,
-        localization: process.env.VUE_APP_SERVICE_HEADER_LOCALIZATION_NAME,
-        token_authorization: process.env.VUE_APP_SERVICE_HEADER_TOKEN_AUTHORIZATION_NAME,
-        basic_authorization: process.env.VUE_APP_SERVICE_HEADER_BASIC_AUTHORIZATION_NAME,
-    },
+export const APP_ROUTE = {
+    redirect_path_if_authenticated: 'home',
+    redirect_path_if_unauthenticated: 'home',
+    redirect_path_after_login: 'home',
+    redirect_path_after_logout: 'home',
+    redirect_path_after_register: 'home',
+    bad_request: 'bad_request',
+    not_found: 'not_found',
+    unauthenticated: 'unauthenticated',
+    unauthorized: 'unauthorized',
+    reset_password: 'reset_password',
+    verify_email: 'verify_email',
 }
-export const APP_LOG_ONLY = []
-export const APP_PREREQUISITE_LIFETIME = 31622400
-export const APP_PATH = {
-    bad_request: '/error/400',
-    reset_password: '/auth/reset-password',
-    verify_email: '/auth/verify-email',
-    not_authenticated: '/error/401',
-    redirect_path_if_authenticated: '/',
-    redirect_path_if_not_authenticated: '/',
-}
+export const DEFAULT_PREREQUISITE_LIFETIME = 31622400
 export const DEFAULT_LOCALIZATION = {
     _from_app: true,
     _ts: 0,
@@ -63,10 +84,10 @@ export const DEFAULT_LOCALIZATION = {
     short_time_format: 0,
     long_date_js_format: 'MMMM DD, YYYY',
     long_date_picker_js_format: 'MM dd, yyyy',
-    long_time_ps_format: 'HH:mm:ss',
+    long_time_js_format: 'HH:mm:ss',
     short_date_js_format: 'YYYY-MM-DD',
     short_date_picker_js_format: 'yyyy-mm-dd',
-    short_time_ps_format: 'HH:mm',
+    short_time_js_format: 'HH:mm',
     time_offset: 0,
 }
 export const DEFAULT_DEVICE = {
@@ -89,6 +110,7 @@ export const ERROR_LEVEL = {
     3: {text: 'error'},
 }
 export const ERROR_LEVEL_DEF = {
+    none: 0,
     info: 1,
     warning: 2,
     error: 3,
@@ -110,3 +132,4 @@ export const CLOCK_BLOCK_KEYS = [
     'y?M3x_=tB5S!Dn!^yvKPEPdHs5$7!t^@rvUM2Yd%2gKbS$D&BVw5+LWzLCUJB+S?',
     'R^dANH-e^*?h6UK@uCR_a?dSX%aj7L%!^mM=#xzFY9E*=x3aF9uaLwvHBj4VHCVH',
 ]
+export * from './other'

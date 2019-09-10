@@ -51,9 +51,9 @@ class PrerequisiteController extends ApiController
         if ($request->has('server')) {
             $this->dataset['server'] = [
                 'c' => time(),
-                'facebook_enable' => true,
-                'google_enable' => true,
-                'microsoft_enable' => true,
+                'facebook_enabled' => true,
+                'google_enabled' => true,
+                'microsoft_enabled' => true,
             ];
         }
     }

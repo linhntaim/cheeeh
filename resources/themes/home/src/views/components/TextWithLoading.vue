@@ -2,7 +2,7 @@
     span
         i.fas.fa-circle-notch.fa-spin(v-if="loading || both")
         span(v-if="both") &nbsp;&nbsp;
-        span(v-if="!loading || both") {{ text }}
+        span(v-if="!loading || both" v-html="text")
 </template>
 
 <script>

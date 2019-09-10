@@ -75,6 +75,7 @@ export default {
             },
             _login: {
                 _: 'Trang đăng nhập',
+                login_with: 'Đăng nhập với {provider}',
             },
             _register: {
                 _: 'Tạo tài khoản',

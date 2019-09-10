@@ -75,6 +75,7 @@ export default {
             },
             _login: {
                 _: 'Login',
+                login_with: 'Login with {provider}',
             },
             _register: {
                 _: 'Create an account',

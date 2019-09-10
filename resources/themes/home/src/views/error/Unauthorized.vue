@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    import {APP_LOGO_URL} from '../../config'
+    import {APP_LOGO_URL} from '../../app/config'
     import ClearCacheButton from '../components/ClearCacheButton'
     import SafeImage from '../components/SafeImage'
 

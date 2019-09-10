@@ -29,7 +29,7 @@
 </template>
 
 <script>
-    import {APP_LOGO_URL, APP_NAME} from '../../config'
+    import {APP_LOGO_URL, APP_NAME} from '../../app/config'
     import {mapGetters} from 'vuex'
     import routeHelper from '../../app/utils/route_helper'
 

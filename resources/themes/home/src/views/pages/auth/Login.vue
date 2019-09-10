@@ -1,6 +1,7 @@
 <template lang="pug">
     .card.border-none
         .card-body
+            error-box.alert-base-pink(:error="error")
             form(@submit.prevent="onLoginSubmitted()")
                 .form-group
                     input#inputEmail.form-control(v-model="email" :placeholder="$t('pages.email_address')" type="text" required)
@@ -9,6 +10,23 @@
                 .form-group
                     button.btn.btn-base-pink(:disabled="loading || disabled" type="submit")
                         text-with-loading(:loading="loading" :text="$t('actions.login')")
+                .form-group
+                    .btn-group
+                        button.btn.btn-microsoft.hide-not-over(v-if="microsoftEnabled" :disabled="loading || token" @click="onMicrosoftLoginClicked()" type="button")
+                            i.fas.fa-circle-notch.fa-spin(v-if="loading")
+                            span(v-else)
+                                i.fab.fa-microsoft.fa-fw.fa-sm
+                                span.hide-target.ml-2 {{ $t('pages._auth._login.login_with', {provider: 'Microsoft'}) }}
+                        button.btn.btn-google.hide-not-over(v-if="googleEnabled" :disabled="loading || token" @click="onMicrosoftLoginClicked()" type="button")
+                            i.fas.fa-circle-notch.fa-spin(v-if="loading")
+                            span(v-else)
+                                i.fab.fa-google.fa-fw.fa-sm
+                                span.hide-target.ml-2 {{ $t('pages._auth._login.login_with', {provider: 'Google'}) }}
+                        button.btn.btn-facebook.hide-not-over(v-if="facebookEnabled" :disabled="loading || token" @click="onMicrosoftLoginClicked()" type="button")
+                            i.fas.fa-circle-notch.fa-spin(v-if="loading")
+                            span(v-else)
+                                i.fab.fa-facebook-f.fa-fw.fa-sm
+                                span.hide-target.ml-2 {{ $t('pages._auth._login.login_with', {provider: 'Facebook'}) }}
             nav
                 .mt-2
                     router-link.link-base-pink(:to="{name: 'forgot_password'}") {{ $t('pages._auth.forgot_password') }}
@@ -22,22 +40,26 @@
     import {mapActions, mapGetters} from 'vuex'
     import {session} from '../../../app/utils/session'
     import TextWithLoading from '../../components/TextWithLoading'
+    import ErrorBox from '../../components/ErrorBox'
+    import {ERROR_LEVEL_DEF} from '../../../app/config'
 
     export default {
         name: 'Login',
-        components: {TextWithLoading},
+        components: {ErrorBox, TextWithLoading},
         data() {
             return {
                 loading: false,
+
+                error: null,
 
                 token: false,
 
                 email: '',
                 password: '',
 
-                microsoftEnabled: this.$server.microsoft_enable,
-                googleEnabled: this.$server.google_enable,
-                facebookEnabled: this.$server.facebook_enable,
+                microsoftEnabled: this.$server.microsoft_enabled,
+                googleEnabled: this.$server.google_enabled,
+                facebookEnabled: this.$server.facebook_enabled,
             }
         },
         computed: {
@@ -78,7 +100,11 @@
                     },
                     errorCallback: err => {
                         this.loading = false
-                        this.$bus.emit('error', {messages: err.getMessages(), extra: err.getExtra()})
+                        this.error = {
+                            messages: err.getMessages(),
+                            extra: err.getExtra(),
+                            level: ERROR_LEVEL_DEF.none,
+                        }
                     },
                 })
             },

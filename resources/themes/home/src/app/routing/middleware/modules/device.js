@@ -1,6 +1,6 @@
 import {log} from '../../../utils/log'
 import {session} from '../../../utils/session'
-import {APP_PATH} from '../../../../config'
+import {APP_ROUTE} from '../../../config'
 import {Middleware} from '../../../../plugins/middleware'
 import deviceCookieStore from '../../../utils/cookie_store/device_cookie_store'
 
@@ -8,8 +8,10 @@ class DeviceMiddleware extends Middleware {
     handle($middlewareManager) {
         log.write('device', 'middleware')
 
+        const badRequestPath = $middlewareManager.router.getPathByName(APP_ROUTE.bad_request)
+
         const store = $middlewareManager.store
-        if (store.getters['device/failed'] && $middlewareManager.to.path === '/error/400') {
+        if (store.getters['device/failed'] && $middlewareManager.to.path === badRequestPath) {
             super.handle($middlewareManager)
             return
         }
@@ -33,7 +35,7 @@ class DeviceMiddleware extends Middleware {
                 },
                 errorCallback: () => {
                     store.dispatch('device/fails')
-                    super.redirect($middlewareManager, APP_PATH.bad_request)
+                    super.redirect($middlewareManager, badRequestPath)
                 },
             })
             return

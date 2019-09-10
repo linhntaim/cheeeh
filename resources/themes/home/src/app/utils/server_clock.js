@@ -1,4 +1,4 @@
-import {CLOCK_BLOCK_KEYS, CLOCK_BLOCK_RANGE} from '../../config'
+import {CLOCK_BLOCK_KEYS, CLOCK_BLOCK_RANGE} from '../config'
 
 class ServerClock {
     setClock(clock) {

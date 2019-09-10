@@ -1,5 +1,5 @@
 import {prerequisiteService} from '../../services/default/prerequisite'
-import {APP_PREREQUISITE_LIFETIME} from '../../../config'
+import {DEFAULT_PREREQUISITE_LIFETIME} from '../../config'
 
 export default {
     namespaced: true,
@@ -16,7 +16,7 @@ export default {
         setMetadata(state, {data}) {
             for (let name in data) {
                 state.metadata[name] = data[name]
-                state.expired[name] = (new Date()).getTime() + APP_PREREQUISITE_LIFETIME
+                state.expired[name] = (new Date()).getTime() + DEFAULT_PREREQUISITE_LIFETIME
             }
         },
 
@@ -36,7 +36,7 @@ export default {
                 let name = names[i]
                 if (!(state.metadata[name]
                     && state.expired[name]
-                    && state.expired[name] <= ((new Date()).getTime() + APP_PREREQUISITE_LIFETIME))) {
+                    && state.expired[name] <= ((new Date()).getTime() + DEFAULT_PREREQUISITE_LIFETIME))) {
                     freshNames.push(name)
                 }
             }

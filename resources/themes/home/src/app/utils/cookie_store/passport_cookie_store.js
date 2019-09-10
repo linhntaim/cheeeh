@@ -1,4 +1,4 @@
-import {APP_COOKIE} from '../../../config'
+import {APP_COOKIE} from '../../config'
 import CookieStore from './cookie_store'
 
 class PassportCookieStore extends CookieStore {

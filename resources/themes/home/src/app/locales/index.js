@@ -1,5 +1,5 @@
 import {localizer} from '../utils/localizer'
-import {DEFAULT_LOCALIZATION} from '../../config'
+import {DEFAULT_LOCALIZATION} from '../config'
 import localizationCookieStore from '../utils/cookie_store/localization_cookie_store'
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'

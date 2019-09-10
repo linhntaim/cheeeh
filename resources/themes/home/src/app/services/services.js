@@ -1,4 +1,4 @@
-import {APP_DEFAULT_SERVICE, APP_NAME, APP_URL} from '../../config'
+import {APP_DEFAULT_SERVICE, APP_NAME, APP_URL} from '../config'
 import axios from 'axios'
 
 export const defaultService = 'axios'
@@ -19,6 +19,26 @@ export const services = {
                 return headers
             })(),
         }),
+        instanceCallback: null,
+        paramsCallback: {},
+    },
+    facebook: {
+        instance: null,
+        instanceCallback: null,
+        paramsCallback: {},
+    },
+    google: {
+        instance: null,
+        instanceCallback: null,
+        paramsCallback: {},
+    },
+    msal: {
+        instance: null,
+        instanceCallback: null,
+        paramsCallback: {},
+    },
+    msgraph: {
+        instance: null,
         instanceCallback: null,
         paramsCallback: {},
     },

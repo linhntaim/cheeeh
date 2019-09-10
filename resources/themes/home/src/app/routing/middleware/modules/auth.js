@@ -1,6 +1,6 @@
 import {authRoutes, notAuthRoutes} from '../../router/routes'
 import {log} from '../../../utils/log'
-import {APP_PATH} from '../../../../config'
+import {APP_ROUTE} from '../../../config'
 import {Middleware} from '../../../../plugins/middleware'
 import passportCookieStore from '../../../utils/cookie_store/passport_cookie_store'
 
@@ -41,7 +41,7 @@ class AuthMiddleware extends Middleware {
                 this.handleAuth($middlewareManager)
             },
             errorCallback: () => {
-                super.redirect($middlewareManager, APP_PATH.bad_request)
+                super.redirect($middlewareManager, $middlewareManager.router.getPathByName(APP_ROUTE.bad_request))
             },
         })
     }
@@ -50,7 +50,7 @@ class AuthMiddleware extends Middleware {
         if (this.replaceRoutesIfNeeded($middlewareManager)) return
 
         if ($middlewareManager.to.matched.some(record => record.meta.requireNotAuth)) {
-            this.redirect($middlewareManager, APP_PATH.redirect_path_if_authenticated)
+            this.redirect($middlewareManager, $middlewareManager.router.getPathByName(APP_ROUTE.redirect_path_if_authenticated))
             return
         }
 
@@ -60,7 +60,7 @@ class AuthMiddleware extends Middleware {
             },
             errorCallback: () => {
                 if ($middlewareManager.to.matched.some(record => record.meta.requireAuth)) {
-                    this.redirect($middlewareManager, APP_PATH.not_authenticated)
+                    this.redirect($middlewareManager, $middlewareManager.router.getPathByName(APP_ROUTE.unauthenticated))
                     return
                 }
 
@@ -73,7 +73,7 @@ class AuthMiddleware extends Middleware {
         if (this.replaceRoutesIfNeeded($middlewareManager, false)) return
 
         if ($middlewareManager.to.matched.some(record => record.meta.requireAuth)) {
-            this.redirect($middlewareManager, APP_PATH.redirect_path_if_not_authenticated)
+            this.redirect($middlewareManager, $middlewareManager.router.getPathByName(APP_ROUTE.redirect_path_if_unauthenticated))
             return
         }
 

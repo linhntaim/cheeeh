@@ -10,9 +10,11 @@
         "compile": "node compile.js"
     },
     "dependencies": {
+        "@microsoft/microsoft-graph-client": "^2.0.0",
         "axios": "^0.19.0",
         "core-js": "^2.6.5",
         "crypto-js": "^3.1.9-1",
+        "msal": "^1.1.3",
         "vue": "^2.6.10",
         "vue-cookie": "^1.1.4",
         "vue-head": "^2.1.2",

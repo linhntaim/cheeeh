@@ -1,8 +1,4 @@
-import {
-    APP_PASSPORT_PW_CLIENT_ID,
-    APP_PASSPORT_PW_CLIENT_SECRET,
-    APP_PATH,
-} from '../../../config'
+import {APP_DEFAULT_SERVICE, APP_ROUTE} from '../../config'
 import {crypto} from '../../utils/crypto'
 import {serverClock} from '../../utils/server_clock'
 import DefaultService from '../default_service'
@@ -23,8 +19,8 @@ class AuthService extends DefaultService {
             'oauth/token',
             {
                 'grant_type': 'refresh_token',
-                'client_id': APP_PASSPORT_PW_CLIENT_ID,
-                'client_secret': APP_PASSPORT_PW_CLIENT_SECRET,
+                'client_id': APP_DEFAULT_SERVICE.client_id,
+                'client_secret': APP_DEFAULT_SERVICE.client_secret,
                 'refresh_token': refreshToken,
                 'scope': '*',
             },
@@ -39,8 +35,8 @@ class AuthService extends DefaultService {
             'auth/login',
             {
                 grant_type: 'password',
-                client_id: APP_PASSPORT_PW_CLIENT_ID,
-                client_secret: APP_PASSPORT_PW_CLIENT_SECRET,
+                client_id: APP_DEFAULT_SERVICE.client_id,
+                client_secret: APP_DEFAULT_SERVICE.client_secret,
                 username: email,
                 password: password,
                 scope: '*',
@@ -104,7 +100,7 @@ class AuthService extends DefaultService {
     }
 
     register(params, doneCallback = null, errorCallback = null, alwaysCallback = null) {
-        params.app_verify_email_path = APP_PATH.verify_email
+        params.app_verify_email_path = APP_ROUTE.verify_email
         this.post(
             'auth/register',
             params,

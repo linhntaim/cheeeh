@@ -1,5 +1,5 @@
 import {cookie} from '../cookie'
-import {APP_COOKIE} from '../../../config'
+import {APP_COOKIE} from '../../config'
 
 export default class CookieStore {
     constructor(cookieName) {
