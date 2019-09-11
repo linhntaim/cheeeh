@@ -50,7 +50,9 @@ export class Application {
 
         this.useDefault()
         localeReady(i18n => {
-            dateTimeHelper.withTranslator(i18n.messages[i18n.locale].def.datetime)
+            dateTimeHelper.withCompiler((format, bags) => {
+                return i18n.t(format, bags)
+            })
 
             this.instance = new Vue({
                 i18n,
@@ -95,7 +97,9 @@ export class Application {
         this.use()
 
         localeReady(i18n => {
-            dateTimeHelper.withTranslator(i18n.t).getLongDateFormat()
+            dateTimeHelper.withCompiler((format, bags) => {
+                return i18n.t(format, bags)
+            })
 
             this.instance = new Vue({
                 i18n,

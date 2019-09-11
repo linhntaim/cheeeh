@@ -122,17 +122,7 @@ abstract class NowNotification extends BaseNotification
             'id' => $this->id,
             'data' => $this->toArray($notifiable),
             'created_at' => DateTimeHelper::syncNow(),
-            'shown_created_at' => $dateTimeHelper->formatToday(
-                $dateTimeHelper->customFormat('notification_date'),
-                $dateTimeHelper->shortTimeFormat(),
-                DateTimeHelper::syncNow(),
-                function ($date, $time, $locale) {
-                    return trans('label.notification_time', [
-                        'date' => $date,
-                        'time' => $time,
-                    ], $locale);
-                }
-            ),
+            'shown_created_at' => null,
             'is_read' => false,
         ]));
     }

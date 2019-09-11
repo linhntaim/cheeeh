@@ -41,17 +41,7 @@ class AccountTransformer extends ModelTransformer
                 'long_time_format' => $localizationHelper->getLongTimeFormat(),
                 'short_time_format' => $localizationHelper->getShortTimeFormat(),
 
-                'time_offset' => $dateTimeHelper->getDateTimeOffset(), // seconds
-                'short_date_js_format' => $dateTimeHelper->shortDateJsFormat(),
-                'short_date_picker_js_format' => $dateTimeHelper->shortDatePickerJsFormat(),
-                'long_date_js_format' => $dateTimeHelper->longDateJsFormat(),
-                'long_date_picker_js_format' => $dateTimeHelper->longDatePickerJsFormat(),
-                'short_time_js_format' => $dateTimeHelper->shortTimeJsFormat(),
-                'long_time_js_format' => $dateTimeHelper->longTimeJsFormat(),
-                'short_date_android_format' => $dateTimeHelper->shortDateAndroidFormat(),
-                'long_date_android_format' => $dateTimeHelper->longDateAndroidFormat(),
-                'short_time_android_format' => $dateTimeHelper->shortTimeAndroidFormat(),
-                'long_time_android_format' => $dateTimeHelper->longTimeAndroidFormat(),
+                'time_offset' => $dateTimeHelper->getDateTimeOffset(),
             ],
         ];
     }

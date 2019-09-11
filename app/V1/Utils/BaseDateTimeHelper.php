@@ -92,11 +92,11 @@ abstract class BaseDateTimeHelper
 
         $this->locale = $localizationHelper->getLocale();
 
-        $this->transLongDate = 'datetime.long_date_' . $localizationHelper->getLongDateFormat();
-        $this->transShortDate = 'datetime.short_date_' . $localizationHelper->getShortDateFormat();
-        $this->transShortMonth = 'datetime.short_month_' . $localizationHelper->getShortDateFormat();
-        $this->transLongTime = 'datetime.long_time_' . $localizationHelper->getLongTimeFormat();
-        $this->transShortTime = 'datetime.short_time_' . $localizationHelper->getShortTimeFormat();
+        $this->transLongDate = 'datetime.formats.long_date_' . $localizationHelper->getLongDateFormat();
+        $this->transShortDate = 'datetime.formats.short_date_' . $localizationHelper->getShortDateFormat();
+        $this->transShortMonth = 'datetime.formats.short_month_' . $localizationHelper->getShortDateFormat();
+        $this->transLongTime = 'datetime.formats.long_time_' . $localizationHelper->getLongTimeFormat();
+        $this->transShortTime = 'datetime.formats.short_time_' . $localizationHelper->getShortTimeFormat();
 
         $this->dateTimeOffset = static::parseDateTimeOffsetByTimezone($localizationHelper->getTimezone());
     }
@@ -133,36 +133,34 @@ abstract class BaseDateTimeHelper
         return $time;
     }
 
-    public function fromFormat($format, $inputString, $noOffset = false, &$diffDay = 0, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
+    public function fromFormat($format, $time, $noOffset = false, &$diffDay = 0, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
-        return $this->from(DateTime::createFromFormat($format, $inputString, new DateTimeZone('UTC')), $noOffset, $diffDay, $start);
+        return $this->from(DateTime::createFromFormat($format, static::standardizeTime($time), new DateTimeZone('UTC')), $noOffset, $diffDay, $start);
     }
 
-    public function fromFormatToFormat($currentFormat, $inputString, $toFormat = null, $noOffset = false, &$diffDay = 0, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
+    public function fromFormatToFormat($currentFormat, $time, $toFormat = null, $noOffset = false, &$diffDay = 0, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
         if (empty($toFormat)) $toFormat = $currentFormat;
-        $now = $this->fromFormat($currentFormat, $inputString, $noOffset, $diffDay, $start);
+        $now = $this->fromFormat($currentFormat, $time, $noOffset, $diffDay, $start);
         return $now !== false ? $now->format($toFormat) : false;
     }
 
-    public function fromFormatToDatabaseFormat($currentFormat, $inputString, $noOffset = false, &$diffDay = 0, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
+    public function fromFormatToDatabaseFormat($currentFormat, $time, $noOffset = false, &$diffDay = 0, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
-        return $this->fromFormatToFormat($currentFormat, $inputString, static::DATABASE_FORMAT, $noOffset, $diffDay, $start);
+        return $this->fromFormatToFormat($currentFormat, $time, static::DATABASE_FORMAT, $noOffset, $diffDay, $start);
     }
 
     public function fromToFormat(DateTime $time, $toFormat, $noOffset = false, &$diffDay = 0, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
-        return $this->from($time, $noOffset, $diffDay, $start)
-            ->format($toFormat);
+        return $this->from($time, $noOffset, $diffDay, $start)->format($toFormat);
     }
 
     public function fromToDatabaseFormat(DateTime $time, $noOffset = false, &$diffDay = 0, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
-        return $this->from($time, $noOffset, $diffDay, $start)
-            ->format(static::DATABASE_FORMAT);
+        return $this->from($time, $noOffset, $diffDay, $start)->format(static::DATABASE_FORMAT);
     }
 
-    public function convertToUTC(DateTime $time)
+    public function fromToUtc(DateTime $time)
     {
         $offset = $this->getDateTimeOffset();
         if ($offset > 0) {
@@ -197,24 +195,32 @@ abstract class BaseDateTimeHelper
     {
         $now = $this->getObject($time, $noOffset, $diffDay, $start);
         return [
-            'ld' => $now->format('l'),
-            'sd' => $now->format('D'),
-            '1d' => $now->format('j'),
-            '2d' => $now->format('d'),
-            'sm' => $now->format('M'),
-            'lm' => $now->format('F'),
-            '2m' => $now->format('m'),
-            '2y' => $now->format('y'),
-            '4y' => $now->format('Y'),
-            '1h' => $now->format('g'),
-            '1hf' => $now->format('h'),
-            '2h' => $now->format('H'),
-            '2i' => $now->format('i'),
-            '2s' => $now->format('s'),
+            'd' => $now->format('j'),
+            'dd' => $now->format('d'),
+            'sd' => trans('datetime.short_day_' . $now->format('N')),
+            'ld' => trans('datetime.day_' . $now->format('N')),
+
+            'm' => $now->format('n'),
+            'mm' => $now->format('m'),
+            'sm' => trans('datetime.short_month_' . $now->format('n')),
+            'lm' => trans('datetime.month_' . $now->format('n')),
+
+            'yy' => $now->format('y'),
+            'yyyy' => $now->format('Y'),
+
+            'h' => $now->format('g'),
+            'hh' => $now->format('h'),
+            'h2' => $now->format('G'),
+            'hh2' => $now->format('H'),
+
+            'i' => intval($now->format('i')),
+            'ii' => $now->format('i'),
+
+            's' => intval($now->format('s')),
+            'ss' => $now->format('s'),
+
             'ut' => $now->format('A'),
             'lt' => $now->format('a'),
-            'lw' => static::transPhpDayOfWeek($now->format('w')),
-            'sw' => static::transShortPhpDayOfWeek($now->format('w')),
         ];
     }
 
@@ -222,7 +228,7 @@ abstract class BaseDateTimeHelper
     {
         $allowedFunctions = [static::LONG_DATE_FUNCTION, static::LONG_TIME_FUNCTION, static::SHORT_DATE_FUNCTION, static::SHORT_TIME_FUNCTION];
         if (!in_array($func1, $allowedFunctions) || !in_array($func2, $allowedFunctions)) {
-            throw new AppException('Not allowed methods');
+            return null;
         }
         return call_user_func(array($this, $func1), $time, $noOffset)
             . $separation
@@ -233,7 +239,7 @@ abstract class BaseDateTimeHelper
     {
         $allowedFunctions = [static::LONG_DATE_FUNCTION, static::LONG_TIME_FUNCTION, static::SHORT_DATE_FUNCTION, static::SHORT_TIME_FUNCTION];
         if (!in_array($func1, $allowedFunctions) || !in_array($func2, $allowedFunctions)) {
-            throw new AppException('Not allowed methods');
+            return null;
         }
         $func1 .= 'FromBags';
         $func2 .= 'FromBags';
@@ -242,14 +248,14 @@ abstract class BaseDateTimeHelper
             . call_user_func(array($this, $func2), $bags);
     }
 
-    public function longDayOfWeek($time = 'now', $no_offset = false)
+    public function shortDay($time = 'now', $no_offset = false)
     {
-        return $this->getBags($time, $no_offset)['lw'];
+        return $this->getBags($time, $no_offset)['sd'];
     }
 
-    public function shortDayOfWeek($time = 'now', $no_offset = false)
+    public function longDay($time = 'now', $no_offset = false)
     {
-        return $this->getBags($time, $no_offset)['sw'];
+        return $this->getBags($time, $no_offset)['ld'];
     }
 
     public function longDate($time = 'now', $no_offset = false)
@@ -303,11 +309,6 @@ abstract class BaseDateTimeHelper
     }
 
     #region Get format
-    public function customFormat($name)
-    {
-        return trans('datetime.custom.' . $name, static::getFormatBags(), $this->locale);
-    }
-
     public function compoundFormat($func1, $separation, $func2)
     {
         return call_user_func(array($this, $func1 . 'Format'))
@@ -320,16 +321,6 @@ abstract class BaseDateTimeHelper
         return $this->longDateFromBags(static::getFormatBags());
     }
 
-    public function longDateJsFormat()
-    {
-        return $this->longDateFromBags(static::getMomentJsFormatBags());
-    }
-
-    public function longDatePickerJsFormat()
-    {
-        return $this->longDateFromBags(static::getDatePickerJsFormatBags());
-    }
-
     public function shortDateFormat()
     {
         return $this->shortDateFromBags(static::getFormatBags());
@@ -340,29 +331,9 @@ abstract class BaseDateTimeHelper
         return $this->shortMonthFromBags(static::getFormatBags());
     }
 
-    public function shortDateJsFormat()
-    {
-        return $this->shortDateFromBags(static::getMomentJsFormatBags());
-    }
-
-    public function shortDatePickerJsFormat()
-    {
-        return $this->shortDateFromBags(static::getDatePickerJsFormatBags());
-    }
-
-    public function shortMonthPickerJsFormat()
-    {
-        return $this->shortMonthFromBags(static::getDatePickerJsFormatBags());
-    }
-
     public function longTimeFormat()
     {
         return $this->longTimeFromBags(static::getFormatBags());
-    }
-
-    public function longTimeJsFormat()
-    {
-        return $this->longTimeFromBags(static::getMomentJsFormatBags());
     }
 
     public function shortTimeFormat()
@@ -370,43 +341,54 @@ abstract class BaseDateTimeHelper
         return $this->shortTimeFromBags(static::getFormatBags());
     }
 
-    public function shortTimeJsFormat()
+    public function customFormat($name)
     {
-        return $this->shortTimeFromBags(static::getMomentJsFormatBags());
-    }
-
-    public function shortDateAndroidFormat()
-    {
-        return $this->shortDateFromBags(static::getAndroidFormatBags());
-    }
-
-    public function longDateAndroidFormat()
-    {
-        return $this->longDateFromBags(static::getAndroidFormatBags());
-    }
-
-    public function shortTimeAndroidFormat()
-    {
-        return $this->shortTimeFromBags(static::getAndroidFormatBags());
-    }
-
-    public function longTimeAndroidFormat()
-    {
-        return $this->longTimeFromBags(static::getAndroidFormatBags());
+        return trans('datetime.custom_formats.' . $name, static::getFormatBags(), $this->locale);
     }
     #endregion
 
     #region To Format
     public function format($format, $time = 'now', $noOffset = false, &$diffDay = 0, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
-        return $this->getObject($time, $noOffset, $diffDay, $start)
-            ->format($format);
+        return $this->getObject($time, $noOffset, $diffDay, $start)->format($format);
     }
     #endregion
 
     #endregion
 
     #region Static Methods
+    protected static function getExampleBags()
+    {
+        return static::getInstance()->getBags(date('Y') . '-12-24 08:00:00', true);
+    }
+
+    public static function getFormatBags()
+    {
+        return [
+            'd' => 'j',
+            'dd' => 'd',
+            'sd' => 'D',
+            'ld' => 'l',
+
+            'm' => 'n',
+            'mm' => 'm',
+            'sm' => 'M',
+            'lm' => 'F',
+
+            'yy' => 'y',
+            'yyyy' => 'Y',
+
+            'h' => 'g',
+            'hh' => 'h',
+            'h2' => 'G',
+            'hh2' => 'H',
+            'ii' => 'i',
+            'ss' => 's',
+            'ut' => 'A',
+            'lt' => 'a',
+        ];
+    }
+
     public static function parseDateTimeOffsetByTimezone($timeZone)
     {
         if (empty($timeZone)) {
@@ -435,68 +417,12 @@ abstract class BaseDateTimeHelper
         return $time;
     }
 
-    public static function dayOfWeek($phpDayOfWeek)
+    public static function getUtcOffsets()
     {
-        return $phpDayOfWeek == 0 ? 6 : ($phpDayOfWeek - 1);
+        return [-12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5,
+            0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 5.75, 6, 6.5, 7, 7.5, 8, 8.5, 8.75, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.75, 13, 13.75, 14];
     }
 
-    public static function phpDayOfWeek($dayOfWeek)
-    {
-        return $dayOfWeek == 6 ? 0 : ($dayOfWeek + 1);
-    }
-
-    public static function transPossiblePhpTexts($formatted, $locale = null)
-    {
-        $possibleTexts = [
-            'Jan', 'January',
-            'Feb', 'February',
-            'Mar', 'March',
-            'Apr', 'April',
-            'May',
-            'Jun', 'Jun',
-            'July', 'Jul',
-            'Aug', 'August',
-            'Sep', 'September',
-            'Oct', 'October',
-            'Nov', 'November',
-            'Dec', 'December',
-            'Mon', 'Monday',
-            'Tue', 'Tuesday',
-            'Wed', 'Wednesday',
-            'Thu', 'Thursday',
-            'Fri', 'Friday',
-            'Sat', 'Saturday',
-            'Sun', 'Sunday',
-        ];
-        return str_replace($possibleTexts, array_map(function ($text) use ($locale) {
-            return trans('datetime.texts.' . $text, [], $locale);
-        }, $possibleTexts), $formatted);
-    }
-
-    public static function transDayOfWeek($dayOfWeek, $locale = null)
-    {
-        return trans('datetime.day_' . $dayOfWeek, [], $locale);
-    }
-
-    public static function transPhpDayOfWeek($phpDayOfWeek, $locale = null)
-    {
-        return trans('datetime.day_' . static::dayOfWeek($phpDayOfWeek), [], $locale);
-    }
-
-    public static function transShortDayOfWeek($dayOfWeek, $locale = null)
-    {
-        return trans('datetime.short_day_' . $dayOfWeek, [], $locale);
-    }
-
-    public static function transShortPhpDayOfWeek($phpDayOfWeek, $locale = null)
-    {
-        return trans('datetime.short_day_' . static::dayOfWeek($phpDayOfWeek), [], $locale);
-    }
-
-    /**
-     * Get list timezone
-     * @return array
-     */
     public static function getTimezones()
     {
         // UTC
@@ -511,11 +437,9 @@ abstract class BaseDateTimeHelper
                 ]
             ],
         ];
-        // UTC offsets
+        // Timezone by UTC offsets
         $utcOffsets = [];
-        $offsetRange = [-12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5,
-            0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 5.75, 6, 6.5, 7, 7.5, 8, 8.5, 8.75, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.75, 13, 13.75, 14];
-        foreach ($offsetRange as $offset) {
+        foreach (static::getUtcOffsets() as $offset) {
             $offsetValue = 'UTC' . (0 <= $offset ? '+' . $offset : (string)$offset);
             $offsetName = str_replace(['.25', '.5', '.75'], [':15', ':30', ':45'], $offsetValue);
             $utcOffsets[] = [
@@ -562,10 +486,8 @@ abstract class BaseDateTimeHelper
     {
         // UTC
         $timezones = ['UTC'];
-        // UTC offsets
-        $offsetRange = [-12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5,
-            0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 5.75, 6, 6.5, 7, 7.5, 8, 8.5, 8.75, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.75, 13, 13.75, 14];
-        foreach ($offsetRange as $offset) {
+        // Timezone by UTC offsets
+        foreach (static::getUtcOffsets() as $offset) {
             $timezones[] = 'UTC' . (0 <= $offset ? '+' . $offset : (string)$offset);
         }
         // UNIX Timezones
@@ -578,7 +500,7 @@ abstract class BaseDateTimeHelper
     public static function getDaysOfWeek()
     {
         $options = [];
-        for ($i = 0; $i < 7; ++$i) {
+        for ($i = 1; $i <= 7; ++$i) {
             $options[] = [
                 'value' => $i,
                 'name' => trans('datetime.day_' . $i),
@@ -589,18 +511,13 @@ abstract class BaseDateTimeHelper
 
     public static function getDaysOfWeekValues()
     {
-        return range(0, 6);
-    }
-
-    protected static function getExampleBags()
-    {
-        return static::getInstance()->getBags(date('Y') . '-12-24 08:00:00', true);
+        return range(1, 7);
     }
 
     public static function getLongDateFormats()
     {
         $options = [];
-        for ($i = 0; $i < 4; ++$i) {
+        for ($i = 0; $i <= 3; ++$i) {
             $options[] = [
                 'value' => $i,
                 'example' => trans('datetime.long_date_' . $i, static::getExampleBags()),
@@ -617,7 +534,7 @@ abstract class BaseDateTimeHelper
     public static function getShortDateFormats()
     {
         $options = [];
-        for ($i = 0; $i < 4; ++$i) {
+        for ($i = 0; $i <= 3; ++$i) {
             $options[] = [
                 'value' => $i,
                 'example' => trans('datetime.short_date_' . $i, static::getExampleBags()),
@@ -665,174 +582,135 @@ abstract class BaseDateTimeHelper
         return range(0, 4);
     }
 
-    public static function getFormatBags()
-    {
-        return [
-            'ld' => 'l',
-            'sd' => 'D',
-            '1d' => 'j',
-            '2d' => 'd',
-            'sm' => 'M',
-            'lm' => 'F',
-            '1m' => 'n',
-            '2m' => 'm',
-            '2y' => 'y',
-            '4y' => 'Y',
-            '1h' => 'g',
-            '1hf' => 'h',
-            '2h' => 'H',
-            '2i' => 'i',
-            '2s' => 's',
-            'ut' => 'A',
-            'lt' => 'a',
-        ];
-    }
+    protected static $standardizedReplaced = [];
+    protected static $standardizedReplacing = [];
 
-    public static function getDatePickerJsFormatBags()
+    public static function standardizeTime($time)
     {
-        return [
-            'ld' => 'DD',
-            'sd' => 'D',
-            '1d' => 'd',
-            '2d' => 'dd',
-            'sm' => 'M',
-            'lm' => 'MM',
-            '1m' => 'm',
-            '2m' => 'mm',
-            '2y' => 'yy',
-            '4y' => 'yyyy'
-        ];
-    }
+        if (empty(static::$standardizedReplaced)) {
+            $mappingReplaces = [
+                'January' => [
+                    'Tháng 1',
+                ],
+                'Februry' => [
+                    'Tháng 2',
+                ],
+                'March' => [
+                    'Tháng 3',
+                ],
+                'April' => [
+                    'Tháng 4',
+                ],
+                'May' => [
+                    'Tháng 4',
+                    'Th5',
+                ],
+                'June' => [
+                    'Tháng 6',
+                ],
+                'July' => [
+                    'Tháng 7',
+                ],
+                'August' => [
+                    'Tháng 8',
+                ],
+                'September' => [
+                    'Tháng 9',
+                ],
+                'October' => [
+                    'Tháng 10',
+                ],
+                'November' => [
+                    'Tháng 11',
+                ],
+                'December' => [
+                    'Tháng 12',
+                ],
+                'Jan' => [
+                    'Th1',
+                ],
+                'Feb' => [
+                    'Th2',
+                ],
+                'Mar' => [
+                    'Th3',
+                ],
+                'Apr' => [
+                    'Th4',
+                ],
+                'Jun' => [
+                    'Th6',
+                ],
+                'Jul' => [
+                    'Th7',
+                ],
+                'Aug' => [
+                    'Th8',
+                ],
+                'Sep' => [
+                    'Th9',
+                ],
+                'Oct' => [
+                    'Th10',
+                ],
+                'Nov' => [
+                    'Th11',
+                ],
+                'Dec' => [
+                    'Th12',
+                ],
+                'Monday' => [
+                    'Thứ 2',
+                ],
+                'Tuesday' => [
+                    'Thứ 3',
+                ],
+                'Wednesday' => [
+                    'Thứ 4',
+                ],
+                'Thursday' => [
+                    'Thứ 5',
+                ],
+                'Friday' => [
+                    'Thứ 6',
+                ],
+                'Saturday' => [
+                    'Thứ 7',
+                ],
+                'Sunday' => [
+                    'Chủ nhật',
+                ],
+                'Mon' => [
+                    'T2',
+                ],
+                'Tue' => [
+                    'T3',
+                ],
+                'Wed' => [
+                    'T4',
+                ],
+                'Thur' => [
+                    'T5',
+                ],
+                'Fri' => [
+                    'T6',
+                ],
+                'Sat' => [
+                    'T7',
+                ],
+                'Sun' => [
+                    'CN',
+                ],
+            ];
+            foreach ($mappingReplaces as $name => $maps) {
+                foreach ($maps as $map) {
+                    static::$standardizedReplaced[] = $map;
+                    static::$standardizedReplacing[] = $name;
+                }
+            }
+        }
 
-    public static function getMomentJsFormatBags()
-    {
-        return [
-            'ld' => 'dddd',
-            'sd' => 'ddd',
-            '1d' => 'D',
-            '2d' => 'DD',
-            'sm' => 'MMM',
-            'lm' => 'MMMM',
-            '1m' => 'M',
-            '2m' => 'MM',
-            '2y' => 'YY',
-            '4y' => 'YYYY',
-            '1h' => 'h',
-            '1hf' => 'hh',
-            '2h' => 'HH',
-            '2i' => 'mm',
-            '2s' => 'ss',
-            'ut' => 'A',
-            'lt' => 'a',
-        ];
-    }
-
-    public static function getAndroidFormatBags()
-    {
-        return [
-            'ld' => 'EEEE',
-            'sd' => 'EEE',
-            '1d' => 'd',
-            '2d' => 'dd',
-            'sm' => 'MMM',
-            'lm' => 'MMMM',
-            '1m' => 'M',
-            '2m' => 'MM',
-            '2y' => 'yy',
-            '4y' => 'yyyy',
-            '1h' => 'h',
-            '1hf' => 'hh',
-            '2h' => 'HH',
-            '2i' => 'mm',
-            '2s' => 'ss',
-            'ut' => 'a',
-            'lt' => 'a',
-        ];
-    }
-
-    public static function currentCompoundFormat($func1, $separation, $func2)
-    {
-        return static::getInstance()->compoundFormat($func1, $separation, $func2);
-    }
-
-    public static function currentLongDateFormat()
-    {
-        return static::getInstance()->longDateFormat();
-    }
-
-    public static function currentShortDateFormat()
-    {
-        return static::getInstance()->shortDateFormat();
-    }
-
-    public static function currentShortMonthFormat()
-    {
-        return static::getInstance()->shortMonthFormat();
-    }
-
-    public static function currentLongTimeFormat()
-    {
-        return static::getInstance()->longTimeFormat();
-    }
-
-    public static function currentShortTimeFormat()
-    {
-        return static::getInstance()->shortTimeFormat();
-    }
-
-    public static function currentLongDateJsFormat()
-    {
-        return static::getInstance()->longDateJsFormat();
-    }
-
-    public static function currentLongDatePickerJsFormat()
-    {
-        return static::getInstance()->longDatePickerJsFormat();
-    }
-
-    public static function currentShortDateJsFormat()
-    {
-        return static::getInstance()->shortDateJsFormat();
-    }
-
-    public static function currentShortDatePickerJsFormat()
-    {
-        return static::getInstance()->shortDatePickerJsFormat();
-    }
-
-    public static function currentShortMonthPickerJsFormat()
-    {
-        return static::getInstance()->shortMonthPickerJsFormat();
-    }
-
-    public static function currentLongTimeJsFormat()
-    {
-        return static::getInstance()->longTimeJsFormat();
-    }
-
-    public static function currentShortTimeJsFormat()
-    {
-        return static::getInstance()->shortTimeJsFormat();
-    }
-
-    public static function currentShortDateAndroidFormat()
-    {
-        return static::getInstance()->shortDateAndroidFormat();
-    }
-
-    public static function currentLongDateAndroidFormat()
-    {
-        return static::getInstance()->longDateAndroidFormat();
-    }
-
-    public static function currentShortTimeAndroidFormat()
-    {
-        return static::getInstance()->shortTimeAndroidFormat();
-    }
-
-    public static function currentLongTimeAndroidFormat()
-    {
-        return static::getInstance()->longTimeAndroidFormat();
+        return str_replace(static::$standardizedReplaced, static::$standardizedReplacing, $time);
     }
     #endregion
 }

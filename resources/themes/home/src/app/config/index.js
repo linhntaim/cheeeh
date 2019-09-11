@@ -82,12 +82,6 @@ export const DEFAULT_LOCALIZATION = {
     short_date_format: 0,
     long_time_format: 0,
     short_time_format: 0,
-    long_date_js_format: 'MMMM DD, YYYY',
-    long_date_picker_js_format: 'MM dd, yyyy',
-    long_time_js_format: 'HH:mm:ss',
-    short_date_js_format: 'YYYY-MM-DD',
-    short_date_picker_js_format: 'yyyy-mm-dd',
-    short_time_js_format: 'HH:mm',
     time_offset: 0,
 }
 export const DEFAULT_DEVICE = {

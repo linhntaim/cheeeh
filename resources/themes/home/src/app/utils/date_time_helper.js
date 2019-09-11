@@ -2,12 +2,12 @@ import {DEFAULT_LOCALIZATION} from '../config'
 
 export class DateTimeHelper {
     constructor() {
-        this.t = null
+        this.compiler = null
         this.localize(DEFAULT_LOCALIZATION)
     }
 
-    withTranslator(t) {
-        this.t = t
+    withCompiler(compiler) {
+        this.compiler = compiler
         return this
     }
 
@@ -23,29 +23,31 @@ export class DateTimeHelper {
         return {
             d: 'D',
             dd: 'DD',
-            ld: 'dddd',
             sd: 'ddd',
+            ld: 'dddd',
+
             m: 'M',
             mm: 'MM',
             sm: 'MMM',
             lm: 'MMMM',
+
             yy: 'YY',
             yyyy: 'YYYY',
+
             h: 'h',
             hh: 'hh',
             h2: 'H',
             hh2: 'HH',
-            i: 'm',
             ii: 'mm',
-            s: 's',
             ss: 'ss',
+
             lt: 'a',
             ut: 'A',
         }
     }
 
     getFormat(format, bags = null) {
-        return this.t ? this.t(format, bags ? bags : this.getBags()) : null
+        return this.compiler ? this.compiler(format, bags ? bags : this.getBags()) : null
     }
 
     getLongDateFormat(bags = null) {

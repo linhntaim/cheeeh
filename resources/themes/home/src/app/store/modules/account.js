@@ -1,6 +1,7 @@
 import {authService} from '../../services/default/auth'
 import {accountService} from '../../services/default/account'
 import {callbackWaiter} from '../../utils/callback_waiter'
+import {dateTimeHelper} from '../../utils/date_time_helper'
 import {localizer} from '../../utils/localizer'
 import {log} from '../../utils/log'
 import {numberFormatHelper} from '../../utils/number_format_helper'
@@ -30,6 +31,22 @@ const setDefaultServiceLocalizationHeader = localization => {
             localization,
         ))
     })
+}
+
+const localize = (localization, action, localeCallback = null) => {
+    if (action === 'all' || action === 'store' || action === 'store_with_locale') {
+        setDefaultServiceLocalizationHeader(localization)
+        localizationCookieStore.store(localization)
+    }
+    if (action === 'all' || action === 'store_with_locale') {
+        localizer.localize(localization).then(() => {
+            localeCallback && localeCallback()
+        })
+    }
+    if (action === 'all') {
+        dateTimeHelper.localize(localization)
+        numberFormatHelper.localize(localization)
+    }
 }
 
 export default {
@@ -95,12 +112,7 @@ export default {
         setUser(state, {user, localeCallback}) {
             state.user = user
 
-            setDefaultServiceLocalizationHeader(state.user.localization)
-            localizationCookieStore.store(state.user.localization)
-            localizer.localize(state.user.localization).then(() => {
-                localeCallback && localeCallback()
-            })
-            numberFormatHelper.localize(state.user.localization)
+            localize(state.user.localization, 'all', localeCallback)
         },
 
         setLocale(state, {locale, callback}) {
@@ -109,11 +121,7 @@ export default {
             }
             state.user.localization.locale = locale
 
-            setDefaultServiceLocalizationHeader(state.user.localization)
-            localizationCookieStore.store(state.user.localization)
-            localizer.localize(state.user.localization).then(() => {
-                callback && callback()
-            })
+            localize(state.user.localization, 'store_with_locale', callback)
         },
 
         setLocalization(state, {localization, localeCallback}) {
@@ -124,12 +132,7 @@ export default {
                 state.user.localization[key] = localization[key]
             }
 
-            setDefaultServiceLocalizationHeader(state.user.localization)
-            localizationCookieStore.store(state.user.localization)
-            localizer.localize(state.user.localization).then(() => {
-                localeCallback && localeCallback()
-            })
-            numberFormatHelper.localize(state.user.localization)
+            localize(state.user.localization, 'all', localeCallback)
         },
 
         unsetUser(state) {
@@ -146,8 +149,8 @@ export default {
 
             state.user.localization._from_app = true
             state.user.localization._ts = 0
-            setDefaultServiceLocalizationHeader(state.user.localization)
-            localizationCookieStore.store(state.user.localization)
+
+            localize(state.user.localization, 'store')
 
             callbackWaiter.remove('account_current')
         },
