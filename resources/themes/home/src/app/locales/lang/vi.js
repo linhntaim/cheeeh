@@ -102,9 +102,11 @@ export default {
             _login: {
                 _: 'Trang đăng nhập',
                 login_with: 'Đăng nhập với {provider}',
+                login_failed_with: 'Đăng nhập bằng tài khoản của {provider} không thành công',
             },
             _register: {
                 _: 'Tạo tài khoản',
+                register_with: 'Đăng ký với {provider}',
             },
         },
     },

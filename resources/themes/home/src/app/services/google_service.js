@@ -1,6 +1,6 @@
-import {Service} from './service'
 import {serviceFactory} from './service_factory'
-import {GOOGLE_SERVICE} from '../../config'
+import {Service} from './service'
+import {GOOGLE_SERVICE} from '../config'
 
 class GoogleService extends Service {
     constructor() {

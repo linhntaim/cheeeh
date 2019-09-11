@@ -58,6 +58,36 @@ body {
     background: linear-gradient(to right, $color-base-yellow 0%, $color-base-pink 51%, $color-base-red 100%);
 }
 
+.bg-microsoft {
+    background-color: $color-microsoft;
+}
+
+.bg-google {
+    background-color: $color-google;
+}
+
+.bg-facebook {
+    background-color: $color-facebook;
+}
+
+/**
+ *
+ */
+.badge-microsoft {
+    color: $color-light;
+    background-color: $color-microsoft;
+}
+
+.badge-google {
+    color: $color-light;
+    background-color: $color-google;
+}
+
+.badge-facebook {
+    color: $color-light;
+    background-color: $color-facebook;
+}
+
 /**
  * Border
  */

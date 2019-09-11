@@ -4,7 +4,7 @@
             error-box.alert-base-pink(:error="error")
             form(@submit.prevent="onLoginSubmitted()")
                 .form-group
-                    input#inputEmail.form-control(v-model="email" :placeholder="$t('pages.email_address')" type="text" required)
+                    input#inputEmail.form-control(ref="inputEmail" v-model="email" :placeholder="$t('pages.email_address')" type="text" required)
                 .form-group
                     input#inputPassword.form-control(v-model="password" :placeholder="$t('pages.password')" :required="!token" :disabled="token" type="password")
                 .form-group
@@ -17,12 +17,12 @@
                             span(v-else)
                                 i.fab.fa-microsoft.fa-fw.fa-sm
                                 span.hide-target.ml-2 {{ $t('pages._auth._login.login_with', {provider: 'Microsoft'}) }}
-                        button.btn.btn-google.hide-not-over(v-if="googleEnabled" :disabled="loading || token" @click="onMicrosoftLoginClicked()" type="button")
+                        button.btn.btn-google.hide-not-over(v-if="googleEnabled" :disabled="loading || token" @click="onGoogleLoginClicked()" type="button")
                             i.fas.fa-circle-notch.fa-spin(v-if="loading")
                             span(v-else)
                                 i.fab.fa-google.fa-fw.fa-sm
                                 span.hide-target.ml-2 {{ $t('pages._auth._login.login_with', {provider: 'Google'}) }}
-                        button.btn.btn-facebook.hide-not-over(v-if="facebookEnabled" :disabled="loading || token" @click="onMicrosoftLoginClicked()" type="button")
+                        button.btn.btn-facebook.hide-not-over(v-if="facebookEnabled" :disabled="loading || token" @click="onFacebookLoginClicked()" type="button")
                             i.fas.fa-circle-notch.fa-spin(v-if="loading")
                             span(v-else)
                                 i.fab.fa-facebook-f.fa-fw.fa-sm
@@ -78,6 +78,9 @@
                 this.token = true
             }
         },
+        mounted() {
+            this.$refs.inputEmail.focus()
+        },
         methods: {
             ...mapActions({
                 accountLogin: 'account/login',
@@ -110,7 +113,7 @@
             },
 
             onMicrosoftLoginClicked() {
-                this.loading = true
+                this.$bus.emit('page.loading')
                 this.microsoftLogin({
                     doneCallback: () => {
                         log.write(this.microsoftMe)
@@ -118,25 +121,27 @@
                         this.accountLoginWithMicrosoft({
                             id: this.microsoftMe.id,
                             doneCallback: () => {
+                                this.$bus.emit('page.loaded')
+
                                 this.afterLogin()
                             },
                             errorCallback: err => {
-                                this.loading = false
+                                this.$bus.emit('page.loaded')
 
                                 this.afterLoginSociallyFailed(err, 'microsoft')
                             },
                         })
                     },
                     errorCallback: err => {
-                        this.loading = false
+                        this.$bus.emit('page.loaded')
 
-                        this.afterTryLoginSociallyFailed(err, 'Sorry, you did not successfully login with Microsoft')
+                        this.afterTryLoginSociallyFailed(err, this.$t('pages._auth._login.login_failed_with', {provider: 'Microsoft'}))
                     },
                 })
             },
 
             onGoogleLoginClicked() {
-                this.loading = true
+                this.$bus.emit('page.loading')
                 this.googleLogin({
                     doneCallback: () => {
                         log.write(this.googleMe)
@@ -144,27 +149,27 @@
                         this.accountLoginWithGoogle({
                             id: this.googleMe.id,
                             doneCallback: () => {
+                                this.$bus.emit('page.loaded')
+
                                 this.afterLogin()
                             },
                             errorCallback: err => {
-                                log.write(err)
-
-                                this.loading = false
+                                this.$bus.emit('page.loaded')
 
                                 this.afterLoginSociallyFailed(err, 'google')
                             },
                         })
                     },
                     errorCallback: err => {
-                        this.loading = false
+                        this.$bus.emit('page.loaded')
 
-                        this.afterTryLoginSociallyFailed(err, 'Sorry, you did not successfully login with Google')
+                        this.afterTryLoginSociallyFailed(err, this.$t('pages._auth._login.login_failed_with', {provider: 'Google'}))
                     },
                 })
             },
 
             onFacebookLoginClicked() {
-                this.loading = true
+                this.$bus.emit('page.loading')
                 this.facebookLogin({
                     doneCallback: () => {
                         log.write(this.facebookMe)
@@ -172,19 +177,21 @@
                         this.accountLoginWithFacebook({
                             id: this.facebookMe.id,
                             doneCallback: () => {
+                                this.$bus.emit('page.loaded')
+
                                 this.afterLogin()
                             },
                             errorCallback: err => {
-                                this.loading = false
+                                this.$bus.emit('page.loaded')
 
                                 this.afterLoginSociallyFailed(err, 'facebook')
                             },
                         })
                     },
                     errorCallback: err => {
-                        this.loading = false
+                        this.$bus.emit('page.loaded')
 
-                        this.afterTryLoginSociallyFailed(err, 'Sorry, you did not successfully login with Facebook')
+                        this.afterTryLoginSociallyFailed(err, this.$t('pages._auth._login.login_failed_with', {provider: 'Facebook'}))
                     },
                 })
             },
@@ -192,9 +199,10 @@
             afterTryLoginSociallyFailed(err, message) {
                 log.write(err)
 
-                this.$bus.emit('error', {
+                this.error = {
                     messages: [message],
-                })
+                    level: ERROR_LEVEL_DEF.none,
+                }
             },
 
             afterLoginSociallyFailed(err, providerName) {

@@ -102,9 +102,11 @@ export default {
             _login: {
                 _: 'Login',
                 login_with: 'Login with {provider}',
+                login_failed_with: 'Sorry, you did not successfully login with {provider}',
             },
             _register: {
                 _: 'Create an account',
+                register_with: 'Registering with {provider}',
             },
         },
     },
