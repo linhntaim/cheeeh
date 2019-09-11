@@ -11,6 +11,7 @@ import Middleware from '../../plugins/middleware'
 import Vue from 'vue'
 import VueCookie from 'vue-cookie'
 import VueHead from 'vue-head'
+import {dateTimeHelper} from './date_time_helper'
 
 export class Application {
     constructor() {
@@ -49,6 +50,8 @@ export class Application {
 
         this.useDefault()
         localeReady(i18n => {
+            dateTimeHelper.withTranslator(i18n.messages[i18n.locale].def.datetime)
+
             this.instance = new Vue({
                 i18n,
                 router,
@@ -92,6 +95,8 @@ export class Application {
         this.use()
 
         localeReady(i18n => {
+            dateTimeHelper.withTranslator(i18n.t).getLongDateFormat()
+
             this.instance = new Vue({
                 i18n,
                 router,

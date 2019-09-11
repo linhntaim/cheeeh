@@ -10,8 +10,6 @@
                 ul.navbar-nav
                     li.nav-item
                         a.nav-link(href="#") What's new
-                    li.nav-item
-                        a.nav-link(href="#") What's new
                     li.nav-item.user-nav-item(v-if="accountIsLoggedIn")
                         .dropdown
                             a.nav-link.dropdown-toggle.no-arrow(href="#" data-toggle="dropdown")
