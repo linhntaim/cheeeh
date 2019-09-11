@@ -22,13 +22,13 @@
             .mb-3(v-if="registerWith")
                 .badge.badge-register.badge-microsoft.mb-0(v-if="provider === 'microsoft'")
                     i.fab.fa-microsoft.fa-sm
-                    | &nbsp;&nbsp;{{ $t('pages._auth._register.register_with', {provider: 'Microsoft'}) }}
+                    | &nbsp;&nbsp;{{ $t('pages._auth._register.registering_with', {provider: 'Microsoft'}) }}
                 .badge.badge-register.badge-google.mb-0(v-else-if="provider === 'google'")
                     i.fab.fa-google.fa-sm
-                    | &nbsp;&nbsp;{{ $t('pages._auth._register.register_with', {provider: 'Google'}) }}
+                    | &nbsp;&nbsp;{{ $t('pages._auth._register.registering_with', {provider: 'Google'}) }}
                 .badge.badge-register.badge-facebook.mb-0(v-else-if="provider === 'facebook'")
                     i.fab.fa-facebook-f.fa-sm
-                    | &nbsp;&nbsp;{{ $t('pages._auth._register.register_with', {provider: 'Facebook'}) }}
+                    | &nbsp;&nbsp;{{ $t('pages._auth._register.registering_with', {provider: 'Facebook'}) }}
             error-box.alert-base-red(:error="error")
             form(@submit.prevent="onRegisterSubmitted()")
                 .form-group.text-center
@@ -115,12 +115,26 @@
                 facebookLogin: 'facebook/login',
             }),
 
+            reset() {
+                this.registerWith = false
+
+                this.urlAvatar = null
+                this.provider = null
+                this.providerId = null
+
+                this.displayName = ''
+                this.email = ''
+                this.password = ''
+                this.passwordConfirmation = ''
+            },
+
             initMicrosoftLogin() {
                 this.registerWith = true
                 this.provider = 'microsoft'
                 this.providerId = this.microsoftMe.id
                 this.displayName = this.microsoftMe.name
                 this.email = this.microsoftMe.email
+                this.urlAvatar = null
 
                 this.$refs.inputPassword.focus()
             },
@@ -148,6 +162,7 @@
             },
 
             onRegisterSubmitted() {
+                this.error = null
                 this.loading = true
                 this.accountRegister({
                     displayName: this.displayName,
@@ -180,6 +195,7 @@
             },
 
             onMicrosoftLoginClicked() {
+                this.error = null
                 this.$bus.emit('page.loading')
                 this.microsoftLogin({
                     doneCallback: () => {
@@ -210,6 +226,7 @@
             },
 
             onGoogleLoginClicked() {
+                this.error = null
                 this.$bus.emit('page.loading')
                 this.googleLogin({
                     doneCallback: () => {
@@ -240,6 +257,7 @@
             },
 
             onFacebookLoginClicked() {
+                this.error = null
                 this.$bus.emit('page.loading')
                 this.facebookLogin({
                     doneCallback: () => {
@@ -276,6 +294,8 @@
                     messages: [message],
                     level: ERROR_LEVEL_DEF.none,
                 }
+
+                this.reset()
             },
         },
     }

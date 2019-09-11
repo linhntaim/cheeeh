@@ -5,7 +5,7 @@
             form(@submit.prevent="onLoginSubmitted()")
                 .alert.alert-success.small(v-if="succeed") {{ $t('pages._auth._forgot_password.succeed') }}
                 .form-group
-                    input#inputEmail.form-control.form-control-user(v-model="email" :readonly="succeed" :placeholder="$t('pages.email_address')" type="email" required)
+                    input#inputEmail.form-control.form-control-user(ref="inputEmail" v-model="email" :readonly="succeed" :placeholder="$t('pages.email_address')" type="email" required)
                 .form-group
                     button.btn.btn-base-pink(:disabled="loading || disabled" type="submit")
                         text-with-loading(:loading="loading" :text="$t('pages._auth._forgot_password.submit')")
@@ -35,6 +35,9 @@
             disabled() {
                 return !this.email
             },
+        },
+        mounted() {
+            this.$refs.inputEmail.focus()
         },
         methods: {
             ...mapActions({

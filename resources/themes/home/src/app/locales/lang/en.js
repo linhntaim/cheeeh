@@ -106,7 +106,8 @@ export default {
             },
             _register: {
                 _: 'Create an account',
-                register_with: 'Registering with {provider}',
+                register_with: 'Register with {provider}',
+                registering_with: 'Registering with {provider}',
             },
         },
     },

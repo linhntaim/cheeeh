@@ -107,6 +107,7 @@ export default {
             _register: {
                 _: 'Tạo tài khoản',
                 register_with: 'Đăng ký với {provider}',
+                registering_with: 'Đang đăng ký với {provider}',
             },
         },
     },

@@ -93,6 +93,7 @@
             }),
 
             onLoginSubmitted() {
+                this.error = null
                 this.loading = true
                 this.accountLogin({
                     email: this.email,
