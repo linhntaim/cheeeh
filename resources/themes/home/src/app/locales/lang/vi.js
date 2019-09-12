@@ -109,6 +109,14 @@ export default {
                 register_with: 'Đăng ký với {provider}',
                 registering_with: 'Đang đăng ký với {provider}',
             },
+            _verify_email: {
+                _: 'Xác thực địa chỉ thư điện tử',
+                desc: 'Hãy kiểm tra xem bạn đã nhận được hướng dẫn xác thực địa chỉ thư điện tử tại hòm thư <span class="text-info">{email}</span> chưa.<br>Nếu chưa, hãy bấm vào nút <strong>Gửi lại</strong> và chúng tôi sẽ gửi cho bạn một hướng dẫn khác.',
+                done: 'Địa chỉ thư điện tử của bạn tại <span class="text-info">{email}</span> đã được xác thực!',
+                help: 'Bạn có thể thay đổi địa chỉ thư điện tử trước khi thực hiện gửi trong trường hợp địa chỉ này không chính xác',
+                succeed: 'Hướng dẫn xác thực đã được gửi tới địa chỉ thư điện tử của bạn',
+                waiting: 'Xin vui lòng chờ, địa chỉ thư điện tử của bạn tại <span class="text-info">{email}</span> đang được xác thực...',
+            },
         },
     },
 }

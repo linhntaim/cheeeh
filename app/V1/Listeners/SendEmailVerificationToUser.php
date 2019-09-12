@@ -16,7 +16,9 @@ class SendEmailVerificationToUser extends NowListener
             MailHelper::sendNowWithTemplate(
                 'user_email_verification',
                 [
-                    TemplateMailable::EMAIL_SUBJECT => 'Verify your email',
+                    TemplateMailable::EMAIL_SUBJECT => static::__transListener('mail_subject', [
+                        'app_name' => $event->getClientAppName(),
+                    ]),
                     TemplateMailable::EMAIL_TO => $userEmail->email,
                     TemplateMailable::EMAIL_TO_NAME => $user->display_name,
                     'url_verify' => $event->getAppEmailVerifyUrl(),

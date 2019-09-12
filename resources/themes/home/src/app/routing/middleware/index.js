@@ -1,6 +1,7 @@
 import commonMiddleware from './modules/common'
 import authMiddleware from './modules/auth'
 import deviceMiddleware from './modules/device'
+import emailVerifiedMiddleware from './modules/email_verified'
 import serverMiddleware from './modules/server'
 import localeMiddleware from './modules/locale'
 
@@ -20,6 +21,7 @@ export const all = {
         localeMiddleware,
         authMiddleware,
         deviceMiddleware,
+        emailVerifiedMiddleware,
         serverMiddleware,
     ],
     after: [

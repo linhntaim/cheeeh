@@ -161,7 +161,10 @@ export default {
         },
 
         anonymous({commit, state}, {callback}) {
-            if (state.isLoggedIn) return
+            if (state.isLoggedIn) {
+                callback && callback()
+                return
+            }
 
             let storedLocalization = localizationCookieStore.retrieve()
             commit('setUser', {
@@ -292,23 +295,11 @@ export default {
             }, errorCallback)
         },
 
-        register({dispatch}, {
-            displayName, email, password, passwordConfirmation, urlAvatar,
-            provider, providerId,
-            doneCallback, errorCallback,
-        }) {
-            authService().register({
-                display_name: displayName,
-                email: email,
-                password: password,
-                password_confirmation: passwordConfirmation,
-                url_avatar: urlAvatar,
-                provider: provider,
-                provider_id: providerId,
-            }, () => {
+        register({dispatch}, {params, doneCallback, errorCallback}) {
+            authService().register(params, () => {
                 dispatch('login', {
-                    email: email,
-                    password: password,
+                    email: params.email,
+                    password: params.password,
                     doneCallback: doneCallback,
                     errorCallback: errorCallback,
                 })

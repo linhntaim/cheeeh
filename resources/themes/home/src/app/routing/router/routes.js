@@ -78,6 +78,14 @@ export const routes = [
                 component: () => import('../../../views/pages/auth/ForgotPassword'),
             },
             {
+                path: 'verify-email',
+                name: 'verify_email',
+                meta: {
+                    requireAuth: true,
+                },
+                component: () => import('../../../views/pages/auth/VerifyEmail'),
+            },
+            {
                 path: '*',
                 component: () => import('../../../views/error/NotFound'),
             },
@@ -101,6 +109,7 @@ export const authRoutes = [
         meta: {
             middleware: all,
             authReplaced: true,
+            requireEmailVerified: true,
         },
         children: [
             {

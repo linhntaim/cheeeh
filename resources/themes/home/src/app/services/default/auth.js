@@ -1,4 +1,4 @@
-import {APP_DEFAULT_SERVICE, APP_ROUTE} from '../../config'
+import {APP_DEFAULT_SERVICE} from '../../config'
 import {crypto} from '../../utils/crypto'
 import {serverClock} from '../../utils/server_clock'
 import DefaultService from '../default_service'
@@ -100,7 +100,6 @@ class AuthService extends DefaultService {
     }
 
     register(params, doneCallback = null, errorCallback = null, alwaysCallback = null) {
-        params.app_verify_email_path = APP_ROUTE.verify_email
         this.post(
             'auth/register',
             params,

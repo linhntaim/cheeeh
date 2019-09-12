@@ -109,6 +109,14 @@ export default {
                 register_with: 'Register with {provider}',
                 registering_with: 'Registering with {provider}',
             },
+            _verify_email: {
+                _: 'Verify email address',
+                desc: 'Please check your e-mail at <span class="text-info">{email}</span> for a guide on verification.<br>Or if you wish us to send you another e-mail, please click the <strong>Resend</strong> button.',
+                done: 'Your e-mail address <span class="text-info">{email}</span> is verified!',
+                help: 'You can change your e-mail address before sending in case it was wrong',
+                succeed: 'A guide on verification has been sent to your e-mail',
+                waiting: 'Please wait while your e-mail address <span class="text-info">{email}</span> is being verified...',
+            },
         },
     },
 }

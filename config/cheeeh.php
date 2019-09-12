@@ -13,7 +13,7 @@ return [
 
     'emails' => [
         'no_reply' => [
-            'name' => 'Chi Chi Team',
+            'name' => 'Cheeeh Team',
             'email' => 'do-not-reply@chichi.com',
         ],
     ],

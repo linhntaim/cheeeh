@@ -50,13 +50,13 @@
 </template>
 
 <script>
+    import {authRoutes} from '../../../app/routing/router/routes'
+    import {log} from '../../../app/utils/log'
     import {mapActions, mapGetters} from 'vuex'
     import {session} from '../../../app/utils/session'
-    import TextWithLoading from '../../components/TextWithLoading'
-    import {ERROR_LEVEL_DEF} from '../../../app/config'
-    import {authRoutes} from '../../../app/routing/router/routes'
+    import {APP_ROUTE, ERROR_LEVEL_DEF} from '../../../app/config'
     import ErrorBox from '../../components/ErrorBox'
-    import {log} from '../../../app/utils/log'
+    import TextWithLoading from '../../components/TextWithLoading'
 
     export default {
         name: 'Register',
@@ -165,13 +165,16 @@
                 this.error = null
                 this.loading = true
                 this.accountRegister({
-                    displayName: this.displayName,
-                    email: this.email,
-                    password: this.password,
-                    passwordConfirmation: this.passwordConfirmation,
-                    provider: this.provider,
-                    providerId: this.providerId,
-                    urlAvatar: this.urlAvatar,
+                    params: {
+                        display_name: this.displayName,
+                        email: this.email,
+                        password: this.password,
+                        password_confirmation: this.passwordConfirmation,
+                        url_avatar: this.urlAvatar,
+                        provider: this.provider,
+                        provider_id: this.providerId,
+                        app_verify_email_path: this.$router.getPathByName(APP_ROUTE.verify_email),
+                    },
                     doneCallback: () => {
                         this.loading = false
 

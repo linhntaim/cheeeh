@@ -20,7 +20,7 @@ class SendEmailCreatedToUser extends NowListener
                 TemplateMailable::EMAIL_TO => $user->email->email,
                 TemplateMailable::EMAIL_TO_NAME => $user->display_name,
                 'user_name' => $user->name,
-                'user_password' => $user->name,
+                'user_password' => $event->getPassword(),
                 'app_name' => $event->getClientAppName(),
                 'app_url' => $event->getClientAppUrl(),
             ],

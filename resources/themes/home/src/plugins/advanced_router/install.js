@@ -14,6 +14,7 @@ const install = (Vue, {router, session}) => {
     }
 
     const parseRoutes = () => {
+        router.routePathByNames = {}
         router.options.routes.forEach(route => {
             parseRoute(route)
         })
