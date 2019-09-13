@@ -9,8 +9,11 @@
     export default {
         name: 'TextWithLoading',
         props: {
-            loading: Boolean,
             text: String,
+            loading: {
+                type: Boolean,
+                default: false,
+            },
             both: {
                 type: Boolean,
                 default: false,

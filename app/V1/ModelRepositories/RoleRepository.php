@@ -2,11 +2,10 @@
 
 namespace App\V1\ModelRepositories;
 
-use App\V1\Configuration;
 use App\V1\Exceptions\AppException;
-use App\V1\Exceptions\DatabaseException;
+use App\V1\Exceptions\Exception;
 use App\V1\Models\Role;
-use PDOException;
+use Illuminate\Database\Eloquent\Collection;
 
 class RoleRepository extends ModelRepository
 {
@@ -15,15 +14,8 @@ class RoleRepository extends ModelRepository
         return Role::class;
     }
 
-    public function getNoneProtected()
+    protected function searchOn($query, array $search)
     {
-        return $this->query()->noneProtected()->get();
-    }
-
-    public function search($search = [], $paging = Configuration::FETCH_PAGING_YES, $itemsPerPage = Configuration::DEFAULT_ITEMS_PER_PAGE, $sortBy = null, $sortOrder = null)
-    {
-        $query = $this->query();
-
         if (!empty($search['except_protected'])) {
             $query->whereNotIn('id', Role::PROTECTED);
         }
@@ -39,58 +31,71 @@ class RoleRepository extends ModelRepository
             });
         }
 
-        if (!empty($sortBy)) {
-            $query->orderBy($sortBy, $sortOrder);
-        }
-        if ($paging == Configuration::FETCH_PAGING_NO) {
-            return $query->get();
-        } elseif ($paging == Configuration::FETCH_PAGING_YES) {
-            return $query->paginate($itemsPerPage);
-        }
-
         return $query;
     }
 
+    /**
+     * @return Collection
+     * @throws Exception
+     */
+    public function getNoneProtected()
+    {
+        return $this->catch(function () {
+            return $this->query()->noneProtected()->get();
+        });
+    }
+
+    /**
+     * @param array $attributes
+     * @param array $permissions
+     * @return Role
+     * @throws Exception
+     */
     public function create(array $attributes, array $permissions = [])
     {
-        try {
-            $this->model = $this->query()->create($attributes);
+        $this->createWithAttributes($attributes);
+        return $this->catch(function () use ($permissions) {
             if (count($permissions) > 0) {
                 $this->model->permissions()->attach($permissions);
             }
             return $this->model;
-        } catch (PDOException $exception) {
-            throw DatabaseException::from($exception);
-        }
+        });
     }
 
+    /**
+     * @param array $attributes
+     * @param array $permissions
+     * @return Role
+     * @throws AppException
+     * @throws Exception
+     */
     public function update(array $attributes, array $permissions = [])
     {
         if (in_array($this->model->id, Role::PROTECTED)) {
-            throw new AppException('Cannot edit this role');
+            throw new AppException('Cannot edit this protected role');
         }
 
-        try {
-            $this->model->update($attributes);
+        $this->updateWithAttributes($attributes);
+        return $this->catch(function () use ($permissions) {
             if (count($permissions) > 0) {
                 $this->model->permissions()->sync($permissions);
             } else {
                 $this->model->permissions()->detach();
             }
             return $this->model;
-        } catch (PDOException $exception) {
-            throw DatabaseException::from($exception);
-        }
+        });
     }
 
-    public function delete($ids)
+    /**
+     * @param array $ids
+     * @return bool
+     * @throws Exception
+     */
+    public function deleteWithIds(array $ids)
     {
-        try {
-            $this->query()->whereIn('id', $ids)
-                ->noneProtected()
-                ->delete();
-        } catch (PDOException $exception) {
-            throw DatabaseException::from($exception);
-        }
+        return $this->catch(function () use ($ids) {
+            $this->queryByIds($ids)->noneProtected()->delete();
+            return true;
+        });
     }
 }

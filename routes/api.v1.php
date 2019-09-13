@@ -18,9 +18,9 @@ Route::group([
 ], function () {
     #region Common
     Route::get('prerequisite', 'PrerequisiteController@index');
-    Route::post('auth/login', 'LoginController@issueToken');
+    Route::get('auth/password', 'PasswordController@index');
     Route::post('auth/password', 'PasswordController@store');
-    Route::get('auth/password', 'PasswordController@show');
+    Route::post('auth/login', 'LoginController@issueToken');
     Route::post('auth/register', 'RegisterController@store');
     Route::post('auth/verify-email', 'VerifyEmailController@store');
     Route::post('device/current', 'DeviceController@currentStore');
@@ -35,9 +35,8 @@ Route::group([
             'prefix' => 'account',
             'namespace' => 'Account',
         ], function () {
+            Route::get('/', 'AccountController@index');
             Route::post('/', 'AccountController@store');
-            Route::get('/', 'AccountController@show');
-            Route::put('/', 'AccountController@update');
 
             Route::post('device/current', 'DeviceController@currentStore');
 

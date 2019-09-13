@@ -4,7 +4,7 @@ namespace App\V1\ModelTransformers;
 
 class RoleTransformer extends ModelTransformer
 {
-    use TransformTrait;
+    use ModelTransformTrait;
 
     public function toArray()
     {
@@ -16,7 +16,7 @@ class RoleTransformer extends ModelTransformer
             'display_name' => $role->display_name,
             'description' => $role->description,
             'permissions' => $this->safeObject($role->permissions, function ($permissions) {
-                return $this->transform(PermissionTransformer::class, $permissions);
+                return $this->modelTransform(PermissionTransformer::class, $permissions);
             }),
         ];
     }

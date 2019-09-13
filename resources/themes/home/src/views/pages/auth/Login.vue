@@ -4,9 +4,9 @@
             error-box.alert-base-pink(:error="error")
             form(@submit.prevent="onLoginSubmitted()")
                 .form-group
-                    input#inputEmail.form-control(ref="inputEmail" v-model="email" :placeholder="$t('pages.email_address')" type="text" required)
+                    input#inputEmail.form-control.focus-base-pink(ref="inputEmail" v-model="email" :placeholder="$t('pages.email_address')" type="text" required)
                 .form-group
-                    input#inputPassword.form-control(v-model="password" :placeholder="$t('pages.password')" :required="!token" :disabled="token" type="password")
+                    input#inputPassword.form-control.focus-base-pink(v-model="password" :placeholder="$t('pages.password')" :required="!token" :disabled="token" type="password")
                 .form-group
                     button.btn.btn-base-pink(:disabled="loading || disabled" type="submit")
                         text-with-loading(:loading="loading" :text="$t('actions.login')")
@@ -221,13 +221,3 @@
         },
     }
 </script>
-
-<style lang="scss" scoped>
-    @import "../../../assets/css/variables";
-
-    .form-control {
-        &:focus, &.focus {
-            box-shadow: 0 0 0 0.2rem $color-base-pink-lighter-o;
-        }
-    }
-</style>

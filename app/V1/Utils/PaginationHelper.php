@@ -3,10 +3,18 @@
 namespace App\V1\Utils;
 
 use App\V1\Configuration;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class PaginationHelper
 {
+    public static function parse($paginator)
+    {
+        if ($paginator instanceof LengthAwarePaginator) {
+            return (new static($paginator))->toArray();
+        }
+        return null;
+    }
+
     public $last;
     public $first;
     public $next;
@@ -20,12 +28,12 @@ class PaginationHelper
     public $totalItems;
     public $itemsPerPage;
 
-    public function __construct(LengthAwarePaginator $pagedCollection, $maxPageShow = Configuration::DEFAULT_PAGINATION_ITEMS)
+    public function __construct(LengthAwarePaginator $paginator, $maxPageShow = Configuration::DEFAULT_PAGINATION_ITEMS)
     {
-        $current = $pagedCollection->currentPage();
-        $last = $pagedCollection->lastPage();
-        $this->itemsPerPage = intval($pagedCollection->perPage());
-        $this->totalItems = $pagedCollection->total();
+        $current = $paginator->currentPage();
+        $last = $paginator->lastPage();
+        $this->itemsPerPage = intval($paginator->perPage());
+        $this->totalItems = $paginator->total();
         $this->startOrder = ($current - 1) * $this->itemsPerPage;
         $pivot = round($maxPageShow / 2);
         $distance = floor($maxPageShow / 2);

@@ -46,6 +46,20 @@ export class AccountService extends DefaultService {
             alwaysCallback,
         )
     }
+
+    mainEmailUpdateAddress(email, appVerifyEmailPath, doneCallback = null, errorCallback = null, alwaysCallback = null) {
+        this.put(
+            'main-email',
+            {
+                _email: 1,
+                email: email,
+                app_verify_email_path: appVerifyEmailPath,
+            },
+            doneCallback,
+            errorCallback,
+            alwaysCallback
+        )
+    }
 }
 
 export const accountService = () => new AccountService()

@@ -36,8 +36,10 @@ export default {
         logging_out: 'Logging out...',
         refresh: 'Refresh',
         register: 'Register',
+        resend: 'Resend',
         retype: 'Retype',
         retype_what: 'Retype {what}',
+        verify: 'Verify',
     },
     components: {
         home_cover: {
@@ -86,7 +88,7 @@ export default {
     },
     pages: {
         display_name: 'Display name',
-        email_address: 'Email address',
+        email_address: 'E-mail address',
         password: 'Password',
         password_lc: 'password',
         start_free: 'Start for free',
@@ -97,7 +99,7 @@ export default {
             _forgot_password: {
                 _: 'Get a new password',
                 submit: 'Get password',
-                succeed: 'A link for resetting password has been sent to your email',
+                succeed: 'A link for resetting password has been sent to your e-mail',
             },
             _login: {
                 _: 'Login',
@@ -111,12 +113,15 @@ export default {
             },
             _verify_email: {
                 _: 'Verify email address',
-                desc: 'Please check your e-mail at <span class="text-info">{email}</span> for a guide on verification.<br>Or if you wish us to send you another e-mail, please click the <strong>Resend</strong> button.',
-                done: 'Your e-mail address <span class="text-info">{email}</span> is verified!',
+                desc: 'Please check your e-mail address at <span class="text-gradient-base">{email}</span> for our guide on the verification.<br>Or if you wish us to send you another e-mail, please click the <strong>{button}</strong> button.',
+                done: 'Your e-mail address <span class="text-gradient-base">{email}</span> is verified!',
                 help: 'You can change your e-mail address before sending in case it was wrong',
                 succeed: 'A guide on verification has been sent to your e-mail',
-                waiting: 'Please wait while your e-mail address <span class="text-info">{email}</span> is being verified...',
+                waiting: 'Please wait while your e-mail address <span class="text-gradient-base">{email}</span> is being verified...',
             },
+        },
+        _home: {
+            _: 'Home',
         },
     },
 }

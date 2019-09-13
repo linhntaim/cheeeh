@@ -24,7 +24,7 @@ class EmailController extends UserEmailController
 
     protected function storeExecute(Request $request)
     {
-        return $this->userEmailRepository->create(
+        return $this->modelRepository->create(
             $request->user()->id,
             $request->input('email'),
             $request->input('is_alias', false) == true,
@@ -40,7 +40,7 @@ class EmailController extends UserEmailController
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('user_emails', 'email')->ignore($this->userEmailRepository->getId())
+                Rule::unique('user_emails', 'email')->ignore($this->modelRepository->getId()),
             ],
         ];
     }
@@ -49,14 +49,14 @@ class EmailController extends UserEmailController
     {
         parent::updateValidated($request);
 
-        if ($this->userEmailRepository->model()->user_id != $request->user()->id) {
-            abort(403);
+        if ($this->modelRepository->model()->user_id != $request->user()->id) {
+            $this->abort403();
         }
     }
 
     protected function updateExecute(Request $request)
     {
-        return $this->userEmailRepository->update(
+        return $this->modelRepository->update(
             $request->user()->id,
             $request->input('email'),
             $request->input('is_alias', false) == true,
@@ -71,7 +71,7 @@ class EmailController extends UserEmailController
 
         $ids = $request->input('ids');
         if ($request->user()->emails()->whereIn('id', $ids)->count() != count($ids)) {
-            abort(403);
+            $this->abort403();
         }
     }
 }

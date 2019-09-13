@@ -192,7 +192,7 @@ export default {
 
                 accountService().current(login, (data) => {
                     commit('setUser', {
-                        user: data.user,
+                        user: data.model,
                         localeCallback: doneCallback,
                     })
                 }, errorCallback)
@@ -205,7 +205,7 @@ export default {
             if (state.isLoggedIn) {
                 accountService().updateLocalization(params, (data) => {
                     commit('setUser', {
-                        user: data.user,
+                        user: data.model,
                         localeCallback: doneCallback,
                     })
                 }, errorCallback)
@@ -221,7 +221,7 @@ export default {
             if (state.isLoggedIn) {
                 accountService().updateLocale(locale, (data) => {
                     commit('setUser', {
-                        user: data.user,
+                        user: data.model,
                         localeCallback: doneCallback,
                     })
                 }, errorCallback)
@@ -324,6 +324,19 @@ export default {
                 password: password,
                 password_confirmation: passwordConfirmation,
             }, doneCallback, errorCallback)
+        },
+
+        mainEmailUpdateAddress({commit}, {email, appVerifyEmailPath, doneCallback, errorCallback}) {
+            accountService().mainEmailUpdateAddress(email, appVerifyEmailPath, (data) => {
+                commit('setUser', {
+                    user: data.model,
+                })
+                doneCallback()
+            }, errorCallback)
+        },
+
+        verifyEmail(store, {email, verifiedCode, doneCallback, errorCallback}) {
+            authService().verifyEmail(email, verifiedCode, doneCallback, errorCallback)
         },
     },
 }

@@ -34,13 +34,13 @@
                 .form-group.text-center
                     img.rounded-circle.w-50(v-if="urlAvatar" :src="urlAvatar")
                 .form-group
-                    input#inputDisplayName.form-control(ref="inputDisplayName" v-model="displayName" :placeholder="$t('pages.display_name')" type="text" required)
+                    input#inputDisplayName.form-control.focus-base-red(ref="inputDisplayName" v-model="displayName" :placeholder="$t('pages.display_name')" type="text" required)
                 .form-group
-                    input#inputEmail.form-control(v-model="email" :placeholder="$t('pages.email_address')" type="email" required)
+                    input#inputEmail.form-control.focus-base-red(v-model="email" :placeholder="$t('pages.email_address')" type="email" required)
                 .form-group
-                    input#inputPassword.form-control(ref="inputPassword" v-model="password" :placeholder="$t('pages.password')" type="password" required)
+                    input#inputPassword.form-control.focus-base-red(ref="inputPassword" v-model="password" :placeholder="$t('pages.password')" type="password" required)
                 .form-group
-                    input#inputRepeatPassword.form-control(v-model="passwordConfirmation" :placeholder="$t('actions.retype_what', {what: $t('pages.password_lc')})" type="password" required)
+                    input#inputRepeatPassword.form-control.focus-base-red(v-model="passwordConfirmation" :placeholder="$t('actions.retype_what', {what: $t('pages.password_lc')})" type="password" required)
                 .form-group
                     button.btn.btn-base-red(:disabled="loading || disabled" type="submit")
                         text-with-loading(:loading="loading" :text="$t('actions.register')")
@@ -305,17 +305,9 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../../../assets/css/variables";
-
     .badge-register {
         line-height: inherit;
         padding-left: .6rem;
         padding-right: .6rem;
-    }
-
-    .form-control {
-        &:focus {
-            box-shadow: 0 0 0 0.2rem $color-base-red-lighter-o;
-        }
     }
 </style>

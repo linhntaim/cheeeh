@@ -9,30 +9,27 @@ use App\V1\ModelTransformers\UserEmailTransformer;
 
 class VerifyEmailController extends ApiController
 {
-    protected $userEmailRepository;
-
     public function __construct()
     {
         parent::__construct();
 
-        $this->userEmailRepository = new UserEmailRepository();
+        $this->modelRepository = new UserEmailRepository();
+        $this->modelTransformerClass = UserEmailTransformer::class;
     }
 
-    public function store(Request $request)
+    protected function storeValidatedRules(Request $request)
     {
-        $this->validated($request, [
+        return [
             'email' => 'required|string|email',
             'verified_code' => 'required|string',
-        ]);
+        ];
+    }
 
-        return $this->responseSuccess([
-            'user_email' => $this->transform(
-                UserEmailTransformer::class,
-                $this->userEmailRepository->updateVerifiedAtByEmailAndCode(
-                    $request->input('email'),
-                    $request->input('verified_code')
-                )
-            ),
-        ]);
+    protected function storeExecute(Request $request)
+    {
+        return $this->modelRepository->updateVerifiedAtByEmailAndCode(
+            $request->input('email'),
+            $request->input('verified_code')
+        );
     }
 }

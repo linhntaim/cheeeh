@@ -2,7 +2,6 @@
 
 namespace App\V1\Utils;
 
-use App\V1\Exceptions\AppException;
 use DateInterval;
 use DateTime;
 use DateTimeZone;

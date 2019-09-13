@@ -2,9 +2,9 @@
 
 namespace App\V1\ModelRepositories;
 
-use App\V1\Exceptions\DatabaseException;
+use App\V1\Exceptions\Exception;
 use App\V1\Models\Permission;
-use PDOException;
+use Illuminate\Database\Eloquent\Collection;
 
 class PermissionRepository extends ModelRepository
 {
@@ -13,17 +13,27 @@ class PermissionRepository extends ModelRepository
         return Permission::class;
     }
 
+    /**
+     * @return Collection
+     * @throws Exception
+     */
     public function getNoneProtected()
     {
-        return $this->query()->noneProtected()->get();
+        return $this->catch(function () {
+            return $this->query()->noneProtected()->get();
+        });
     }
 
+    /**
+     * @return Collection
+     * @throws Exception
+     */
     public function getCompacts()
     {
-        try {
-            return $this->query()->select(['display_name', 'id'])->pluck('display_name', 'id');
-        } catch (PDOException $exception) {
-            throw DatabaseException::from($exception);
-        }
+        return $this->catch(function () {
+            return $this->query()
+                ->select(['display_name', 'id'])
+                ->pluck('display_name', 'id');
+        });
     }
 }

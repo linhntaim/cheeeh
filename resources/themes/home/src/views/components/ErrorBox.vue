@@ -16,6 +16,7 @@
             alertHtmlClasses[ERROR_LEVEL_DEF.info] = 'alert-primary'
             alertHtmlClasses[ERROR_LEVEL_DEF.warning] = 'alert-warning'
             alertHtmlClasses[ERROR_LEVEL_DEF.error] = 'alert-danger'
+            alertHtmlClasses[ERROR_LEVEL_DEF.success] = 'alert-success'
             return {
                 alertHtmlClasses: alertHtmlClasses,
             }
@@ -31,6 +32,8 @@
                 return this.error ? this.error.extra : null
             },
             alertHtmlClass() {
+                if (this.error.hasOwnProperty('class')) return this.error.class
+
                 const level = this.level
                 return this.alertHtmlClasses.hasOwnProperty(level) ? this.alertHtmlClasses[level] : ''
             },

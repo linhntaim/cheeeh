@@ -102,12 +102,14 @@ export const ERROR_LEVEL = {
     1: {text: 'info'},
     2: {text: 'warning'},
     3: {text: 'error'},
+    4: {text: 'success'},
 }
 export const ERROR_LEVEL_DEF = {
     none: 0,
     info: 1,
     warning: 2,
     error: 3,
+    success: 4,
 }
 export const ERROR_MESSAGE_LEVEL = {
     1: {text: 'user_failed'},

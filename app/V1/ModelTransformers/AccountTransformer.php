@@ -7,7 +7,7 @@ use App\V1\Utils\LocalizationHelper;
 
 class AccountTransformer extends ModelTransformer
 {
-    use TransformTrait;
+    use ModelTransformTrait;
 
     public function toArray()
     {
@@ -22,7 +22,7 @@ class AccountTransformer extends ModelTransformer
             'display_name' => $user->display_name,
             'url_avatar' => $user->url_avatar,
             'email' => $this->safeObject($user->email, function ($userEmail) {
-                return $this->transform(UserEmailTransformer::class, $userEmail);
+                return $this->modelTransform(UserEmailTransformer::class, $userEmail);
             }),
             'role_names' => $this->safeObject($user->roleNames),
             'permission_names' => $this->safeObject($user->permissionNames),

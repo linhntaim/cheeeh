@@ -35,16 +35,13 @@ class UserEmailUpdated extends Event
         return $this->userEmail;
     }
 
-    /**
-     * @return string
-     */
-    public function getAppVerifyEmailPath()
-    {
-        return $this->appVerifyEmailPath;
-    }
-
     public function getAppEmailVerifyUrl()
     {
-        return $this->clientAppUrl . '/' . $this->appVerifyEmailPath . '/' . $this->userEmail->email . '/' . $this->userEmail->verified_code;
+        return implode('/', [
+            $this->clientAppUrl,
+            trim($this->appVerifyEmailPath, '/'),
+            $this->userEmail->email,
+            $this->userEmail->verified_code,
+        ]);
     }
 }

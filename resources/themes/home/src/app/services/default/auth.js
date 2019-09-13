@@ -108,6 +108,19 @@ class AuthService extends DefaultService {
             alwaysCallback,
         )
     }
+
+    verifyEmail(email, verifiedCode, doneCallback = null, errorCallback = null, alwaysCallback = null) {
+        this.post(
+            'auth/verify-email',
+            {
+                email: email,
+                verified_code: verifiedCode,
+            },
+            doneCallback,
+            errorCallback,
+            alwaysCallback,
+        )
+    }
 }
 
 export const authService = () => new AuthService()

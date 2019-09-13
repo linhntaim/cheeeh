@@ -5,7 +5,7 @@ namespace App\V1\Http\Controllers;
 use App\Http\Controllers\Controller as BaseController;
 use App\V1\Exceptions\UserException;
 use App\V1\Http\Requests\Request;
-use App\V1\ModelTransformers\TransformTrait;
+use App\V1\ModelTransformers\ModelTransformTrait;
 use App\V1\Rules\Rule;
 use App\V1\Utils\AbortTrait;
 use App\V1\Utils\ClassTrait;
@@ -13,7 +13,7 @@ use App\V1\Utils\TransactionTrait;
 
 class Controller extends BaseController
 {
-    use ClassTrait, AbortTrait, TransactionTrait, TransformTrait;
+    use ClassTrait, AbortTrait, TransactionTrait, ModelTransformTrait;
 
     protected function validated(Request $request, array $rules, array $messages = [], array $customAttributes = [])
     {

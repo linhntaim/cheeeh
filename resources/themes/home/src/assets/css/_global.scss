@@ -357,6 +357,24 @@ body {
 .form-control {
     border: none;
     background-color: $color-base-lightest;
+
+    &.focus-base-red {
+        &:focus {
+            box-shadow: 0 0 0 0.2rem $color-base-red-lighter-o;
+        }
+    }
+
+    &.focus-base-pink {
+        &:focus {
+            box-shadow: 0 0 0 0.2rem $color-base-pink-lighter-o;
+        }
+    }
+
+    &.focus-base-yellow {
+        &:focus {
+            box-shadow: 0 0 0 0.2rem $color-base-yellow-lighter-o;
+        }
+    }
 }
 
 /**

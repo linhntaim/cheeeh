@@ -54,14 +54,6 @@ export const routes = [
                 component: () => import('../../../views/pages/auth/Login'),
             },
             {
-                path: 'logout',
-                name: 'logout',
-                meta: {
-                    requireAuth: true,
-                },
-                component: () => import('../../../views/pages/auth/Logout'),
-            },
-            {
                 path: 'register',
                 name: 'register',
                 meta: {
@@ -78,14 +70,6 @@ export const routes = [
                 component: () => import('../../../views/pages/auth/ForgotPassword'),
             },
             {
-                path: 'verify-email',
-                name: 'verify_email',
-                meta: {
-                    requireAuth: true,
-                },
-                component: () => import('../../../views/pages/auth/VerifyEmail'),
-            },
-            {
                 path: '*',
                 component: () => import('../../../views/error/NotFound'),
             },
@@ -98,6 +82,20 @@ export const routes = [
             middleware: all,
             replaced: true,
         },
+        children: [
+            {
+                path: 'logout',
+                name: 'logout',
+            },
+            {
+                path: 'verify-email',
+                name: 'verify_email',
+            },
+            {
+                path: 'verify-email/:email/:verified_code',
+                name: 'verify_email_complete',
+            },
+        ],
     },
 ]
 
@@ -109,17 +107,45 @@ export const authRoutes = [
         meta: {
             middleware: all,
             authReplaced: true,
-            requireEmailVerified: true,
         },
         children: [
             {
                 path: '',
-                name: 'home',
-                component: () => import('../../../views/pages/Home'),
+                meta: {
+                    requireAuth: true,
+                },
+                component: () => import('../../../views/master/Blank'),
+                children: [
+                    {
+                        path: '',
+                        meta: {
+                            requireEmailVerified: true,
+                        },
+                        component: () => import('../../../views/master/Blank'),
+                        children: [
+                            {
+                                path: '',
+                                name: 'home',
+                                component: () => import('../../../views/pages/Home'),
+                            },
+                        ],
+                    },
+                    {
+                        path: 'logout',
+                        name: 'logout',
+                        component: () => import('../../../views/pages/Logout'),
+                    },
+                    {
+                        path: 'verify-email',
+                        name: 'verify_email',
+                        component: () => import('../../../views/pages/VerifyEmail'),
+                    },
+                ],
             },
             {
-                path: 'account',
-                name: 'account',
+                path: 'verify-email/:email/:verified_code',
+                name: 'verify_email_complete',
+                component: () => import('../../../views/pages/VerifyEmailComplete'),
             },
             {
                 path: '*',
@@ -143,6 +169,20 @@ export const notAuthRoutes = [
                 path: '',
                 name: 'home',
                 component: () => import('../../../views/pages/auth/Register'),
+            },
+        ],
+    },
+    {
+        path: '/',
+        component: () => import('../../../views/master/Base'),
+        meta: {
+            middleware: all,
+        },
+        children: [
+            {
+                path: 'verify-email/:email/:verified_code',
+                name: 'verify_email_complete',
+                component: () => import('../../../views/pages/VerifyEmailComplete'),
             },
             {
                 path: '*',

@@ -36,8 +36,10 @@ export default {
         logging_out: 'Đang thoát...',
         refresh: 'Tải lại',
         register: 'Đăng ký',
+        resend: 'Gửi lại',
         retype: 'Nhập lại',
         retype_what: 'Nhập lại {what}',
+        verify: 'Xác thực',
     },
     components: {
         home_cover: {
@@ -111,12 +113,15 @@ export default {
             },
             _verify_email: {
                 _: 'Xác thực địa chỉ thư điện tử',
-                desc: 'Hãy kiểm tra xem bạn đã nhận được hướng dẫn xác thực địa chỉ thư điện tử tại hòm thư <span class="text-info">{email}</span> chưa.<br>Nếu chưa, hãy bấm vào nút <strong>Gửi lại</strong> và chúng tôi sẽ gửi cho bạn một hướng dẫn khác.',
-                done: 'Địa chỉ thư điện tử của bạn tại <span class="text-info">{email}</span> đã được xác thực!',
+                desc: 'Hãy kiểm tra xem bạn đã nhận được hướng dẫn xác thực địa chỉ thư điện tử tại hòm thư <span class="text-gradient-base">{email}</span> chưa.<br>Nếu chưa, hãy bấm vào nút <strong>{button}</strong> và chúng tôi sẽ gửi cho bạn một hướng dẫn khác.',
+                done: 'Địa chỉ thư điện tử của bạn tại <span class="text-gradient-base">{email}</span> đã được xác thực!',
                 help: 'Bạn có thể thay đổi địa chỉ thư điện tử trước khi thực hiện gửi trong trường hợp địa chỉ này không chính xác',
                 succeed: 'Hướng dẫn xác thực đã được gửi tới địa chỉ thư điện tử của bạn',
-                waiting: 'Xin vui lòng chờ, địa chỉ thư điện tử của bạn tại <span class="text-info">{email}</span> đang được xác thực...',
+                waiting: 'Xin vui lòng chờ, địa chỉ thư điện tử của bạn tại <span class="text-gradient-base">{email}</span> đang được xác thực...',
             },
+        },
+        _home: {
+            _: 'Trang chủ',
         },
     },
 }

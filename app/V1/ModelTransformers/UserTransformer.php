@@ -4,7 +4,7 @@ namespace App\V1\ModelTransformers;
 
 class UserTransformer extends ModelTransformer
 {
-    use TransformTrait;
+    use ModelTransformTrait;
 
     public function toArray()
     {
@@ -16,10 +16,10 @@ class UserTransformer extends ModelTransformer
             'display_name' => $user->display_name,
             'url_avatar' => $user->url_avatar,
             'email' => $this->safeObject($user->email, function ($userEmail) {
-                return $this->transform(UserEmailTransformer::class, $userEmail);
+                return $this->modelTransform(UserEmailTransformer::class, $userEmail);
             }),
             'roles' => $this->safeObject($user->roles, function ($roles) {
-                return $this->transform(RoleTransformer::class, $roles);
+                return $this->modelTransform(RoleTransformer::class, $roles);
             }),
         ];
     }

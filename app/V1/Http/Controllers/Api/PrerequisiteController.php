@@ -2,22 +2,20 @@
 
 namespace App\V1\Http\Controllers\Api;
 
-use App\V1\Configuration;
 use App\V1\Http\Controllers\ApiController;
 use App\V1\Http\Requests\Request;
 use App\V1\ModelRepositories\PermissionRepository;
 use App\V1\ModelRepositories\RoleRepository;
 use App\V1\ModelTransformers\PermissionTransformer;
 use App\V1\ModelTransformers\RoleTransformer;
-use App\V1\ModelTransformers\TransformTrait;
+use App\V1\ModelTransformers\ModelTransformTrait;
 use App\V1\Utils\ConfigHelper;
-use App\V1\Utils\CryptoJs\AES;
 use App\V1\Utils\DateTimeHelper;
 use App\V1\Utils\NumberFormatHelper;
 
 class PrerequisiteController extends ApiController
 {
-    use TransformTrait;
+    use ModelTransformTrait;
 
     private $dataset;
 
@@ -61,7 +59,7 @@ class PrerequisiteController extends ApiController
     private function roles(Request $request)
     {
         if ($request->has('roles')) {
-            $this->dataset['roles'] = $this->transform(
+            $this->dataset['roles'] = $this->modelTransform(
                 RoleTransformer::class,
                 (new RoleRepository())->getNoneProtected()
             );
@@ -71,7 +69,7 @@ class PrerequisiteController extends ApiController
     private function permissions(Request $request)
     {
         if ($request->has('permissions')) {
-            $this->dataset['permissions'] = $this->transform(
+            $this->dataset['permissions'] = $this->modelTransform(
                 PermissionTransformer::class,
                 (new PermissionRepository())->getNoneProtected()
             );

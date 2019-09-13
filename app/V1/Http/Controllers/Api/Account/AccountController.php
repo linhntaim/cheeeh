@@ -16,50 +16,41 @@ use Illuminate\Validation\Rule;
 
 class AccountController extends ApiController
 {
-    protected $userRepository;
     protected $userEmailRepository;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->userRepository = new UserRepository();
+        $this->modelRepository = new UserRepository();
+        $this->modelTransformerClass = AccountTransformer::class;
+
         $this->userEmailRepository = new UserEmailRepository();
+    }
+
+    public function index(Request $request)
+    {
+        return $this->responseModel($request->user());
     }
 
     public function store(Request $request)
     {
-        $this->userRepository->model($request->user());
+        $this->modelRepository->model($request->user());
 
         if ($request->has('_avatar')) {
             return $this->updateAvatar($request);
         }
-
-        return $this->responseFail();
-    }
-
-    public function show(Request $request)
-    {
-        return $this->responseSuccess([
-            'user' => $this->transform(AccountTransformer::class, $request->user()),
-        ]);
-    }
-
-    public function update(Request $request)
-    {
-        $this->userRepository->model($request->user());
-
         if ($request->has('_information')) {
             return $this->updateInformation($request);
         }
-        if ($request->has('_localization')) {
-            return $this->updateLocalization($request);
-        }
-        if ($request->has('_locale')) {
-            return $this->updateLocale($request);
-        }
         if ($request->has('_password')) {
             return $this->updatePassword($request);
+        }
+        if ($request->has('_localization')) {
+            return $this->localizationUpdate($request);
+        }
+        if ($request->has('_locale')) {
+            return $this->localizationUpdateLocale($request);
         }
 
         return $this->responseFail();
@@ -71,12 +62,9 @@ class AccountController extends ApiController
             'image' => 'required|image|dimensions:min_width=512,min_height=512',
         ]);
 
-        return $this->responseSuccess([
-            'user' => $this->transform(
-                AccountTransformer::class,
-                $this->userRepository->updateAvatar($request->file('image'))
-            ),
-        ]);
+        return $this->responseModel(
+            $this->modelRepository->updateAvatar($request->file('image'))
+        );
     }
 
     private function updateInformation(Request $request)
@@ -87,23 +75,46 @@ class AccountController extends ApiController
                 'string',
                 'max:255',
                 'regex:/^[0-9a-zA-Z_\-\.]+$/',
-                Rule::unique('users', 'name')->ignore($request->user()->id)
+                Rule::unique('users', 'name')->ignore($request->user()->id),
             ],
             'display_name' => 'required|string|max:255',
         ]);
 
-        return $this->responseSuccess([
-            'user' => $this->transform(
-                AccountTransformer::class,
-                $this->userRepository->update([
+        return $this->responseModel(
+            $this->modelRepository->update(
+                [
                     'name' => $request->input('name'),
                     'display_name' => $request->input('display_name'),
-                ], '', true, '', false)
-            ),
-        ]);
+                ],
+                '',
+                true,
+                '',
+                false
+            )
+        );
     }
 
-    private function updateLocalization(Request $request)
+    private function updatePassword(Request $request)
+    {
+        $this->validated($request, [
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'current_password' => ['required', new CurrentPasswordRule()],
+        ]);
+
+        return $this->responseModel(
+            $this->modelRepository->update(
+                [
+                    'password' => $request->input('password'),
+                ],
+                '',
+                true,
+                '',
+                false
+            )
+        );
+    }
+
+    private function localizationUpdate(Request $request)
     {
         $this->validated($request, [
             'locale' => 'required|in:' . implode(',', ConfigHelper::getLocaleCodes()),
@@ -118,7 +129,7 @@ class AccountController extends ApiController
             'short_time_format' => 'required|in:' . implode(',', DateTimeHelper::getShortTimeFormatValues()),
         ]);
 
-        $currentUser = $this->userRepository->updateLocalization([
+        $currentUser = $this->modelRepository->updateLocalization([
             'locale' => $request->input('locale'),
             'country' => $request->input('country'),
             'timezone' => $request->input('timezone'),
@@ -133,49 +144,22 @@ class AccountController extends ApiController
 
         LocalizationHelper::getInstance()->fetchFromUser($currentUser);
 
-        return $this->responseSuccess([
-            'user' => $this->transform(
-                AccountTransformer::class,
-                $currentUser
-            ),
-        ]);
+        return $this->responseModel($currentUser);
     }
 
-    private function updateLocale(Request $request)
+    private function localizationUpdateLocale(Request $request)
     {
         $this->validated($request, [
             'locale' => 'required|in:' . implode(',', ConfigHelper::getLocaleCodes()),
         ]);
 
-        $currentUser = $this->userRepository->updateLocalization([
+        $currentUser = $this->modelRepository->updateLocalization([
             'locale' => $request->input('locale'),
         ]);
 
         LocalizationHelper::getInstance()->fetchFromUser($currentUser);
 
-        return $this->responseSuccess([
-            'user' => $this->transform(
-                AccountTransformer::class,
-                $currentUser
-            ),
-        ]);
-    }
-
-    private function updatePassword(Request $request)
-    {
-        $this->validated($request, [
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'current_password' => ['required', new CurrentPasswordRule()],
-        ]);
-
-        return $this->responseSuccess([
-            'user' => $this->transform(
-                AccountTransformer::class,
-                $this->userRepository->update([
-                    'password' => $request->input('password'),
-                ], '', true, '', false)
-            ),
-        ]);
+        return $this->responseModel($currentUser);
     }
 
     public function mainEmailUpdate(Request $request)
@@ -204,18 +188,12 @@ class AccountController extends ApiController
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('user_emails', 'email')->ignore($currentUser->email->id)
+                Rule::unique('user_emails', 'email')->ignore($currentUser->email->id),
             ],
         ]);
 
         $currentUser->memorize('email', $this->userEmailRepository->updateEmail($request->input('email'), $request->input('app_verify_email_path')));
-
-        return $this->responseSuccess([
-            'user' => $this->transform(
-                AccountTransformer::class,
-                $currentUser
-            ),
-        ]);
+        return $this->responseModel($currentUser);
     }
 
     public function mainEmailUpdateAddressWithPassword(Request $request)
@@ -229,31 +207,23 @@ class AccountController extends ApiController
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('user_emails', 'email')->ignore($currentUser->email->id)
+                Rule::unique('user_emails', 'email')->ignore($currentUser->email->id),
             ],
             'current_password' => ['required', new CurrentPasswordRule()],
         ]);
 
         $currentUser->memorize('email', $this->userEmailRepository->updateEmail($request->input('email'), $request->input('app_verify_email_path')));
-
-        return $this->responseSuccess([
-            'user' => $this->transform(
-                AccountTransformer::class,
-                $currentUser
-            ),
-        ]);
+        return $this->responseModel($currentUser);
     }
 
     public function mainEmailUpdateVerification(Request $request)
     {
-        return $this->responseSuccess([
-            'user_email' => $this->transform(
-                UserEmailTransformer::class,
-                $this->userEmailRepository->updateVerifiedAtByEmailAndCode(
-                    $request->input('email', ''),
-                    $request->input('verified_code', '')
-                )
-            ),
-        ]);
+        return $this->responseCustomModel($this->modelTransform(
+            UserEmailTransformer::class,
+            $this->userEmailRepository->updateVerifiedAtByEmailAndCode(
+                $request->input('email', ''),
+                $request->input('verified_code', '')
+            )
+        ));
     }
 }

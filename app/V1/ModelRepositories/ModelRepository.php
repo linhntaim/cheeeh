@@ -2,11 +2,17 @@
 
 namespace App\V1\ModelRepositories;
 
+use App\V1\Configuration;
+use App\V1\Exceptions\DatabaseException;
+use App\V1\Exceptions\Exception;
 use App\V1\Utils\AbortTrait;
 use App\V1\Utils\ClassTrait;
 use App\V1\Utils\DateTimeHelper;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use PDOException;
 
 abstract class ModelRepository
 {
@@ -18,7 +24,7 @@ abstract class ModelRepository
     protected $modelClass;
 
     /**
-     * @var Model
+     * @var Model|mixed
      */
     protected $model;
 
@@ -35,11 +41,25 @@ abstract class ModelRepository
 
     protected abstract function modelClass();
 
-    public function query()
+    /**
+     * @return Builder
+     */
+    public function rawQuery()
     {
         return call_user_func($this->modelClass . '::query');
     }
 
+    /**
+     * @return Builder
+     */
+    public function query()
+    {
+        return $this->rawQuery();
+    }
+
+    /**
+     * @return Model|mixed
+     */
     public function newModel()
     {
         $modelClass = $this->modelClass;
@@ -47,6 +67,10 @@ abstract class ModelRepository
         return $this->model;
     }
 
+    /**
+     * @param Model|mixed|null $id
+     * @return Model|mixed|null
+     */
     public function model($id = null)
     {
         if (!empty($id)) {
@@ -65,12 +89,23 @@ abstract class ModelRepository
         return empty($this->model) ? null : $this->model->id;
     }
 
-    public function getById($id, $strict = true)
+    protected function catch(callable $callback)
     {
-        return $strict ? $this->query()->findOrFail($id) : $this->query()->find($id);
+        try {
+            return $callback();
+        } catch (PDOException $exception) {
+            throw DatabaseException::from($exception);
+        }
     }
 
-    public function queryByIds($ids)
+    public function getById($id, $strict = true)
+    {
+        return $this->catch(function () use ($id, $strict) {
+            return $strict ? $this->query()->findOrFail($id) : $this->query()->find($id);
+        });
+    }
+
+    public function queryByIds(array $ids)
     {
         return $this->query()->whereIn('id', $ids);
     }
@@ -78,16 +113,104 @@ abstract class ModelRepository
     /**
      * @param array $ids
      * @param callable|null $callback
-     * @return mixed
+     * @return Collection
+     * @throws Exception
      */
-    public function getByIds($ids, $callback = null)
+    public function getByIds(array $ids, $callback = null)
     {
-        return empty($callback) ? $this->queryByIds($ids)->get() : $callback($this->queryByIds($ids));
+        return $this->catch(function () use ($ids, $callback) {
+            return empty($callback) ? $this->queryByIds($ids)->get() : $callback($this->queryByIds($ids));
+        });
+
     }
 
     public function getAll()
     {
-        return $this->query()->get();
+        return $this->catch(function () {
+            return $this->query()->get();
+        });
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $search
+     * @return Builder
+     */
+    protected function searchOn($query, array $search)
+    {
+        return $query;
+    }
+
+    /**
+     * @param array $search
+     * @param int $paging
+     * @param int $itemsPerPage
+     * @param string|null $sortBy
+     * @param string|null $sortOrder
+     * @return Collection|LengthAwarePaginator|Builder
+     * @throws Exception
+     */
+    public function search($search = [], $paging = Configuration::FETCH_PAGING_YES, $itemsPerPage = Configuration::DEFAULT_ITEMS_PER_PAGE, $sortBy = null, $sortOrder = null)
+    {
+        $query = $this->query();
+
+        if (!empty($search)) {
+            $query = $this->searchOn($query, $search);
+        }
+
+        if (!empty($sortBy)) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+        if ($paging == Configuration::FETCH_PAGING_NO) {
+            return $this->catch(function () use ($query) {
+                return $query->get();
+            });
+        } elseif ($paging == Configuration::FETCH_PAGING_YES) {
+            return $this->catch(function () use ($query, $itemsPerPage) {
+                return $query->paginate($itemsPerPage);
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * @param array $attributes
+     * @return Model|mixed
+     * @throws Exception
+     */
+    public function createWithAttributes(array $attributes)
+    {
+        return $this->catch(function () use ($attributes) {
+            $this->model = $this->rawQuery()->create($attributes);
+            return $this->model;
+        });
+    }
+
+    /**
+     * @param array $attributes
+     * @return Model|mixed
+     * @throws Exception
+     */
+    public function updateWithAttributes(array $attributes)
+    {
+        return $this->catch(function () use ($attributes) {
+            $this->model->update($attributes);
+            return $this->model;
+        });
+    }
+
+    /**
+     * @param array $ids
+     * @return bool
+     * @throws Exception
+     */
+    public function deleteWithIds(array $ids)
+    {
+        return $this->catch(function () use ($ids) {
+            $this->queryByIds($ids)->delete();
+            return true;
+        });
     }
 
     public function batchInsertStart($batch = 1000)

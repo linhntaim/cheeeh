@@ -2,6 +2,9 @@
 
 namespace App\V1\Utils;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 class StringHelper
 {
     public static function fill($text, $length, $char)
@@ -14,5 +17,20 @@ class StringHelper
     public static function fillFollow($text, $followText, $char)
     {
         return static::fill($text, mb_strlen($followText), $char);
+    }
+
+    public static function hashRandom($length = 32)
+    {
+        return static::hash(Str::random($length));
+    }
+
+    public static function hash($text)
+    {
+        return Hash::make($text);
+    }
+
+    public static function uuid()
+    {
+        return Str::uuid()->toString();
     }
 }

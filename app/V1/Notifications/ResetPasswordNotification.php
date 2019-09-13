@@ -40,6 +40,11 @@ class ResetPasswordNotification extends NowNotification
 
     public function getAppResetPasswordUrl($notifiable)
     {
-        return $this->clientAppUrl . '/' . $this->appResetPasswordPath . '/' . $notifiable->preferredEmail() . '/' . $this->token;
+        return implode('/', [
+            $this->clientAppUrl,
+            trim($this->appResetPasswordPath, '/'),
+            $notifiable->preferredEmail(),
+            $this->token,
+        ]);
     }
 }
