@@ -306,8 +306,8 @@ export default {
             }, errorCallback)
         },
 
-        forgotPassword(store, {email, doneCallback, errorCallback}) {
-            authService().forgotPassword(email, doneCallback, errorCallback)
+        forgotPassword(store, {email, appResetPasswordPath, doneCallback, errorCallback}) {
+            authService().forgotPassword(email, appResetPasswordPath, doneCallback, errorCallback)
         },
 
         getResetPassword(store, {email, token, doneCallback, errorCallback}) {

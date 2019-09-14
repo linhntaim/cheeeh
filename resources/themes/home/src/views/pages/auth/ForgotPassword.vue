@@ -1,11 +1,11 @@
 <template lang="pug">
-    .card.border-none
+    .card.border-0
         .card-body
             h4.font-weight-bold.text-base-pink.mb-3 {{ $t('pages._auth._forgot_password._') }}
-            form(@submit.prevent="onLoginSubmitted()")
-                .alert.alert-success.small(v-if="succeed") {{ $t('pages._auth._forgot_password.succeed') }}
+            form(@submit.prevent="onForgotPasswordSubmitted()")
+                error-box(:error="error")
                 .form-group
-                    input#inputEmail.form-control.form-control-user(ref="inputEmail" v-model="email" :readonly="succeed" :placeholder="$t('pages.email_address')" type="email" required)
+                    input#inputEmail.form-control.focus-base-pink(ref="inputEmail" v-model="email" :placeholder="$t('pages.email_address')" type="email" required)
                 .form-group
                     button.btn.btn-base-pink(:disabled="loading || disabled" type="submit")
                         text-with-loading(:loading="loading" :text="$t('pages._auth._forgot_password.submit')")
@@ -19,14 +19,17 @@
 <script>
     import {mapActions} from 'vuex'
     import TextWithLoading from '../../components/TextWithLoading'
+    import ErrorBox from '../../components/ErrorBox'
+    import {APP_ROUTE, ERROR_LEVEL_DEF} from '../../../app/config'
 
     export default {
         name: 'ForgotPassword',
-        components: {TextWithLoading},
+        components: {ErrorBox, TextWithLoading},
         data() {
             return {
                 loading: false,
-                succeed: false,
+
+                error: null,
 
                 email: '',
             }
@@ -44,32 +47,31 @@
                 accountForgotPassword: 'account/forgotPassword',
             }),
 
-            onSubmitted() {
-                this.succeed = false
+            onForgotPasswordSubmitted() {
+                this.error = null
                 this.loading = true
                 this.accountForgotPassword({
                     email: this.email,
+                    appResetPasswordPath: this.$router.getPathByName(APP_ROUTE.reset_password),
                     doneCallback: () => {
                         this.loading = false
-                        this.succeed = true
+                        this.error = {
+                            messages: [this.$t('pages._auth._forgot_password.succeed')],
+                            level: ERROR_LEVEL_DEF.success,
+                            class: 'alert-base-yellow',
+                        }
                     },
                     errorCallback: err => {
                         this.loading = false
-                        this.$bus.emit('error', {messages: err.getMessages(), extra: err.getExtra()})
+                        this.error = {
+                            messages: err.getMessages(),
+                            extra: err.getExtra(),
+                            level: ERROR_LEVEL_DEF.error,
+                            class: 'alert-base-pink',
+                        }
                     },
                 })
             },
         },
     }
 </script>
-
-<style lang="scss" scoped>
-    @import "../../../assets/css/variables";
-
-    .form-control {
-        &:focus {
-            border-color: $color-base-pink-lighter;
-            box-shadow: 0 0 0 0.2rem $color-base-pink-lighter-o;
-        }
-    }
-</style>

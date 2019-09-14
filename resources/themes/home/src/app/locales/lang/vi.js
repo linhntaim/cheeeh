@@ -30,6 +30,7 @@ export default {
         back: 'Quay lại',
         back_where: 'Quay lại {where}',
         clear_cache: 'Xóa thông tin lưu trữ',
+        confirm: 'Xác nhận',
         go_where: 'Đến {where}',
         login: 'Đăng nhập',
         logout: 'Đăng xuất',
@@ -99,7 +100,7 @@ export default {
             _forgot_password: {
                 _: 'Lấy mật khẩu mới',
                 submit: 'Lấy mật khẩu',
-                succeed: 'Đường dẫn để thiết lậpLập lại mật khẩu đã được gửi tới địa chỉ thư điện tử của bạn',
+                succeed: 'Đường dẫn để thiết lập lại mật khẩu đã được gửi tới địa chỉ thư điện tử của bạn',
             },
             _login: {
                 _: 'Trang đăng nhập',
@@ -110,6 +111,10 @@ export default {
                 _: 'Tạo tài khoản',
                 register_with: 'Đăng ký với {provider}',
                 registering_with: 'Đang đăng ký với {provider}',
+            },
+            _reset_password: {
+                _: 'Thiết lập mật khẩu',
+                succeed: 'Mật khẩu đã được thiết lập thành công',
             },
             _verify_email: {
                 _: 'Xác thực địa chỉ thư điện tử',

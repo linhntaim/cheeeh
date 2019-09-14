@@ -1,6 +1,12 @@
 import {intervalCaller} from './interval_caller'
 
 export class CountDown {
+    constructor() {
+        this.counter = 0
+        this.realCounter = 0
+        this.enabled = false
+    }
+
     start(counter, callback, step = 1) {
         this.counter = counter
         this.realCounter = counter

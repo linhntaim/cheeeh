@@ -30,6 +30,7 @@ export default {
         back: 'Back',
         back_where: 'Back to {where}',
         clear_cache: 'Clear cache',
+        confirm: 'Confirm',
         go_where: 'Go to {where}',
         login: 'Login',
         logout: 'Logout',
@@ -110,6 +111,10 @@ export default {
                 _: 'Create an account',
                 register_with: 'Register with {provider}',
                 registering_with: 'Registering with {provider}',
+            },
+            _reset_password: {
+                _: 'Set a new password',
+                succeed: 'Your password has been reset successfully',
             },
             _verify_email: {
                 _: 'Verify email address',

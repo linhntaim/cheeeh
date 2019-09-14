@@ -1,5 +1,5 @@
 <template lang="pug">
-    .card.border-none
+    .card.border-0
         .card-body
             error-box.alert-base-pink(:error="error")
             form(@submit.prevent="onLoginSubmitted()")

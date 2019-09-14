@@ -1,5 +1,5 @@
 <template lang="pug">
-    .card.border-none
+    .card.border-0
         .card-body
             h4.font-weight-bold.text-base-red.mb-3 {{ $t('pages._auth._register._') }}
             .form-group
@@ -40,7 +40,7 @@
                 .form-group
                     input#inputPassword.form-control.focus-base-red(ref="inputPassword" v-model="password" :placeholder="$t('pages.password')" type="password" required)
                 .form-group
-                    input#inputRepeatPassword.form-control.focus-base-red(v-model="passwordConfirmation" :placeholder="$t('actions.retype_what', {what: $t('pages.password_lc')})" type="password" required)
+                    input#inputRetypePassword.form-control.focus-base-red(v-model="passwordConfirmation" :placeholder="$t('actions.retype_what', {what: $t('pages.password_lc')})" type="password" required)
                 .form-group
                     button.btn.btn-base-red(:disabled="loading || disabled" type="submit")
                         text-with-loading(:loading="loading" :text="$t('actions.register')")

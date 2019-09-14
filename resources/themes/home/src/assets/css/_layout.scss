@@ -45,7 +45,7 @@
     }
 }
 
-@media (max-width: $xs-max-width) {
+@media (max-width: $layout-footer-max-width) {
     .layout-footer {
         height: auto;
     }

@@ -6,9 +6,23 @@
         padding-top: 0;
         padding-bottom: 0;
         background: $color-dark;
+
+        .nav-item {
+            white-space: nowrap;
+        }
     }
 
-    @media (min-width: $sm-min-width) {
+    .locale-dropdown {
+        .dropdown-menu {
+            margin-bottom: 0.15rem;
+            border-bottom-width: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            background-color: #fff;
+        }
+    }
+
+    @media (min-width: ($layout-footer-max-width + 1)) {
         .navbar-collapse {
             margin-right: 1rem;
         }
@@ -30,7 +44,7 @@
         }
     }
 
-    @media (max-width: $xs-max-width) {
+    @media (max-width: $layout-footer-max-width) {
         padding: 0;
 
         .navbar {
@@ -56,6 +70,18 @@
                         padding-bottom: 0;
                     }
                 }
+            }
+        }
+
+        .locale-dropdown {
+            .dropdown-menu {
+                position: absolute;
+                left: 0;
+                right: auto;
+                margin-bottom: .5rem;
+                padding: 0;
+                border-bottom-width: 1px;
+                border-radius: 0;
             }
         }
     }

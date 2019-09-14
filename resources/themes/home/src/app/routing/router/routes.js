@@ -46,28 +46,37 @@ export const routes = [
         },
         children: [
             {
-                path: 'login',
-                name: 'login',
+                path: '',
+                component: () => import('../../../views/master/Blank'),
                 meta: {
                     requireNotAuth: true,
                 },
-                component: () => import('../../../views/pages/auth/Login'),
-            },
-            {
-                path: 'register',
-                name: 'register',
-                meta: {
-                    requireNotAuth: true,
-                },
-                component: () => import('../../../views/pages/auth/Register'),
-            },
-            {
-                path: 'forgot-password',
-                name: 'forgot_password',
-                meta: {
-                    requireNotAuth: false,
-                },
-                component: () => import('../../../views/pages/auth/ForgotPassword'),
+                children: [
+                    {
+                        path: 'login',
+                        name: 'login',
+                        component: () => import('../../../views/pages/auth/Login'),
+                    },
+                    {
+                        path: 'register',
+                        name: 'register',
+                        component: () => import('../../../views/pages/auth/Register'),
+                    },
+                    {
+                        path: 'forgot-password',
+                        name: 'forgot_password',
+                        component: () => import('../../../views/pages/auth/ForgotPassword'),
+                    },
+                    {
+                        path: 'reset-password',
+                        name: 'reset_password',
+                    },
+                    {
+                        path: 'reset-password/:email/:token',
+                        name: 'reset_password_complete',
+                        component: () => import('../../../views/pages/auth/ResetPassword'),
+                    },
+                ],
             },
             {
                 path: '*',

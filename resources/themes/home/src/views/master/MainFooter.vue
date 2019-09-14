@@ -1,8 +1,10 @@
 <template lang="pug">
     .container.main-footer
-        nav.navbar.navbar-expand-sm.navbar-dark
+        nav.navbar.navbar-expand-md.navbar-dark
             .navbar-collapse
                 ul.navbar-nav
+                    li.nav-item
+                        a.nav-link.active {{ appName }} &copy; {{ year }}
                     li.nav-item
                         a.nav-link(href="#")
                             | {{ $t('master.main_footer.about') }}
@@ -32,12 +34,16 @@
 <script>
     import {mapActions, mapGetters} from 'vuex'
     import {log} from '../../app/utils/log'
+    import {APP_NAME} from '../../app/config'
 
     export default {
         name: 'MainFooter',
         data() {
             return {
                 loading: false,
+
+                appName: APP_NAME,
+                year: (new Date()).getFullYear(),
             }
         },
         computed: {
@@ -89,16 +95,3 @@
         },
     }
 </script>
-
-<style lang="scss" scoped>
-    @import '../../assets/css/variables';
-
-    .locale-dropdown {
-        .dropdown-menu {
-            margin-bottom: 0.15rem;
-            border-bottom: none;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-    }
-</style>

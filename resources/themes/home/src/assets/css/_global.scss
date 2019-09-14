@@ -91,10 +91,6 @@ body {
 /**
  * Border
  */
-.border-none {
-    border: none;
-}
-
 .border-base-dark {
     border-color: $color-base-dark !important;
 }
@@ -340,6 +336,10 @@ body {
     border-color: $color-base-light;
 }
 
+.dropdown-menu {
+    background-clip: unset;
+}
+
 .dropdown-item {
     &:hover {
         background-color: $color-base-light;
@@ -551,6 +551,26 @@ a {
         max-width: $xl-min-width - 100;
     }
 }
+
+/**
+ * Navbar
+ */
+@media (max-width: $sm-max-width) {
+    .navbar-expand-md {
+        > .navbar-nav {
+            flex-basis: 100%;
+        }
+    }
+}
+
+@media (max-width: $xs-max-width) {
+    .navbar-expand-sm {
+        > .navbar-nav {
+            flex-basis: 100%;
+        }
+    }
+}
+
 
 /**
  * Padding
