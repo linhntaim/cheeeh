@@ -7,15 +7,15 @@ export default class CookieStore {
     }
 
     retrieve() {
-        return cookie.get(this.cookieName, null, APP_COOKIE.domain)
+        return cookie.get(this.cookieName)
     }
 
-    store(data) {
-        cookie.set(this.cookieName, data, null, APP_COOKIE.domain)
+    store(data, expires = '1Y') {
+        cookie.set(this.cookieName, data, expires, APP_COOKIE.domain)
         return data
     }
 
     remove() {
-        cookie.remove([this.cookieName])
+        cookie.remove([this.cookieName], APP_COOKIE.domain)
     }
 }

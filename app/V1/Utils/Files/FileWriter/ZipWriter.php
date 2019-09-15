@@ -11,7 +11,7 @@ class ZipWriter extends FileWriter
      */
     protected $handler;
 
-    public function __construct($name, $handler = ZipperHandler::class, $stored = false, $toDirectory = '', $isRelative = false)
+    public function __construct($name, $handler = ZipArchiveHandler::class, $stored = false, $toDirectory = '', $isRelative = false)
     {
         if (is_array($name)) {
             $name['extension'] = 'zip';

@@ -4,6 +4,10 @@
             .card.border-0.shadow-sm
                 .card-body.p-3
                     | Sidebar
+            .mt-3
+                router-link.btn.btn-base-pink.btn-block(:to="{name: 'upload'}")
+                    i.fas.fa-plus
+                    | &nbsp;&nbsp;{{ $t('actions.upload') }}
         .col-lg-8.my-3
             .card.border-0.shadow-sm
                 .card-body.p-3
@@ -15,7 +19,3 @@
         name: 'Home',
     }
 </script>
-
-<style scoped>
-
-</style>

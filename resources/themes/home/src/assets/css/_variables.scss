@@ -18,24 +18,25 @@ $color-base-pink-darker: #d85ea2;
 $color-base-pink-dark: #b55982;
 $color-base-lightest: #f9fbfc;
 $color-base-lighter: #f3f5f6;
-$color-base-lighter-o: rgba(243, 245, 246, 0.4);
-$color-base-lighter-o2: rgba(243, 245, 246, 0.2);
+$color-base-lighter-o: rgba(243, 245, 246, .4);
+$color-base-lighter-o2: rgba(243, 245, 246, .2);
 $color-base-light: #f0f2f3;
 $color-base-dark-lighter: #687279;
 $color-base-dark: #262626;
+$color-base-dark-o: rgba(38, 38, 38, .5);
 
 $color-microsoft-lighter: #57A3C5;
-$color-microsoft-lighter-o: rgba(87, 163, 197, 0.4);
+$color-microsoft-lighter-o: rgba(87, 163, 197, .4);
 $color-microsoft: #3999c6;
 $color-microsoft-darker: #2A89B5;
 $color-microsoft-dark: #1876A1;
 $color-facebook-lighter: #477bcb;
-$color-facebook-lighter-o: rgba(71, 123, 203, 0.4);
+$color-facebook-lighter-o: rgba(71, 123, 203, .4);
 $color-facebook: #4267B2;
 $color-facebook-darker: #405099;
 $color-facebook-dark: #393e80;
 $color-google-lighter: #ff5845;
-$color-google-lighter-o: rgba(255, 88, 69, 0.4);
+$color-google-lighter-o: rgba(255, 88, 69, .4);
 $color-google: #EA4335;
 $color-google-darker: #d13d33;
 $color-google-dark: #ae392f;
@@ -44,6 +45,9 @@ $disabled-o: .65;
 
 $color-light: #fff;
 $color-dark: #000;
+$color-dark-o1: rgba(0, 0, 0, .25);
+$color-dark-o: rgba(0, 0, 0, .5);
+$color-dark-o2: rgba(0, 0, 0, .75);
 
 $xs-max-width: 575px;
 $sm-min-width: 576px;
@@ -58,13 +62,14 @@ $d5: 3rem;
 $d6: $d5 * 2;
 
 $d8x: 8px;
+$d15x: 15px;
 
 $rem: 16px;
 $d-base-n: 14;
 $d-base: 14rem;
 
-$layout-header-height: $d-base * 0.25;
-$layout-footer-height: $d-base * 0.2;
+$layout-header-height: $d-base * .25;
+$layout-footer-height: $d-base * .2;
 $layout-main-with-left-cover-width-n: $d-base-n * 2.5;
 $layout-main-with-left-cover-width: $d-base * 2.5;
 $layout-footer-max-width: $sm-max-width;

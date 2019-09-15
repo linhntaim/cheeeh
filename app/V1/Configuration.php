@@ -25,6 +25,9 @@ class Configuration
     const DEFAULT_ITEMS_PER_PAGE = 10;
     const ALLOWED_ITEMS_PER_PAGE = [10, 20, 50, 100];
 
+    const THROTTLE_REQUEST_MAX_ATTEMPTS = 60;
+    const THROTTLE_REQUEST_DECAY_MINUTES = 1;
+
     const FETCH_QUERY = 0;
     const FETCH_PAGING_YES = 1;
     const FETCH_PAGING_NO = 2;

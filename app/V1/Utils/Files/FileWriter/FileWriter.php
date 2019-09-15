@@ -2,6 +2,7 @@
 
 namespace App\V1\Utils\Files\FileWriter;
 
+use App\V1\Utils\Files\FileHelper;
 use App\V1\Utils\Files\RelativeFileContainer;
 
 class FileWriter extends RelativeFileContainer
@@ -43,15 +44,42 @@ class FileWriter extends RelativeFileContainer
         return $this;
     }
 
+    public function openToRead()
+    {
+        if (!is_resource($this->handler)) {
+            $this->handler = fopen($this->filePath, 'r');
+        }
+        return $this;
+    }
+
+    public function readAll()
+    {
+        if (is_resource($this->handler)) {
+            return fread($this->handler, filesize($this->filePath));
+        }
+        return null;
+    }
+
     public function write($anything)
     {
-        fwrite($this->handler, $anything);
+        if (is_resource($this->handler)) {
+            fwrite($this->handler, $anything);
+        }
     }
 
     public function close()
     {
         if (is_resource($this->handler)) {
             fclose($this->handler);
+        }
+
+        return $this;
+    }
+
+    public function delete()
+    {
+        if (file_exists($this->filePath)) {
+            unlink($this->filePath);
         }
     }
 

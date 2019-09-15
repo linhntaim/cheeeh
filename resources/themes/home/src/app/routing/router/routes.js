@@ -104,6 +104,10 @@ export const routes = [
                 path: 'verify-email/:email/:verified_code',
                 name: 'verify_email_complete',
             },
+            {
+                path: 'upload',
+                name: 'upload',
+            },
         ],
     },
 ]
@@ -136,6 +140,11 @@ export const authRoutes = [
                                 path: '',
                                 name: 'home',
                                 component: () => import('../../../views/pages/Home'),
+                            },
+                            {
+                                path: 'upload',
+                                name: 'upload',
+                                component: () => import('../../../views/pages/Upload'),
                             },
                         ],
                     },

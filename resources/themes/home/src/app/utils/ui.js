@@ -39,6 +39,10 @@ export class UI {
         }, 500)
     }
 
+    waitRendering(callback) {
+        window.requestAnimationFrame(callback)
+    }
+
     reloadPage() {
         window.location.reload()
     }

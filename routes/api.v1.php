@@ -42,6 +42,8 @@ Route::group([
 
             Route::put('main-email', 'AccountController@mainEmailUpdate');
 
+            Route::post('upload', 'UploadController@store');
+
             Route::group([
                 'prefix' => 'email',
             ], function () {

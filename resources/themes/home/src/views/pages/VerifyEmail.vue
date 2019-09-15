@@ -8,8 +8,7 @@
                     .mt-5.mb-3.small.text-base-red {{ $t('pages._auth._verify_email.help') }}
                     error-box.d-inline-block.small(:error="error")
                     form(@submit.prevent="onResendSubmitted()")
-                        .row
-                            .col-md-2.col-lg-3
+                        .row.justify-content-center
                             .col-md-8.col-lg-6
                                 .form-group
                                     input#nputEmail.form-control.focus-base-red.text-center(v-model="email" :placeholder="$t('pages.email_address')" type="email" required)

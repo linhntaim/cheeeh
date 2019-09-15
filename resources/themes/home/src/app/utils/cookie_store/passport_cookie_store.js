@@ -40,7 +40,7 @@ class PassportCookieStore extends CookieStore {
             token_type: passport.tokenType,
             refresh_token: passport.refreshToken,
             token_end_time: passport.tokenEndTime,
-        })
+        }, new Date(passport.tokenEndTime))
     }
 }
 

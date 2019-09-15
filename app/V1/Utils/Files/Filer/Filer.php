@@ -6,7 +6,6 @@ use App\V1\Exceptions\AppException;
 use App\V1\Utils\Files\File;
 use App\V1\Utils\Files\FileHelper;
 use App\V1\Utils\Files\RelativeFileContainer;
-use Illuminate\Http\UploadedFile;
 use SplFileInfo;
 
 class Filer extends RelativeFileContainer
@@ -25,35 +24,7 @@ class Filer extends RelativeFileContainer
      */
     public function __construct($file)
     {
-        $this->file = $this->checkFile($file);
-    }
-
-    /**
-     * @param string|SplFileInfo $file
-     * @return File
-     * @throws AppException
-     */
-    protected function checkFile($file)
-    {
-        if (is_string($file)) {
-            if (!file_exists($file)) {
-                throw new AppException($this->__transErrorWithModule('file_not_found'));
-            }
-            return new File($file);
-        }
-        if ($file instanceof File) {
-            return $file;
-        }
-        if ($file instanceof UploadedFile) {
-            return new File(FileHelper::getInstance()->toDefaultRealPath(
-                $file->store('') // saved in storage/app directory (local disk), which is default path, return relative path
-            ));
-        }
-        if ($file instanceof SplFileInfo) {
-            return new File($file->getRealPath());
-        }
-
-        throw new AppException($this->__transErrorWithModule('file_not_found'));
+        $this->file = File::from($file);
     }
 
     public function getIsOverridden()

@@ -46,7 +46,7 @@ abstract class ZipHandler
     public function close()
     {
         if ($this->opened) {
-            $this->handler->close();
+            $this->_close();
             $this->opened = false;
         }
     }

@@ -2,6 +2,7 @@
 
 namespace App\V1\Http\Controllers\Api;
 
+use App\V1\Configuration;
 use App\V1\Http\Controllers\ApiController;
 use App\V1\Http\Requests\Request;
 use App\V1\ModelRepositories\PermissionRepository;
@@ -49,6 +50,10 @@ class PrerequisiteController extends ApiController
         if ($request->has('server')) {
             $this->dataset['server'] = [
                 'c' => time(),
+                'throttle_request' => [
+                    'max_attempts' => Configuration::THROTTLE_REQUEST_MAX_ATTEMPTS,
+                    'decay_minutes' => Configuration::THROTTLE_REQUEST_DECAY_MINUTES,
+                ],
                 'facebook_enabled' => true,
                 'google_enabled' => true,
                 'microsoft_enabled' => true,
