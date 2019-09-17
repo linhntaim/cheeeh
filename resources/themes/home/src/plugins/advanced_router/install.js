@@ -41,7 +41,14 @@ const install = (Vue, {router, session}) => {
 
     router.softReplace = function (location, onComplete = null, onAbort = null) {
         session.skip()
-        this.replace(location, onComplete, onAbort)
+        this.replace(location, onComplete, () => {
+            onAbort && onAbort()
+        })
+    }
+
+    router.catchSoftReplace = function (location, onComplete = null, onAbort = null) {
+        session.skip()
+        return this.replace(location, onComplete, onAbort)
     }
 }
 

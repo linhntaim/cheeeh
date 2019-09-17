@@ -39,12 +39,16 @@ export class UI {
         }, 500)
     }
 
+    reloadPage() {
+        window.location.reload()
+    }
+
     waitRendering(callback) {
         window.requestAnimationFrame(callback)
     }
 
-    reloadPage() {
-        window.location.reload()
+    selectText(elementId) {
+        this.selectElement(document.getElementById(elementId))
     }
 }
 

@@ -1,14 +1,16 @@
 export const APP_ENV = process.env.VUE_APP_ENV
 export const APP_DEBUG = process.env.VUE_APP_DEBUG
 export const APP_LOG_ONLY = process.env.VUE_APP_LOG_ONLY ? process.env.VUE_APP_LOG_ONLY.split(',') : []
-export const APP_TYPE = process.env.VUE_APP_TYPE
 export const APP_TYPE_ADMIN = 'admin'
 export const APP_TYPE_HOME = 'home'
-export const APP_HOST = process.env.VUE_APP_HOST
+export const APP_TYPE = process.env.VUE_APP_TYPE ? process.env.VUE_APP_TYPE : APP_TYPE_ADMIN
 export const APP_HOST_SELF = 'self'
 export const APP_HOST_SUB = 'sub'
-export const APP_HOST_SUB_PATH = process.env.VUE_APP_HOST_SUB_PATH
+export const APP_HOST = process.env.VUE_APP_HOST ? process.env.VUE_APP_HOST : APP_HOST_SELF
+export const APP_HOST_SUB_PATH = APP_HOST === APP_HOST_SUB ? process.env.VUE_APP_HOST_SUB_PATH : ''
 export const APP_NAME = process.env.VUE_APP_NAME
+export const APP_AUTHOR = process.env.VUE_APP_AUTHOR
+export const APP_DESCRIPTION = process.env.VUE_APP_DESCRIPTION
 export const APP_URL = window.location.origin + (APP_HOST === APP_HOST_SUB ? APP_HOST_SUB_PATH : '')
 export const APP_ADMIN_URL = APP_TYPE === APP_TYPE_ADMIN ? APP_URL : process.env.VUE_APP_ADMIN_URL
 export const APP_HOME_URL = APP_TYPE === APP_TYPE_HOME ? APP_URL : process.env.VUE_APP_HOME_URL

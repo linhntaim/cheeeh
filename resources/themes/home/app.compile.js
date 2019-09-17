@@ -5,7 +5,7 @@ dotenvExpand(dotenv.config())
 const sass = require('node-sass')
 const fs = require('fs')
 const path = require('path')
-const outFile = 'public/css/style.css'
+const outFile = 'public/css/style.min.css'
 const outDir = path.dirname(outFile)
 if (!fs.existsSync(outDir)) {
     fs.mkdirSync(outDir, {
@@ -13,7 +13,7 @@ if (!fs.existsSync(outDir)) {
     })
 }
 sass.render({
-    file: 'src/assets/css/style.scss',
+    file: 'src/assets/css/__style.scss',
     importer: function (url, prev, done) {
         const urls = url.split('/')
         url = urls.pop()
