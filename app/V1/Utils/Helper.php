@@ -11,4 +11,10 @@ class Helper
         }
         return $default;
     }
+
+    public static function currentUserId($default = null)
+    {
+        $currentUser = request()->user();
+        return empty($currentUser) ? $default : $currentUser->id;
+    }
 }
