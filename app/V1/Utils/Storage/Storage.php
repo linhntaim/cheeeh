@@ -6,8 +6,10 @@ use App\V1\Exceptions\AppException;
 use App\V1\Utils\ClassTrait;
 use App\V1\Utils\DateTimeHelper;
 use App\V1\Utils\Helper;
+use App\V1\Utils\StringHelper;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
+use Psy\Util\Str;
 use SplFileInfo;
 
 abstract class Storage
@@ -27,12 +29,18 @@ abstract class Storage
 
     public function getDirectory()
     {
-        $seed = Helper::currentUserId(rand(0, $this->maxFirstFolder - 1)) % $this->maxFirstFolder;
-        $salt = 170; // AA
-        $first = dechex($seed + 170); // + AA
         $now = DateTimeHelper::syncNowObject();
-        $ym = dechex(1000000 - intval($now->format('Ym')));
-        return dechex($this->getDirectory() % $this->maxFirstFolder);
+        $hash = function ($value, $length = 8) {
+            $value = StringHelper::fillAfter(empty($value) ? '' : $value, $length - 1, function () {
+                    return rand(1, 9);
+                }, $filled) . $filled;
+            return dechex(intval($value));
+        };
+        return implode(DIRECTORY_SEPARATOR, [
+            $hash(Helper::currentUserId(rand(0, $this->maxFirstFolder - 1)) % $this->maxFirstFolder + 170),
+            $hash($now->format('Ym')),
+            $hash($now->format('dH')),
+        ]);
     }
 
     protected function checkFile($file)

@@ -7,16 +7,44 @@ use Illuminate\Support\Str;
 
 class StringHelper
 {
-    public static function fill($text, $length, $char)
+    public static function repeat($char, $time)
     {
-        $textLength = mb_strlen($text);
-        return $textLength >= $length ?
-            $text : str_repeat($char, $length - $textLength) . $text;
+        if (is_callable($char)) {
+            $r = '';
+            while (--$time >= 0) {
+                $r .= $char();
+            }
+            return $r;
+        }
+        return str_repeat($char, $time);
     }
 
-    public static function fillFollow($text, $followText, $char)
+    public static function fill($text, $length, $char, &$filled = 0)
     {
-        return static::fill($text, mb_strlen($followText), $char);
+        $textLength = mb_strlen($text);
+        if ($textLength >= $length) return $text;
+
+        $filled = $length - $textLength;
+        return static::repeat($char, $length - $textLength) . $text;
+    }
+
+    public static function fillFollow($text, $followText, $char, &$filled = 0)
+    {
+        return static::fill($text, mb_strlen($followText), $char, $filled);
+    }
+
+    public static function fillAfter($text, $length, $char, &$filled = 0)
+    {
+        $textLength = mb_strlen($text);
+        if ($textLength >= $length) return $text;
+
+        $filled = $length - $textLength;
+        return $text . static::repeat($char, $length - $textLength);
+    }
+
+    public static function fillAfterFollow($text, $followText, $char, &$filled = 0)
+    {
+        return static::fillAfter($text, mb_strlen($followText), $char, $filled);
     }
 
     public static function hashRandom($length = 32)
