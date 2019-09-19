@@ -112,42 +112,42 @@ class PrerequisiteController extends ApiController
     private function timezones(Request $request)
     {
         if ($request->has('timezones')) {
-            $this->dataset['timezones'] = DateTimeHelper::getTimezones();
+            $this->dataset['timezones'] = DateTimeHelper::getInstance()->getTimezones();
         }
     }
 
     private function daysOfWeek(Request $request)
     {
         if ($request->has('days_of_week')) {
-            $this->dataset['days_of_week'] = DateTimeHelper::getDaysOfWeek();
+            $this->dataset['days_of_week'] = DateTimeHelper::getInstance()->getDaysOfWeek();
         }
     }
 
     private function longDateFormats(Request $request)
     {
         if ($request->has('long_date_formats')) {
-            $this->dataset['long_date_formats'] = DateTimeHelper::getLongDateFormats();
+            $this->dataset['long_date_formats'] = DateTimeHelper::getInstance()->getLongDateFormats();
         }
     }
 
     private function shortDateFormats(Request $request)
     {
         if ($request->has('short_date_formats')) {
-            $this->dataset['short_date_formats'] = DateTimeHelper::getShortDateFormats();
+            $this->dataset['short_date_formats'] = DateTimeHelper::getInstance()->getShortDateFormats();
         }
     }
 
     private function longTimeFormats(Request $request)
     {
         if ($request->has('long_time_formats')) {
-            $this->dataset['long_time_formats'] = DateTimeHelper::getLongTimeFormats();
+            $this->dataset['long_time_formats'] = DateTimeHelper::getInstance()->getLongTimeFormats();
         }
     }
 
     private function shortTimeFormats(Request $request)
     {
         if ($request->has('short_time_formats')) {
-            $this->dataset['short_time_formats'] = DateTimeHelper::getShortTimeFormats();
+            $this->dataset['short_time_formats'] = DateTimeHelper::getInstance()->getShortTimeFormats();
         }
     }
 

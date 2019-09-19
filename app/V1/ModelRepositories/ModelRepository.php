@@ -241,8 +241,9 @@ abstract class ModelRepository
     protected function batchInsertAdd($attributes)
     {
         if ($this->model->timestamps) {
-            $attributes['created_at'] = DateTimeHelper::syncNow();
-            $attributes['updated_at'] = DateTimeHelper::syncNow();
+            $now = DateTimeHelper::syncNow();
+            $attributes['created_at'] = $now;
+            $attributes['updated_at'] = $now;
         }
         $this->batch['values'][] = $attributes;
     }

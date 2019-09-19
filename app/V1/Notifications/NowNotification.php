@@ -122,7 +122,7 @@ abstract class NowNotification extends BaseNotification
             'id' => $this->id,
             'data' => $this->toArray($notifiable),
             'created_at' => DateTimeHelper::syncNow(),
-            'shown_created_at' => null,
+            'shown_created_at' => $dateTimeHelper->compound('shortDate', ' ', 'shortTime'),
             'is_read' => false,
         ]));
     }
@@ -160,7 +160,7 @@ abstract class NowNotification extends BaseNotification
                 'badge' => 1,
             ],
             'extraPayLoad' => [
-                'action' => $this->getAction($notifiable)
+                'action' => $this->getAction($notifiable),
             ],
         ];
     }
@@ -171,10 +171,10 @@ abstract class NowNotification extends BaseNotification
             'notification' => [
                 'title' => $this->getTitle($notifiable),
                 'body' => $this->getContent($notifiable, false),
-                'sound' => 'default'
+                'sound' => 'default',
             ],
             'data' => [
-                'action' => $this->getAction($notifiable)
+                'action' => $this->getAction($notifiable),
             ],
         ];
     }

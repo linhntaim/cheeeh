@@ -41,8 +41,7 @@ abstract class BaseLocalizationHelper
         $this->_ts = 0;
         $this->locale = config('app.locale');
         $this->country = ConfigHelper::get('localization.country');
-//        $this->timezone = config('app.timezone');
-        $this->timezone = 'Asia/Tokyo';
+        $this->timezone = config('app.timezone');
         $this->currency = ConfigHelper::get('localization.currency');
         $this->numberFormat = ConfigHelper::get('localization.number_format');
         $this->firstDayOfWeek = ConfigHelper::get('localization.first_day_of_week');

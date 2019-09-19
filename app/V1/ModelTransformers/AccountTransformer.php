@@ -21,9 +21,7 @@ class AccountTransformer extends ModelTransformer
             'name' => $user->name,
             'display_name' => $user->display_name,
             'url_avatar' => $user->url_avatar,
-            'email' => $this->safeObject($user->email, function ($userEmail) {
-                return $this->modelTransform(UserEmailTransformer::class, $userEmail);
-            }),
+            'email' => $this->modelTransform(UserEmailTransformer::class, $user->email),
             'role_names' => $this->safeObject($user->roleNames),
             'permission_names' => $this->safeObject($user->permissionNames),
 

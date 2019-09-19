@@ -24,12 +24,15 @@ abstract class BaseDateTimeHelper
     const DAY_TYPE_END = 1;
     const DAY_TYPE_NEXT_START = 2;
 
+    /**
+     * @var static
+     */
     protected static $instance;
 
     /**
      * @return static
      */
-    public function getInstance()
+    public static function getInstance()
     {
         if (empty(static::$instance)) {
             static::$instance = new static();
@@ -37,9 +40,47 @@ abstract class BaseDateTimeHelper
         return static::$instance;
     }
 
-    private $now;
+    /**
+     * @var Carbon
+     */
+    protected static $now;
+
+    /**
+     * @param bool $reset
+     * @return Carbon
+     * @throws Exception
+     */
+    public static function syncNowObject($reset = false)
+    {
+        if ($reset || empty(static::$now)) {
+            static::$now = new Carbon('now', new CarbonTimeZone('UTC'));
+        }
+        return static::$now;
+    }
+
+    /**
+     * @param string $format
+     * @param bool $reset
+     * @return string
+     * @throws Exception
+     */
+    public static function syncNowFormat($format, $reset = false)
+    {
+        return static::syncNowObject($reset)->format($format);
+    }
+
+    /**
+     * @param bool $reset
+     * @return string
+     * @throws Exception
+     */
+    public static function syncNow($reset = false)
+    {
+        return static::syncNowFormat(static::DATABASE_FORMAT, $reset);
+    }
 
     private $locale;
+    private $locales;
     private $transLongDate;
     private $transShortDate;
     private $transShortMonth;
@@ -70,40 +111,6 @@ abstract class BaseDateTimeHelper
         $this->dateTimeOffset = $this->parseDateTimeOffsetByTimezone($localizationHelper->getTimezone());
     }
 
-    /**
-     * @param bool $reset
-     * @return Carbon
-     * @throws Exception
-     */
-    public function syncNowObject($reset = false)
-    {
-        if ($reset || empty($this->now)) {
-            $this->now = new Carbon();
-        }
-        return $this->now;
-    }
-
-    /**
-     * @param string $format
-     * @param bool $reset
-     * @return string
-     * @throws Exception
-     */
-    public function syncNowFormat($format, $reset = false)
-    {
-        return $this->syncNowObject($reset)->format($format);
-    }
-
-    /**
-     * @param bool $reset
-     * @return string
-     * @throws Exception
-     */
-    public function syncNow($reset = false)
-    {
-        return $this->syncNowFormat(static::DATABASE_FORMAT, $reset);
-    }
-
     public function getLocale()
     {
         return $this->locale;
@@ -119,22 +126,71 @@ abstract class BaseDateTimeHelper
      * @return Carbon
      * @throws \App\V1\Exceptions\Exception
      */
-    public function toCarbon($time)
+    protected function toCarbon($time)
     {
         if (is_string($time)) {
             try {
-                return (new Carbon($time))->locale($this->locale);
+                return (new Carbon($time, new CarbonTimeZone('UTC')))->locale($this->locale);
             } catch (Exception $exception) {
                 throw AppException::from($exception);
             }
         }
 
-        if ($time instanceof Carbon) return $time->locale($this->locale);
+        if ($time instanceof Carbon) return (clone $time)->setTimezone(new CarbonTimeZone('UTC'))->locale($this->locale);
 
         throw new AppException(self::__transErrorWithModule('time_not_supported'));
     }
 
-    public function applyStartType(Carbon $time, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
+    protected function resetLocales($force = false)
+    {
+        if (empty($this->locales) || $force) {
+            $this->locales = [
+                'default' => [],
+                'trans' => [],
+            ];
+            $defaultLocales = [];
+            for ($i = 1; $i <= 7; ++$i) {
+                $defaultLocales[] = trans('datetime.day_' . $i, [], 'en');
+                $this->locales['trans'][] = trans('datetime.day_' . $i, [], $this->locale);
+            }
+            for ($i = 1; $i <= 7; ++$i) {
+                $defaultLocales[] = trans('datetime.short_day_' . $i, [], 'en');
+                $this->locales['trans'][] = trans('datetime.short_day_' . $i, [], $this->locale);
+            }
+            for ($i = 1; $i <= 12; ++$i) {
+                $defaultLocales[] = trans('datetime.month_' . $i, [], 'en');
+                $this->locales['trans'][] = trans('datetime.month_' . $i, [], $this->locale);
+            }
+            for ($i = 1; $i <= 12; ++$i) {
+                $defaultLocales[] = trans('datetime.short_month_' . $i, [], 'en');
+                $this->locales['trans'][] = trans('datetime.short_month_' . $i, [], $this->locale);
+            }
+            foreach (['lm', 'um'] as $c) {
+                foreach (['am', 'pm'] as $m) {
+                    $defaultLocales[] = trans('datetime.' . $c . '_' . $m, [], 'en');
+                    $this->locales['trans'][] = trans('datetime.' . $c . '_' . $m, [], $this->locale);
+                }
+            }
+            uasort($this->locales['trans'], function ($t1, $t2) {
+                $t1Length = mb_strlen($t1);
+                $t2Length = mb_strlen($t2);
+                if ($t1Length != $t2Length) return $t1Length < $t2Length ? 1 : -1;
+
+                return $t1 == $t2 ? 0 : ($t1 < $t2 ? 1 : -1);
+            });
+            foreach ($this->locales['trans'] as $key => $text) {
+                $this->locales['default'][$key] = $defaultLocales[$key];
+            }
+        }
+    }
+
+    protected function standardizeTime($time)
+    {
+        $this->resetLocales();
+        return str_replace($this->locales['trans'], $this->locales['default'], $time);
+    }
+
+    protected function applyStartType(Carbon $time, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
         switch ($start) {
             case static::DAY_TYPE_NEXT_START:
@@ -167,7 +223,7 @@ abstract class BaseDateTimeHelper
 
     public function fromFormat($format, $time, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
-        return $this->from(Carbon::createFromFormat($format, $time), $start);
+        return $this->from(Carbon::createFromFormat($format, $this->standardizeTime($time)), $start);
     }
 
     public function fromFormatToFormat($format, $time, $toFormat = null, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
@@ -212,12 +268,12 @@ abstract class BaseDateTimeHelper
         return [
             'd' => $time->format('j'),
             'dd' => $time->format('d'),
-            'sd' => trans('datetime.short_day_' . $time->format('N')),
-            'ld' => trans('datetime.day_' . $time->format('N')),
+            'sd' => trans('datetime.short_day_' . $time->format('N'), [], $this->locale),
+            'ld' => trans('datetime.day_' . $time->format('N'), [], $this->locale),
             'm' => $time->format('n'),
             'mm' => $time->format('m'),
-            'sm' => trans('datetime.short_month_' . $time->format('n')),
-            'lm' => trans('datetime.month_' . $time->format('n')),
+            'sm' => trans('datetime.short_month_' . $time->format('n'), [], $this->locale),
+            'lm' => trans('datetime.month_' . $time->format('n'), [], $this->locale),
             'yy' => $time->format('y'),
             'yyyy' => $time->format('Y'),
             'h' => $time->format('g'),
@@ -226,8 +282,32 @@ abstract class BaseDateTimeHelper
             'hh2' => $time->format('H'),
             'ii' => $time->format('i'),
             'ss' => $time->format('s'),
-            'ut' => $time->format('A'),
-            'lt' => $time->format('a'),
+            'ut' => trans('datetime.um_' . $time->format('a'), [], $this->locale),
+            'lt' => trans('datetime.lm_' . $time->format('a'), [], $this->locale),
+        ];
+    }
+
+    protected function getFormatBags()
+    {
+        return [
+            'd' => 'j',
+            'dd' => 'd',
+            'sd' => 'D',
+            'ld' => 'l',
+            'm' => 'n',
+            'mm' => 'm',
+            'sm' => 'M',
+            'lm' => 'F',
+            'yy' => 'y',
+            'yyyy' => 'Y',
+            'h' => 'g',
+            'hh' => 'h',
+            'h2' => 'G',
+            'hh2' => 'H',
+            'ii' => 'i',
+            'ss' => 's',
+            'ut' => 'A',
+            'lt' => 'a',
         ];
     }
 
@@ -256,41 +336,41 @@ abstract class BaseDateTimeHelper
         return trans($this->transShortTime, $bags, $this->locale);
     }
 
-    public function compound($time, $func1 = BaseDateTimeHelper::SHORT_DATE_FUNCTION, $separation = ' ', $func2 = BaseDateTimeHelper::SHORT_TIME_FUNCTION)
+    public function compound($func1 = BaseDateTimeHelper::SHORT_DATE_FUNCTION, $separation = ' ', $func2 = BaseDateTimeHelper::SHORT_TIME_FUNCTION, $time = 'now')
     {
         $allowedFunctions = [static::LONG_DATE_FUNCTION, static::LONG_TIME_FUNCTION, static::SHORT_DATE_FUNCTION, static::SHORT_TIME_FUNCTION];
         if (!in_array($func1, $allowedFunctions) || !in_array($func2, $allowedFunctions)) {
             return null;
         }
-        return sprintf('%s%s%s', call_user_func([$this, $func1], $time), $separation, call_user_func([$this, $func2], $time));
+        $bags = $this->getBags($time);
+        return sprintf('%s%s%s', call_user_func([$this, $func1 . 'FromBags'], $bags), $separation, call_user_func([$this, $func2 . 'FromBags'], $bags));
     }
 
-    public function longDate($time)
+    public function longDate($time = 'now')
     {
         return $this->longDateFromBags($this->getBags($time));
     }
 
-    public function shortDate($time)
+    public function shortDate($time = 'now')
     {
         return $this->shortDateFromBags($this->getBags($time));
     }
 
-    public function shortMonth($time)
+    public function shortMonth($time = 'now')
     {
         return $this->shortMonthFromBags($this->getBags($time));
     }
 
-    public function longTime($time)
+    public function longTime($time = 'now')
     {
         return $this->longTimeFromBags($this->getBags($time));
     }
 
-    public function shortTime($time)
+    public function shortTime($time = 'now')
     {
         return $this->shortTimeFromBags($this->getBags($time));
     }
 
-    #region Get format
     public function compoundFormat($func1, $separation, $func2)
     {
         $allowedFunctions = [static::LONG_DATE_FUNCTION, static::LONG_TIME_FUNCTION, static::SHORT_DATE_FUNCTION, static::SHORT_TIME_FUNCTION];
@@ -329,9 +409,7 @@ abstract class BaseDateTimeHelper
     {
         return trans('datetime.custom_formats.' . $name, $this->getFormatBags(), $this->locale);
     }
-    #endregion
 
-    #region To Format
     /**
      * @param string $format
      * @param Carbon|string $time
@@ -343,41 +421,15 @@ abstract class BaseDateTimeHelper
     {
         return $this->getObject($time, $start)->format($format);
     }
-    #endregion
 
     #endregion
 
-    #region Static Methods
     protected function getExampleBags()
     {
-        return $this->getBags($this->syncNowObject()->year . '-12-24 08:00:00', true);
+        return $this->getBags(static::syncNowObject()->year . '-12-24 08:00:00', true);
     }
 
-    protected function getFormatBags()
-    {
-        return [
-            'd' => 'j',
-            'dd' => 'd',
-            'sd' => 'D',
-            'ld' => 'l',
-            'm' => 'n',
-            'mm' => 'm',
-            'sm' => 'M',
-            'lm' => 'F',
-            'yy' => 'y',
-            'yyyy' => 'Y',
-            'h' => 'g',
-            'hh' => 'h',
-            'h2' => 'G',
-            'hh2' => 'H',
-            'ii' => 'i',
-            'ss' => 's',
-            'ut' => 'A',
-            'lt' => 'a',
-        ];
-    }
-
-    public function parseDateTimeOffsetByTimezone($timeZone)
+    protected function parseDateTimeOffsetByTimezone($timeZone)
     {
         if (empty($timeZone)) {
             return 0;
@@ -386,12 +438,6 @@ abstract class BaseDateTimeHelper
             return floatval(Str::substr($timeZone, 3)) * 3600;
         }
         return (new CarbonTimeZone($timeZone))->getOffset(new Carbon());
-    }
-
-    protected function getUtcOffsets()
-    {
-        return [-12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5,
-            0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 5.75, 6, 6.5, 7, 7.5, 8, 8.5, 8.75, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.75, 13, 13.75, 14];
     }
 
     public function getTimezones()
@@ -419,7 +465,7 @@ abstract class BaseDateTimeHelper
             ];
         }
         $timezones[] = [
-            'name' => trans('datetime.utc_offsets'),
+            'name' => trans('datetime.utc_offsets', [], $this->locale),
             'timezones' => $utcOffsets,
         ];
         // UNIX Timezones
@@ -453,12 +499,78 @@ abstract class BaseDateTimeHelper
         return $timezones;
     }
 
-    public function getTimezoneValues()
+    public function getDaysOfWeek()
+    {
+        $options = [];
+        for ($i = 1; $i <= 7; ++$i) {
+            $options[] = [
+                'value' => $i,
+                'name' => trans('datetime.day_' . $i, [], $this->locale),
+            ];
+        }
+        return $options;
+    }
+
+    public function getLongDateFormats()
+    {
+        $options = [];
+        for ($i = 0; $i <= 3; ++$i) {
+            $options[] = [
+                'value' => $i,
+                'example' => trans('datetime.long_date_' . $i, $this->getExampleBags(), $this->locale),
+            ];
+        }
+        return $options;
+    }
+
+    public function getShortDateFormats()
+    {
+        $options = [];
+        for ($i = 0; $i <= 3; ++$i) {
+            $options[] = [
+                'value' => $i,
+                'example' => trans('datetime.short_date_' . $i, $this->getExampleBags(), $this->locale),
+            ];
+        }
+        return $options;
+    }
+
+    public function getLongTimeFormats()
+    {
+        $options = [];
+        for ($i = 0; $i <= 4; ++$i) {
+            $options[] = [
+                'value' => $i,
+                'example' => trans('datetime.long_time_' . $i, $this->getExampleBags(), $this->locale),
+            ];
+        }
+        return $options;
+    }
+
+    public function getShortTimeFormats()
+    {
+        $options = [];
+        for ($i = 0; $i <= 4; ++$i) {
+            $options[] = [
+                'value' => $i,
+                'example' => trans('datetime.short_time_' . $i, $this->getExampleBags(), $this->locale),
+            ];
+        }
+        return $options;
+    }
+
+    public static function getUtcOffsets()
+    {
+        return [-12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5,
+            0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 5.75, 6, 6.5, 7, 7.5, 8, 8.5, 8.75, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.75, 13, 13.75, 14];
+    }
+
+    public static function getTimezoneValues()
     {
         // UTC
         $timezones = ['UTC'];
         // Timezone by UTC offsets
-        foreach ($this->getUtcOffsets() as $offset) {
+        foreach (static::getUtcOffsets() as $offset) {
             $timezones[] = 'UTC' . (0 <= $offset ? '+' . $offset : (string)$offset);
         }
         // UNIX Timezones
@@ -468,220 +580,28 @@ abstract class BaseDateTimeHelper
         return $timezones;
     }
 
-    public function getDaysOfWeek()
-    {
-        $options = [];
-        for ($i = 1; $i <= 7; ++$i) {
-            $options[] = [
-                'value' => $i,
-                'name' => trans('datetime.day_' . $i),
-            ];
-        }
-        return $options;
-    }
-
-    public function getDaysOfWeekValues()
+    public static function getDaysOfWeekValues()
     {
         return range(1, 7);
     }
 
-    public function getLongDateFormats()
-    {
-        $options = [];
-        for ($i = 0; $i <= 3; ++$i) {
-            $options[] = [
-                'value' => $i,
-                'example' => trans('datetime.long_date_' . $i, $this->getExampleBags()),
-            ];
-        }
-        return $options;
-    }
-
-    public function getLongDateFormatValues()
+    public static function getLongDateFormatValues()
     {
         return range(0, 3);
     }
 
-    public function getShortDateFormats()
-    {
-        $options = [];
-        for ($i = 0; $i <= 3; ++$i) {
-            $options[] = [
-                'value' => $i,
-                'example' => trans('datetime.short_date_' . $i, $this->getExampleBags()),
-            ];
-        }
-        return $options;
-    }
-
-    public function getShortDateFormatValues()
+    public static function getShortDateFormatValues()
     {
         return range(0, 3);
     }
 
-    public function getLongTimeFormats()
-    {
-        $options = [];
-        for ($i = 0; $i <= 4; ++$i) {
-            $options[] = [
-                'value' => $i,
-                'example' => trans('datetime.long_time_' . $i, $this->getExampleBags()),
-            ];
-        }
-        return $options;
-    }
-
-    public function getLongTimeFormatValues()
+    public static function getLongTimeFormatValues()
     {
         return range(0, 4);
     }
 
-    public function getShortTimeFormats()
-    {
-        $options = [];
-        for ($i = 0; $i <= 4; ++$i) {
-            $options[] = [
-                'value' => $i,
-                'example' => trans('datetime.short_time_' . $i, $this->getExampleBags()),
-            ];
-        }
-        return $options;
-    }
-
-    public function getShortTimeFormatValues()
+    public static function getShortTimeFormatValues()
     {
         return range(0, 4);
     }
-
-    protected $standardizedReplaced = [];
-    protected $standardizedReplacing = [];
-
-    public function standardizeTime($time)
-    {
-        if (empty($this->standardizedReplaced)) {
-            $mappingReplaces = [
-                'January' => [
-                    'Tháng 1',
-                ],
-                'Februry' => [
-                    'Tháng 2',
-                ],
-                'March' => [
-                    'Tháng 3',
-                ],
-                'April' => [
-                    'Tháng 4',
-                ],
-                'May' => [
-                    'Tháng 4',
-                    'Th5',
-                ],
-                'June' => [
-                    'Tháng 6',
-                ],
-                'July' => [
-                    'Tháng 7',
-                ],
-                'August' => [
-                    'Tháng 8',
-                ],
-                'September' => [
-                    'Tháng 9',
-                ],
-                'October' => [
-                    'Tháng 10',
-                ],
-                'November' => [
-                    'Tháng 11',
-                ],
-                'December' => [
-                    'Tháng 12',
-                ],
-                'Jan' => [
-                    'Th1',
-                ],
-                'Feb' => [
-                    'Th2',
-                ],
-                'Mar' => [
-                    'Th3',
-                ],
-                'Apr' => [
-                    'Th4',
-                ],
-                'Jun' => [
-                    'Th6',
-                ],
-                'Jul' => [
-                    'Th7',
-                ],
-                'Aug' => [
-                    'Th8',
-                ],
-                'Sep' => [
-                    'Th9',
-                ],
-                'Oct' => [
-                    'Th10',
-                ],
-                'Nov' => [
-                    'Th11',
-                ],
-                'Dec' => [
-                    'Th12',
-                ],
-                'Monday' => [
-                    'Thứ 2',
-                ],
-                'Tuesday' => [
-                    'Thứ 3',
-                ],
-                'Wednesday' => [
-                    'Thứ 4',
-                ],
-                'Thursday' => [
-                    'Thứ 5',
-                ],
-                'Friday' => [
-                    'Thứ 6',
-                ],
-                'Saturday' => [
-                    'Thứ 7',
-                ],
-                'Sunday' => [
-                    'Chủ nhật',
-                ],
-                'Mon' => [
-                    'T2',
-                ],
-                'Tue' => [
-                    'T3',
-                ],
-                'Wed' => [
-                    'T4',
-                ],
-                'Thur' => [
-                    'T5',
-                ],
-                'Fri' => [
-                    'T6',
-                ],
-                'Sat' => [
-                    'T7',
-                ],
-                'Sun' => [
-                    'CN',
-                ],
-            ];
-            foreach ($mappingReplaces as $name => $maps) {
-                foreach ($maps as $map) {
-                    $this->standardizedReplaced[] = $map;
-                    $this->standardizedReplacing[] = $name;
-                }
-            }
-        }
-
-        return str_replace($this->standardizedReplaced, $this->standardizedReplacing, $time);
-    }
-    #endregion
 }

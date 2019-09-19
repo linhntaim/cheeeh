@@ -57,7 +57,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function getEmailAttribute()
     {
-        if (!$this->memorizable('email')) {
+        if (!$this->memorized('email')) {
             $this->memorize('email', $this->emails()->main()->first());
         }
         return $this->remind('email');
@@ -75,7 +75,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function getLocalizationAttribute()
     {
-        if (!$this->memorizable('localization')) {
+        if (!$this->memorized('localization')) {
             $this->memorize('localization', $this->localizations()->first());
         }
         return $this->remind('localization');
@@ -83,7 +83,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function getRolesAttribute()
     {
-        if (!$this->memorizable('roles')) {
+        if (!$this->memorized('roles')) {
             $roles = $this->roles()->get();
             $roles->load('permissions');
             $this->memorize('roles', $roles);
@@ -93,7 +93,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function getRoleNamesAttribute()
     {
-        if (!$this->memorizable('role_names')) {
+        if (!$this->memorized('role_names')) {
             $roleNames = [];
             $this->roles->each(function ($role) use (&$roleNames) {
                 $roleNames[] = $role->name;
@@ -105,7 +105,7 @@ class User extends Authenticatable implements HasLocalePreference
 
     public function getPermissionNamesAttribute()
     {
-        if (!$this->memorizable('permission_names')) {
+        if (!$this->memorized('permission_names')) {
             $permissionNames = [];
             $this->roles->each(function ($role) use (&$permissionNames) {
                 $role->permissions->each(function ($permission) use (&$permissionNames) {
@@ -119,18 +119,10 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->remind('permission_names');
     }
 
-    public function getPasswordResetExpiredAtAttribute()
+    public function getSdStPasswordResetExpiredAtAttribute()
     {
-        $dateTimeHelper = DateTimeHelper::getInstance();
         $passwordReset = $this->passwordReset;
-        return empty($passwordReset) ? null : $dateTimeHelper->compound(
-            'shortDate',
-            ' ',
-            'shortTime',
-            $dateTimeHelper->getObject($passwordReset->created_at)
-                ->add(new DateInterval('PT' . config('auth.passwords.users.expire') . 'M')),
-            true
-        );
+        return empty($passwordReset) ? null : $passwordReset->sdStExpiredAt;
     }
 
     public function emails()

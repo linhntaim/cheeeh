@@ -192,7 +192,7 @@ class AccountController extends ApiController
             ],
         ]);
 
-        $currentUser->memorize('email', $this->userEmailRepository->updateEmail($request->input('email'), $request->input('app_verify_email_path')));
+        $currentUser->memorizeEmail($this->userEmailRepository->updateEmail($request->input('email'), $request->input('app_verify_email_path')));
         return $this->responseModel($currentUser);
     }
 
@@ -212,7 +212,7 @@ class AccountController extends ApiController
             'current_password' => ['required', new CurrentPasswordRule()],
         ]);
 
-        $currentUser->memorize('email', $this->userEmailRepository->updateEmail($request->input('email'), $request->input('app_verify_email_path')));
+        $currentUser->memorizeEmail($this->userEmailRepository->updateEmail($request->input('email'), $request->input('app_verify_email_path')));
         return $this->responseModel($currentUser);
     }
 
