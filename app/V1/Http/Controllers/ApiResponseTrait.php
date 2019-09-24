@@ -10,8 +10,14 @@ use App\V1\Http\Requests\Request;
 use App\V1\Utils\ClientAppHelper;
 use App\V1\Utils\LocalizationHelper;
 use App\V1\Utils\LogHelper;
+use App\V1\Utils\PaginationHelper;
 use Closure;
 use Exception as BaseException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
 use League\OAuth2\Server\Exception\OAuthServerException;
 
 trait ApiResponseTrait
@@ -90,7 +96,7 @@ trait ApiResponseTrait
         });
     }
 
-    protected function throttleMiddleware()
+    protected function throttleMiddleware(Request $request = null)
     {
         LocalizationHelper::getInstance()->autoFetch();
         ClientAppHelper::getInstance();
@@ -99,7 +105,7 @@ trait ApiResponseTrait
     /**
      * @param boolean $failed
      * @param array $payload
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function response($failed, $payload)
     {
@@ -112,7 +118,7 @@ trait ApiResponseTrait
     /**
      * @param array|null $data
      * @param array|string|null $message
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function responseSuccess($data = null, $message = null)
     {
@@ -123,7 +129,7 @@ trait ApiResponseTrait
     /**
      * @param Exception|array|string|null $message
      * @param array|null $data
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function responseFail($message = null, $data = null)
     {
@@ -132,5 +138,35 @@ trait ApiResponseTrait
             LogHelper::error($message);
         }
         return $this->response(true, static::payload($data, $message));
+    }
+
+    protected function getRespondedModel($model)
+    {
+        if ($model instanceof LengthAwarePaginator) {
+            return [
+                'models' => $this->modelTransform($this->modelTransformerClass, $model),
+                'pagination' => PaginationHelper::parse($model),
+            ];
+        }
+        if ($model instanceof Collection) {
+            return [
+                'models' => $this->modelTransform($this->modelTransformerClass, $model),
+            ];
+        }
+        if ($model instanceof Model) {
+            return [
+                'model' => $this->modelTransform($this->modelTransformerClass, $model),
+            ];
+        }
+        return Arr::isAssoc($model) ? [
+            'model' => $model,
+        ] : [
+            'models' => $model,
+        ];
+    }
+
+    protected function responseModel($model)
+    {
+        return $this->responseSuccess($this->getRespondedModel($model));
     }
 }

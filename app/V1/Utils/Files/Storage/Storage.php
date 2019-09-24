@@ -1,15 +1,12 @@
 <?php
 
-namespace App\V1\Utils\Storage;
+namespace App\V1\Utils\Files\Storage;
 
-use App\V1\Exceptions\AppException;
 use App\V1\Utils\ClassTrait;
 use App\V1\Utils\DateTimeHelper;
+use App\V1\Utils\Files\File;
 use App\V1\Utils\Helper;
 use App\V1\Utils\StringHelper;
-use Illuminate\Http\File;
-use Illuminate\Http\UploadedFile;
-use SplFileInfo;
 
 abstract class Storage
 {
@@ -39,27 +36,9 @@ abstract class Storage
         ]);
     }
 
-    protected function checkFile($file)
+    public function putFile($file, $directory = null)
     {
-        if (is_string($file)) {
-            if (!file_exists($file)) {
-                throw new AppException(static::__transErrorWithModule('file_not_found'));
-            }
-            return new File($file);
-        }
-        if ($file instanceof File || $file instanceof UploadedFile) {
-            return $file;
-        }
-        if ($file instanceof SplFileInfo) {
-            return new File($file->getRealPath());
-        }
-
-        throw new AppException(static::__transErrorWithModule('file_not_supported'));
-    }
-
-    public function putFile($file)
-    {
-        $file = $this->checkFile($file);
-        $this->disk->putFile($this->getDirectory(), $file);
+        $file = File::from($file);
+        $this->disk->putFile(empty($directory) ? $this->getDirectory() : $directory, $file);
     }
 }

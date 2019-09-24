@@ -4,10 +4,10 @@ namespace App\V1\Utils\Files;
 
 use App\V1\Exceptions\AppException;
 use App\V1\Utils\ClassTrait;
+use Illuminate\Http\File as BaseFile;
 use Illuminate\Http\UploadedFile;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\File as BaseFile;
 
 class File extends BaseFile
 {
@@ -28,6 +28,9 @@ class File extends BaseFile
         }
         if ($file instanceof File) {
             return $file;
+        }
+        if ($file instanceof BaseFile) {
+            return new File($file->getRealPath());
         }
         if ($file instanceof UploadedFile) {
             return new File(FileHelper::getInstance()->toDefaultRealPath(

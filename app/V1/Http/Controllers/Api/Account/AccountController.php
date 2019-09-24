@@ -218,7 +218,7 @@ class AccountController extends ApiController
 
     public function mainEmailUpdateVerification(Request $request)
     {
-        return $this->responseCustomModel($this->modelTransform(
+        return $this->responseModel($this->modelTransform(
             UserEmailTransformer::class,
             $this->userEmailRepository->updateVerifiedAtByEmailAndCode(
                 $request->input('email', ''),

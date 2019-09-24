@@ -4,7 +4,6 @@ namespace App\V1\Http\Controllers;
 
 use App\V1\Http\Requests\Request;
 use App\V1\ModelRepositories\ModelRepository;
-use App\V1\Utils\PaginationHelper;
 
 class ApiController extends Controller
 {
@@ -25,28 +24,6 @@ class ApiController extends Controller
         $this->withThrottlingMiddleware();
     }
 
-    protected function responseCustomModel($model)
-    {
-        return $this->responseSuccess([
-            'model' => $model,
-        ]);
-    }
-
-    protected function responseModel($model)
-    {
-        return $this->responseSuccess([
-            'model' => $this->modelTransform($this->modelTransformerClass, $model),
-        ]);
-    }
-
-    protected function responseModels($models)
-    {
-        return $this->responseSuccess([
-            'models' => $this->modelTransform($this->modelTransformerClass, $models),
-            'pagination' => PaginationHelper::parse($models),
-        ]);
-    }
-
     #region Index
     protected function search(Request $request)
     {
@@ -59,10 +36,10 @@ class ApiController extends Controller
             $this->search($request),
             $this->paging(),
             $this->itemsPerPage(),
-            $request->input('sort_by'),
-            $request->input('sort_order')
+            $this->sortBy(),
+            $this->sortOrder()
         );
-        return $this->responseModels($models);
+        return $this->responseModel($models);
     }
     #endregion
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\V1\Utils\Storage;
+namespace App\V1\Utils\Files\Storage;
 
 class PublicLocalStorage extends LocalStorage
 {

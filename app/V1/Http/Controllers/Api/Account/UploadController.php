@@ -22,7 +22,7 @@ class UploadController extends ApiController
 
     private function storeChunkInit(Request $request)
     {
-        return $this->responseCustomModel([
+        return $this->responseModel([
             'file_id' => (new ChunkedFileJoiner())->getFileId(),
         ]);
     }
@@ -43,7 +43,7 @@ class UploadController extends ApiController
                 $request->file('chunk_file')
             );
 
-        return $this->responseCustomModel([
+        return $this->responseModel([
             'file_id' => $joiner->getFileId(),
             'joined' => $joiner->isJoined(),
         ]);
