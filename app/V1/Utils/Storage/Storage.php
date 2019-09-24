@@ -9,7 +9,6 @@ use App\V1\Utils\Helper;
 use App\V1\Utils\StringHelper;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
-use Psy\Util\Str;
 use SplFileInfo;
 
 abstract class Storage
@@ -30,16 +29,13 @@ abstract class Storage
     public function getDirectory()
     {
         $now = DateTimeHelper::syncNowObject();
-        $hash = function ($value, $length = 8) {
-            $value = StringHelper::fillAfter(empty($value) ? '' : $value, $length - 1, function () {
-                    return rand(1, 9);
-                }, $filled) . $filled;
-            return dechex(intval($value));
+        $hash = function ($value) {
+            return dechex(intval(StringHelper::repeat(9, strlen($value))) - intval($value));
         };
         return implode(DIRECTORY_SEPARATOR, [
-            $hash(Helper::currentUserId(rand(0, $this->maxFirstFolder - 1)) % $this->maxFirstFolder + 170),
             $hash($now->format('Ym')),
             $hash($now->format('dH')),
+            $hash(Helper::currentUserId(rand(0, $this->maxFirstFolder - 1)) % $this->maxFirstFolder + 170),
         ]);
     }
 
@@ -64,6 +60,6 @@ abstract class Storage
     public function putFile($file)
     {
         $file = $this->checkFile($file);
-        $this->disk->putFile($this->getFirstFolderName(), $file);
+        $this->disk->putFile($this->getDirectory(), $file);
     }
 }
