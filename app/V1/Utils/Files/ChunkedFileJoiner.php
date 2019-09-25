@@ -5,11 +5,13 @@ namespace App\V1\Utils\Files;
 use App\V1\Exceptions\AppException;
 use App\V1\Utils\Files\Filer\Filer;
 use App\V1\Utils\Files\FileWriter\BinaryFileWriter;
+use App\V1\Utils\Files\Disk\LocalStorageHandler;
 use App\V1\Utils\StringHelper;
 
 class ChunkedFileJoiner
 {
     const CHUNK_FILE_NAME = 'chunk';
+    const CHUNK_FOLDER_NAME = 'chunks';
 
     protected $fileId;
     protected $chunkDirectory;
@@ -19,7 +21,7 @@ class ChunkedFileJoiner
     protected $currentChunkFile;
     protected $joinedFiler;
 
-    public function __construct($fileId = null)
+    public function __construct($fileId = null )
     {
         $this->tryFileId($fileId);
         $this->joined = false;
@@ -27,15 +29,17 @@ class ChunkedFileJoiner
 
     protected function tryFileId($fileId)
     {
-        if (empty($fileId)) {
+        $isEmptyFiledId = empty($fileId);
+        if ($isEmptyFiledId) {
             $fileId = StringHelper::uuid();
-            if (is_dir(storage_path('app/chunks/' . $fileId))) { // prevent duplicate
-                $this->tryFileId(null);
-                return;
-            }
+        }
+        $chunkDirectory = FileHelper::getInstance()->concatPath(static::CHUNK_FOLDER_NAME, $fileId);
+        if ($isEmptyFiledId && $this->storage->exists($chunkDirectory)) { // prevent duplicate
+            $this->tryFileId(null);
+            return;
         }
         $this->fileId = $fileId;
-        $this->chunkDirectory = storage_path('app/chunks/' . $this->fileId);
+        $this->chunkDirectory = $chunkDirectory;
         $this->joinedFilePath = $this->chunkDirectory . DIRECTORY_SEPARATOR . static::CHUNK_FILE_NAME;
     }
 

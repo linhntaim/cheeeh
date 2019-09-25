@@ -2,163 +2,93 @@
 
 namespace App\V1\Utils\Files\Filer;
 
-use App\V1\Exceptions\AppException;
-use App\V1\Utils\Files\File;
-use App\V1\Utils\Files\FileHelper;
-use App\V1\Utils\Files\RelativeFileContainer;
-use SplFileInfo;
+use App\V1\Utils\Files\Disk\Disk;
+use App\V1\Utils\Files\Disk\LocalDisk;
+use App\V1\Utils\Files\Disk\PublicDisk;
 
-class Filer extends RelativeFileContainer
+class Filer
 {
     /**
-     * @var File
+     * @var Disk
      */
-    protected $file;
+    protected $disk;
 
-    protected $isOverridden;
-
-    /**
-     * Filer constructor.
-     * @param string|SplFileInfo $file
-     * @throws AppException
-     */
     public function __construct($file)
     {
-        $this->file = File::from($file);
+        $this->disk = Disk::factory($file);
     }
 
-    public function getIsOverridden()
+    public function inFree()
     {
-        return $this->isOverridden;
+        return get_class($this->disk) === Disk::class;
     }
 
-    public function setIsOverridden($value = true)
+    public function inLocal()
     {
-        return $this->isOverridden = $value;
+        return get_class($this->disk) === LocalDisk::class;
     }
 
-    /**
-     * @param string|array|bool $toDirectory
-     * @param string|array|null $name
-     * @param bool $isRelative
-     * @param bool $safe
-     * @return bool
-     */
-    protected function movable(&$toDirectory, &$name, $isRelative, $safe)
+    public function inPublic()
     {
-        $fileHelper = FileHelper::getInstance();
-        $toDirectory = $toDirectory === false ?
-            dirname($this->getRealPath())
-            : $fileHelper->autoDirectory($toDirectory, $isRelative);
-        $name = $fileHelper->autoFilename(is_array($name) ? $name : [
-            'name' => $name,
-            'extension' => $this->file->getExtension(),
-        ]);
-        $this->isOverridden = file_exists($fileHelper->concatPath($toDirectory, $name));
-        return !$safe || !$this->isOverridden;
-    }
-
-    /**
-     * @param string|array|bool $toDirectory
-     * @param string|array|null $name
-     * @param bool $isRelative
-     * @param bool $safe
-     * @return static
-     */
-    public function move($toDirectory, $name = null, $isRelative = false, $safe = false)
-    {
-        if (!$this->movable($toDirectory, $name, $isRelative, $safe)) {
-            return $this;
-        }
-
-        $this->file = $this->file->move($toDirectory, $name);
-        return $this;
-    }
-
-    /**
-     * @param string|array|bool $toDirectory
-     * @param string|array|null $name
-     * @param bool $isRelative
-     * @return static
-     */
-    public function safeMove($toDirectory, $name = null, $isRelative = false)
-    {
-        return $this->move($toDirectory, $name, $isRelative, true);
-    }
-
-    /**
-     * @param string|array|bool $toDirectory
-     * @param string|array|null $name
-     * @param bool $isRelative
-     * @param bool $safe
-     * @return static
-     */
-    public function duplicate($toDirectory, $name = null, $isRelative = false, $safe = false)
-    {
-        if (!$this->movable($toDirectory, $name, $isRelative, $safe)) {
-            return $this;
-        }
-
-        $thisClass = $this->__class();
-        $thisObject = new $thisClass($this->file->copy($toDirectory, $name));
-        $thisObject->setIsOverridden($this->isOverridden);
-        return $thisObject;
-    }
-
-    /**
-     * @param string|array|bool $toDirectory
-     * @param string|array|null $name
-     * @param bool $isRelative
-     * @return static
-     */
-    public function safeDuplicate($toDirectory, $name = null, $isRelative = false)
-    {
-        return $this->duplicate($toDirectory, $name, $isRelative, true);
-    }
-
-    /**
-     * @param string|array|null $name
-     * @return static
-     */
-    public function store($name = null)
-    {
-        return $this->move(FileHelper::getInstance()->storePath(), $name);
-    }
-
-    public function delete()
-    {
-        $path = $this->getRealPath();
-        if (file_exists($path)) unlink($path);
-        $this->file = null;
+        return get_class($this->disk) === PublicDisk::class;
     }
 
     public function getFile()
     {
-        return $this->file;
+        return $this->disk->getFile();
     }
 
     public function getBaseName()
     {
-        return $this->file->getBasename();
+        return $this->disk->getBaseName();
+    }
+
+    public function getFileName()
+    {
+        return $this->disk->getFileName();
     }
 
     public function getSize()
     {
-        return $this->file->getSize();
+        return $this->disk->getSize();
     }
 
     public function getExtension()
     {
-        return $this->file->getExtension();
+        return $this->disk->getExtension();
     }
 
     public function getRealPath()
     {
-        return $this->file->getRealPath();
+        return $this->disk->getRealPath();
+    }
+
+    public function getRealDirectory()
+    {
+        return $this->disk->getRealDirectory();
     }
 
     public function getResponse()
     {
         return response()->file($this->getRealPath());
+    }
+
+    public function delete()
+    {
+        $this->disk->delete();
+    }
+
+    public function moveInLocal($relativeDirectory = null)
+    {
+        if (!$this->inLocal()) {
+            $this->disk = (new LocalDisk())->moveIn($this->disk);
+        }
+    }
+
+    public function moveInPublic($relativeDirectory = null)
+    {
+        if (!$this->inPublic()) {
+            $this->disk = (new PublicDisk())->moveIn($this->disk);
+        }
     }
 }

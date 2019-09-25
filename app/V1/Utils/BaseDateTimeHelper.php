@@ -236,16 +236,6 @@ abstract class BaseDateTimeHelper
         return $this->fromFormatToFormat($format, $time, static::DATABASE_FORMAT, $start);
     }
 
-    public function fromToFormat(Carbon $time, $toFormat, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
-    {
-        return $this->from($time, $start)->format($toFormat);
-    }
-
-    public function fromToDatabaseFormat(Carbon $time, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
-    {
-        return $this->from($time, $start)->format(static::DATABASE_FORMAT);
-    }
-
     #endregion
 
     #region From UTC to Local Time
@@ -255,14 +245,14 @@ abstract class BaseDateTimeHelper
      * @return Carbon
      * @throws \App\V1\Exceptions\Exception
      */
-    public function getObject($time, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
+    public function getObject($time = 'now', $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
         $time = $this->toCarbon($time);
         $time->addSeconds($this->getDateTimeOffset());
         return $this->applyStartType($time, $start);
     }
 
-    protected function getBags($time, $start = BaseDateTimeHelper::DAY_TYPE_NONE)
+    protected function getBags($time = 'now', $start = BaseDateTimeHelper::DAY_TYPE_NONE)
     {
         $time = $this->getObject($time, $start);
         return [

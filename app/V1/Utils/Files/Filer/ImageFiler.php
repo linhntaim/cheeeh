@@ -2,22 +2,16 @@
 
 namespace App\V1\Utils\Files\Filer;
 
-use App\V1\Exceptions\AppException;
+use Intervention\Image\Image;
 use Intervention\Image\ImageManagerStatic;
-use SplFileInfo;
 
 class ImageFiler extends Filer
 {
     /**
-     * @var \Intervention\Image\Image
+     * @var Image
      */
     protected $image;
 
-    /**
-     * ImageFiler constructor.
-     * @param string|SplFileInfo $file
-     * @throws AppException
-     */
     public function __construct($file)
     {
         parent::__construct($file);
@@ -68,19 +62,9 @@ class ImageFiler extends Filer
         $this->image->rotate($angle, $bgColor);
     }
 
-    public function save($quality = null, $path = null)
+    public function save($quality = null)
     {
-        $this->image->save($path, $quality);
-
-        $this->file = new File($this->file->getRealPath());
-        $this->prepare();
-    }
-
-    public function move($toDirectory, $name = null, $isRelative = false, $safe = false)
-    {
-        parent::move($toDirectory, $name, $isRelative, $safe);
-        $this->prepare();
-        return $this;
+        $this->image->save(null, $quality);
     }
 
     public function delete()
@@ -101,7 +85,7 @@ class ImageFiler extends Filer
     public function createThumbnail($width, $height, $separator1 = '_', $separator2 = 'x')
     {
         $fileName = sprintf('%s%s%s%s%s',
-            pathinfo($this->file->getFilename(), PATHINFO_FILENAME),
+            $this->getFileName(),
             $separator1,
             $width,
             $separator2,

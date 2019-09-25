@@ -5,7 +5,6 @@ namespace App\V1\Utils\Files;
 use App\V1\Exceptions\AppException;
 use App\V1\Utils\ClassTrait;
 use Illuminate\Http\File as BaseFile;
-use Illuminate\Http\UploadedFile;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
@@ -15,33 +14,26 @@ class File extends BaseFile
 
     /**
      * @param string|SplFileInfo $file
+     * @param bool $checkPath
      * @return File
      * @throws AppException
      */
-    public static function from($file)
+    public static function from($file, $checkPath = true)
     {
+        if ($file instanceof File) {
+            return $file;
+        }
         if (is_string($file)) {
             if (!file_exists($file)) {
                 throw new AppException(static::__transErrorWithModule('file_not_found'));
             }
-            return new File($file);
+            return new File($file, $checkPath);
         }
-        if ($file instanceof File) {
-            return $file;
-        }
-        if ($file instanceof BaseFile) {
-            return new File($file->getRealPath());
-        }
-        if ($file instanceof UploadedFile) {
-            return new File(FileHelper::getInstance()->toDefaultRealPath(
-                $file->store('') // saved in storage/app directory (local disk), which is default path, return relative path
-            ));
-        }
-        if ($file instanceof SplFileInfo) {
-            return new File($file->getRealPath());
+        if ($file instanceof BaseFile || $file instanceof SplFileInfo) {
+            return new File($file->getRealPath(), $checkPath);
         }
 
-        throw new AppException(static::__transErrorWithModule('file_not_found'));
+        throw new AppException(static::__transErrorWithModule('file_not_supported'));
     }
 
     protected function getTargetFile($directory, $name = null)
