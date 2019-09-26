@@ -12,6 +12,7 @@ use App\V1\ModelTransformers\RoleTransformer;
 use App\V1\ModelTransformers\ModelTransformTrait;
 use App\V1\Utils\ConfigHelper;
 use App\V1\Utils\DateTimeHelper;
+use App\V1\Utils\Files\FileHelper;
 use App\V1\Utils\NumberFormatHelper;
 
 class PrerequisiteController extends ApiController
@@ -54,6 +55,7 @@ class PrerequisiteController extends ApiController
                     'max_attempts' => Configuration::THROTTLE_REQUEST_MAX_ATTEMPTS,
                     'decay_minutes' => Configuration::THROTTLE_REQUEST_DECAY_MINUTES,
                 ],
+                'max_upload_file_size' => FileHelper::maxUploadFileSize(),
                 'facebook_enabled' => true,
                 'google_enabled' => true,
                 'microsoft_enabled' => true,

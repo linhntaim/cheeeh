@@ -2,207 +2,87 @@
 
 namespace App\V1\Utils\Files;
 
-use App\V1\Exceptions\AppException;
-use App\V1\Utils\ClassTrait;
-use App\V1\Utils\DateTimeHelper;
 use App\V1\Utils\NumberFormatHelper;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class FileHelper
 {
-    use ClassTrait;
+    private static $fileSizeType = ['byte', 'bytes', 'KB', 'MB', 'GB'];
 
-    protected static $instance;
-
-    /**
-     * @return FileHelper
-     */
-    public static function getInstance()
+    public static function hasBackPath($path)
     {
-        if (empty(static::$instance)) {
-            return new static();
-        }
-        return static::$instance;
+        return Str::contains('..', $path);
     }
 
-    const STORE_FOLDER = 'store';
-
-    private $fileSizeType = ['byte', 'bytes', 'KB', 'MB', 'GB'];
-
-    private $fileUrl;
-    private $filePath;
-    private $defaultPath;
-
-    private function __construct()
-    {
-        $this->fileUrl = config('files.url');
-        $this->filePath = config('files.path');
-        $this->defaultPath = config('filesystems.disks.local.root');
-    }
-
-    public function defaultPath()
-    {
-        return $this->defaultPath;
-    }
-
-    public function storePath()
-    {
-        $now = DateTimeHelper::syncNowObject();
-        return $this->concatPath($this->filePath, static::STORE_FOLDER, $now->format('Y'), $now->format('m'), $now->format('d'), $now->format('H'));
-    }
-
-    public function deleteUrl($fileUrl)
-    {
-        $filePath = $this->concatPath($this->filePath, $this->changeToPath(str_replace($this->fileUrl, '', $fileUrl)));
-        if (file_exists($filePath)) {
-            return @unlink($filePath);
-        }
-        return false;
-    }
-
-    public function toDefaultRealPath($relativePath)
-    {
-        if (empty($relativePath)) return $this->defaultPath;
-        return $this->concatPath($this->defaultPath, $relativePath);
-    }
-
-    public function toRealPath($relativePath)
-    {
-        if (empty($relativePath)) return $this->filePath;
-        return $this->concatPath($this->filePath, $relativePath);
-    }
-
-    public function toRelativePath($realPath)
-    {
-        return trim(str_replace($this->filePath, '', $realPath), DIRECTORY_SEPARATOR);
-    }
-
-    public function isRelativePath($realPath)
-    {
-        return Str::startsWith($realPath, $this->filePath);
-    }
-
-    public function fileExists($path, $isRelative = true)
-    {
-        return file_exists($isRelative ? $this->toRealPath($path) : $path);
-    }
-
-    public function toUrl($path, $isRelative = true)
-    {
-        return $this->concatUrl(
-            $this->fileUrl,
-            $this->changeToUrl($isRelative ? $path : $this->toRelativePath($path))
-        );
-    }
-
-    public function autoDirectory($directory, $isRelative = true)
-    {
-        $directory = $isRelative ?
-            $this->toRealPath($this->concatPath((array)$directory))
-            : $this->concatPath((array)$directory);
-        $this->checkDirectory($directory);
-        return $directory;
-    }
-
-    public function autoFilename($name = null)
-    {
-        if (is_string($name)) {
-            return $name;
-        }
-
-        $prefix = null;
-        $extension = null;
-
-        if (is_array($name)) {
-            if (isset($name['prefix'])) {
-                $prefix = $name['prefix'];
-            }
-            if (isset($name['extension'])) {
-                $extension = $name['extension'];
-            }
-            if (isset($name['name'])) {
-                $name = $name['name'];
-            } else {
-                $name = null;
-            }
-        }
-
-        if (empty($name)) {
-            return $this->randomizeFilename($prefix, $extension);
-        }
-
-        $name = $name . (empty($extension) ? '' : '.' . $extension);
-        return empty($prefix) ? $name : $prefix . $name;
-    }
-
-    public function checkDirectory($directory)
-    {
-        if ($this->hasBackPath($directory)) {
-            throw new AppException($this->__transErrorWithModule('directory_not_allowed') . ' (' . $directory . ')');
-        }
-        if (!is_dir($directory)) {
-            if (false === @mkdir($directory, 0777, true)) {
-                throw new AppException($this->__transErrorWithModule('directory_not_found') . ' (' . $directory . ')');
-            }
-        }
-        if (!is_writable($directory)) {
-            throw new AppException($this->__transErrorWithModule('directory_not_writable') . ' (' . $directory . ')');
-        }
-    }
-
-    public function randomizeFilename($prefix = null, $extension = null, $needTime = true, $needUnique = true, $moreUnique = true)
-    {
-        return sprintf('%s%s%s%s',
-            $prefix,
-            $needTime ? time() . '_' : '',
-            $needUnique ? uniqid('', $moreUnique) : '',
-            empty($extension) ? '' : '.' . $extension
-        );
-    }
-
-    public function changeToUrl($path)
-    {
-        return str_replace('\\', '/', $path);
-    }
-
-    public function changeToPath($path)
-    {
-        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
-    }
-
-    public function hasBackPath($path)
-    {
-        return Str::startsWith('..\\', $path)
-            || Str::contains('\\..\\', $path)
-            || Str::startsWith('../', $path)
-            || Str::contains('/../', $path);
-    }
-
-    public function concatPath()
+    public static function concatPath()
     {
         $paths = [];
         foreach (func_get_args() as $arg) {
             if (is_array($arg)) {
-                array_push($paths, $this->concatPath(...$arg));
+                array_push($paths, static::concatPath(...$arg));
             } else {
-                $paths[] = $arg;
+                if (!empty($arg)) {
+                    $paths[] = trim($arg, '/\\');
+                }
             }
         }
         return implode(DIRECTORY_SEPARATOR, $paths);
     }
 
-    public function concatUrl()
+    public static function concatUrl()
     {
         $urls = [];
         foreach (func_get_args() as $arg) {
             if (is_array($arg)) {
-                array_push($urls, $this->concatUrl(...$arg));
+                array_push($urls, static::concatUrl(...$arg));
             } else {
-                $urls[] = $arg;
+                if (!empty($arg)) {
+                    $urls[] = trim($arg, '/\\');
+                }
             }
         }
         return implode('/', $urls);
+    }
+
+    public static function changeToUrl($path)
+    {
+        return str_replace('\\', '/', $path);
+    }
+
+    public static function changeToPath($path)
+    {
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+    }
+
+    public static function randomFileBaseName($extension = null)
+    {
+        return sprintf('%s%s', Str::random(40), empty($extension) ? '' : '.' . $extension);
+    }
+
+    public static function removeFile($file)
+    {
+        if (file_exists($file)) {
+            unlink($file);
+        }
+    }
+
+    public static function removeDirectory($directory, $recursive = true)
+    {
+        if (is_dir($directory)) {
+            foreach (scandir($directory) as $item) {
+                if ($item != '.' && $item != '..') {
+                    $itemPath = $directory . DIRECTORY_SEPARATOR . $item;
+                    if (is_file($itemPath)) unlink($itemPath);
+                    else {
+                        if ($recursive) {
+                            static::removeDirectory($itemPath);
+                        }
+                    }
+                }
+            }
+            rmdir($directory);
+        }
     }
 
     /**
@@ -210,20 +90,20 @@ class FileHelper
      *
      * @return int The maximum size of an uploaded file in bytes
      */
-    public function maxUploadFileSize()
+    public static function maxUploadFileSize()
     {
         return UploadedFile::getMaxFilesize();
     }
 
-    public function asSize($fileSize, $typeIndex = 1)
+    public static function asSize($fileSize, $typeIndex = 1)
     {
         if ($fileSize > 1024) {
-            return $this->asSize($fileSize / 1024, ++$typeIndex);
+            return static::asSize($fileSize / 1024, ++$typeIndex);
         }
         if ($typeIndex == 1 && $fileSize <= 1) {
             $typeIndex = 0;
         }
 
-        return NumberFormatHelper::getInstance()->formatNumber($fileSize) . ' ' . $this->fileSizeType[$typeIndex];
+        return NumberFormatHelper::getInstance()->formatNumber($fileSize) . ' ' . static::$fileSizeType[$typeIndex];
     }
 }

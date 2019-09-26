@@ -1,13 +1,13 @@
 <?php
 
-namespace App\V1\Utils\Files\FileWriter;
+namespace App\V1\Utils\Files\Filer;
 
-class BinaryFileWriter extends FileWriter
+class BinaryFiler extends Filer
 {
     public function openToWrite()
     {
         if (!is_resource($this->handler)) {
-            $this->handler = fopen($this->filePath, 'wb');
+            $this->handler = fopen($this->getRealPath(), 'wb');
         }
         return $this;
     }
@@ -15,7 +15,7 @@ class BinaryFileWriter extends FileWriter
     public function openToAppend()
     {
         if (!is_resource($this->handler)) {
-            $this->handler = fopen($this->filePath, 'ab');
+            $this->handler = fopen($this->getRealPath(), 'ab');
         }
         return $this;
     }
@@ -23,7 +23,7 @@ class BinaryFileWriter extends FileWriter
     public function openToRead()
     {
         if (!is_resource($this->handler)) {
-            $this->handler = fopen($this->filePath, 'rb');
+            $this->handler = fopen($this->getRealPath(), 'rb');
         }
         return $this;
     }

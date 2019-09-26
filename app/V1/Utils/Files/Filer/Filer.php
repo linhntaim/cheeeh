@@ -13,9 +13,14 @@ class Filer
      */
     protected $disk;
 
-    public function __construct($file)
+    /**
+     * @var resource
+     */
+    protected $handler;
+
+    public function __construct($file, $strict = true)
     {
-        $this->disk = Disk::factory($file);
+        $this->disk = Disk::factory($file, $strict);
     }
 
     public function inFree()
@@ -40,7 +45,7 @@ class Filer
 
     public function getBaseName()
     {
-        return $this->disk->getBaseName();
+        return $this->disk->getFileBaseName();
     }
 
     public function getFileName()
@@ -50,22 +55,22 @@ class Filer
 
     public function getSize()
     {
-        return $this->disk->getSize();
+        return $this->disk->getFileSize();
     }
 
     public function getExtension()
     {
-        return $this->disk->getExtension();
+        return $this->disk->getFileExtension();
     }
 
     public function getRealPath()
     {
-        return $this->disk->getRealPath();
+        return $this->disk->getFileRealPath();
     }
 
     public function getRealDirectory()
     {
-        return $this->disk->getRealDirectory();
+        return $this->disk->getFileRealDirectory();
     }
 
     public function getResponse()
@@ -75,20 +80,87 @@ class Filer
 
     public function delete()
     {
-        $this->disk->delete();
+        $this->disk->fileDelete();
     }
 
-    public function moveInLocal($relativeDirectory = null)
+    public function moveInLocal($directory = null, $name = null)
     {
         if (!$this->inLocal()) {
-            $this->disk = (new LocalDisk())->moveIn($this->disk);
+            $this->disk = (new LocalDisk())->fileMoveIn($this->disk, $directory, $name);
+            return true;
+        }
+        return false;
+    }
+
+    public function moveInPublic($directory = null, $name = null)
+    {
+        if (!$this->inPublic()) {
+            $this->disk = (new PublicDisk())->fileMoveIn($this->disk, $directory, $name);
+            return true;
+        }
+        return false;
+    }
+
+    public function move($directory = null, $name = null)
+    {
+        $this->disk->fileMove($directory, $name);
+    }
+
+    public function duplicate($directory = null, $name = null)
+    {
+        $this->disk->fileDuplicate($directory, $name);
+    }
+
+    public function openToWrite()
+    {
+        if (!is_resource($this->handler)) {
+            $this->handler = fopen($this->getRealPath(), 'w');
+        }
+        return $this;
+    }
+
+    public function openToAppend()
+    {
+        if (!is_resource($this->handler)) {
+            $this->handler = fopen($this->getRealPath(), 'a');
+        }
+        return $this;
+    }
+
+    public function openToRead()
+    {
+        if (!is_resource($this->handler)) {
+            $this->handler = fopen($this->getRealPath(), 'r');
+        }
+        return $this;
+    }
+
+    public function readAll()
+    {
+        if (is_resource($this->handler)) {
+            return fread($this->handler, filesize($this->getRealPath()));
+        }
+        return null;
+    }
+
+    public function write($anything)
+    {
+        if (is_resource($this->handler)) {
+            fwrite($this->handler, $anything);
         }
     }
 
-    public function moveInPublic($relativeDirectory = null)
+    public function close()
     {
-        if (!$this->inPublic()) {
-            $this->disk = (new PublicDisk())->moveIn($this->disk);
+        if (is_resource($this->handler)) {
+            fclose($this->handler);
         }
+
+        return $this;
+    }
+
+    public function __destruct()
+    {
+        $this->close();
     }
 }

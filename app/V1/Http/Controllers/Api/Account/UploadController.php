@@ -4,7 +4,7 @@ namespace App\V1\Http\Controllers\Api\Account;
 
 use App\V1\Http\Controllers\ApiController;
 use App\V1\Http\Requests\Request;
-use App\V1\Utils\Files\ChunkedFileJoiner;
+use App\V1\Utils\Files\Filer\ChunkedFiler;
 
 class UploadController extends ApiController
 {
@@ -23,7 +23,7 @@ class UploadController extends ApiController
     private function storeChunkInit(Request $request)
     {
         return $this->responseModel([
-            'file_id' => (new ChunkedFileJoiner())->getFileId(),
+            'file_id' => ChunkedFiler::generateFileId(),
         ]);
     }
 
@@ -36,12 +36,12 @@ class UploadController extends ApiController
             'chunk_file' => 'required',
         ]);
 
-        $joiner = (new ChunkedFileJoiner($request->input('file_id')))
-            ->join(
-                $request->input('chunk_index'),
-                $request->input('chunk_total'),
-                $request->file('chunk_file')
-            );
+        $joiner = (new ChunkedFiler(
+            $request->file('chunk_file'),
+            $request->input('file_id'),
+            $request->input('chunk_index'),
+            $request->input('chunk_total')
+        ))->join();
 
         return $this->responseModel([
             'file_id' => $joiner->getFileId(),

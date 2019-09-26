@@ -2,6 +2,7 @@
 
 namespace App\V1\Utils\Files\Disk;
 
+use App\V1\Exceptions\AppException;
 use App\V1\Utils\DateTimeHelper;
 use App\V1\Utils\Files\File;
 use App\V1\Utils\Files\FileHelper;
@@ -25,31 +26,6 @@ class LocalDisk extends Disk
         $this->maxFirstFolder = $maxFirstFolder;
     }
 
-    protected function getDirectory()
-    {
-        $now = DateTimeHelper::syncNowObject();
-        $hash = function ($value) {
-            return dechex(intval(StringHelper::repeat(9, strlen($value))) - intval($value));
-        };
-        return implode(DIRECTORY_SEPARATOR, [
-            $hash($now->format('Ym')),
-            $hash($now->format('dH')),
-            $hash(Helper::currentUserId(rand(0, $this->maxFirstFolder - 1)) % $this->maxFirstFolder + 170),
-        ]);
-    }
-
-    public function handle($file)
-    {
-        if ($file instanceof UploadedFile) {
-            $relativeFilePath = $this->disk->putFile('', $file);
-            $this->file = new File(FileHelper::getInstance()->concatPath(
-                $this->directory, $relativeFilePath
-            ));
-            return $this;
-        }
-        return parent::handle($file);
-    }
-
     public function in($path)
     {
         return Str::startsWith($path, $this->directory);
@@ -60,20 +36,69 @@ class LocalDisk extends Disk
         return $this->disk->exists($path);
     }
 
-    public function moveIn(Disk $fromDisk)
+    public function findFile($path, $fileBaseName, $strict = false, $recursive = false)
     {
-        $relativeFilePath = $this->disk->putFile($this->getDirectory(), $fromDisk->getFile());
-        $this->file = new File(FileHelper::getInstance()->concatPath(
-            $this->directory, $relativeFilePath
-        ));
+        return parent::findFile($this->directory . DIRECTORY_SEPARATOR . $path, $fileBaseName, $strict, $recursive);
+    }
+
+    public function handle($file, $strict = true)
+    {
+        if ($file instanceof UploadedFile) {
+            $relativeFilePath = $this->disk->putFile('', $file);
+            $this->file = new File(FileHelper::concatPath(
+                $this->directory, $relativeFilePath
+            ));
+            return $this;
+        }
+        return parent::handle($file, $strict);
+    }
+
+    public function fileDelete()
+    {
+        $this->disk->delete($this->getFileRelativePath());
+    }
+
+    public function fileDeleteFolder()
+    {
+        $this->disk->deleteDirectory($this->getFileRelativeDirectory());
+    }
+
+    public function fileMoveIn(Disk $fromDisk, $fileDirectory = null, $fileBaseName = null)
+    {
+        if (!$fromDisk->fileExists()) {
+            throw new AppException(static::__transErrorWithModule('file_not_found'));
+        }
+        if (get_class($fromDisk) != static::class) {
+            $fileRelativePath = $this->disk->putFileAs($this->fileAutoDirectory($fileDirectory), $fromDisk->getFile(), $fromDisk->fileAutoBaseName($fileBaseName));
+            $this->file = new File(FileHelper::concatPath($this->directory, $fileRelativePath));
+            $fromDisk->fileDelete();
+        }
         return $this;
     }
 
-    public function move($directory = null, $name = null)
+    public function fileMove($fileDirectory = null, $fileBaseName = null)
     {
-        $relativeFilePath = $this->disk->putFile($directory ?: $this->getDirectory(), $this->file);
-        $this->file = new File(FileHelper::getInstance()->concatPath(
-            $this->directory, $relativeFilePath
-        ));
+        if (!$this->fileExists()) {
+            throw new AppException(static::__transErrorWithModule('file_not_found'));
+        }
+        if (!empty($fileDirectory) || !empty($fileBaseName)) {
+            $toFileRelativePath = FileHelper::concatPath($this->fileAutoDirectory($fileDirectory), $this->fileAutoBaseName($fileBaseName));
+            $this->disk->move($this->getFileRelativePath(), $toFileRelativePath);
+            $this->file = new File(FileHelper::concatPath($this->directory, $toFileRelativePath));
+        }
+        return $this;
+    }
+
+    public function fileDuplicate($fileDirectory = null, $fileBaseName = null)
+    {
+        if (!$this->fileExists()) {
+            throw new AppException(static::__transErrorWithModule('file_not_found'));
+        }
+        if (!empty($fileDirectory) || !empty($fileBaseName)) {
+            $toFileRelativePath = FileHelper::concatPath($this->fileAutoDirectory($fileDirectory), $this->fileAutoBaseName($fileBaseName));
+            $this->disk->copy($this->getFileRelativePath(), $toFileRelativePath);
+            $this->file = new File(FileHelper::concatPath($this->directory, $toFileRelativePath));
+        }
+        return $this;
     }
 }

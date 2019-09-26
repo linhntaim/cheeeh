@@ -14,23 +14,26 @@ class File extends BaseFile
 
     /**
      * @param string|SplFileInfo $file
-     * @param bool $checkPath
+     * @param bool $strict
      * @return File
      * @throws AppException
      */
-    public static function from($file, $checkPath = true)
+    public static function from($file, $strict = true)
     {
         if ($file instanceof File) {
+            if ($strict && !file_exists($file->getRealPath())) {
+                throw new AppException(static::__transErrorWithModule('file_not_found'));
+            }
             return $file;
         }
         if (is_string($file)) {
             if (!file_exists($file)) {
                 throw new AppException(static::__transErrorWithModule('file_not_found'));
             }
-            return new File($file, $checkPath);
+            return new File($file, $strict);
         }
         if ($file instanceof BaseFile || $file instanceof SplFileInfo) {
-            return new File($file->getRealPath(), $checkPath);
+            return new File($file->getRealPath(), $strict);
         }
 
         throw new AppException(static::__transErrorWithModule('file_not_supported'));

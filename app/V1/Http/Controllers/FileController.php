@@ -21,7 +21,7 @@ class FileController extends Controller
 
     public function show($path = null)
     {
-        if (!empty($path) && !FileHelper::getInstance()->hasBackPath($path)) {
+        if (!empty($path) && !FileHelper::hasBackPath($path)) {
             $filePath = $this->filePath($path);
             if (is_file($filePath)) {
                 return $this->responseFile($filePath);
