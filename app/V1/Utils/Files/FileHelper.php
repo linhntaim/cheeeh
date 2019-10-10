@@ -12,7 +12,12 @@ class FileHelper
 
     public static function hasBackPath($path)
     {
-        return Str::contains('..', $path);
+        return Str::startsWith('../', $path)
+            || Str::startsWith('..\\', $path)
+            || Str::contains('/../', $path)
+            || Str::contains('\\..\\', $path)
+            || Str::endsWith('/..', $path)
+            || Str::endsWith('\\..', $path);
     }
 
     public static function concatPath()
